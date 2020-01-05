@@ -77,7 +77,12 @@ public class Drive extends Subsystem {
     NetworkTableEntry tx = table.getEntry("tx");
     NetworkTableEntry camtranEntry = table.getEntry("camtran");
 
-    private static final int MAX_VELOCITY = 18000; // max velocity of velocity drive in rpm
+    private static final int MAX_VELOCITY; // max velocity of velocity drive in rpm
+
+    static {
+        MAX_VELOCITY = 18000;
+    }
+
     VelocityDrive velocityDrive = new VelocityDrive(MAX_VELOCITY);
     CurvatureDrive curvatureDrive = new CurvatureDrive(TELEOP_DEAD_ZONE);
     ArcadeDrive arcadeDrive = curvatureDrive.getArcadeDrive();
@@ -127,10 +132,7 @@ public class Drive extends Subsystem {
 
         }
 
-        if (AUTO_BUTTON.get() && Subsystems.MAIN_INTAKE.periodicIO.demand != MainIntake.Position.FRONT_HATCH.getPos() && Subsystems.MAIN_INTAKE.periodicIO.demand != MainIntake.Position.REAR_HATCH.getPos()) {
-            System.out.println("Correction Steer " + correctionSteer);
-            driveDemand = curvatureDrive.getDemand(CURVATURE_FORWARD.get(), CURVATURE_REVERSE.get(), correctionSteer, true);
-        } else if (driveType == TeleopDriveType.ARCADE) {
+        if (driveType == TeleopDriveType.ARCADE) {
             driveDemand = arcadeDrive.getDemand(ARCADE_Y_AXIS.get(), ARCADE_X_AXIS.get());
         } else if (driveType == TeleopDriveType.CURVATURE) {
             driveDemand = curvatureDrive.getDemand(CURVATURE_FORWARD.get(), CURVATURE_REVERSE.get(), CURVATURE_STEER.get(), PIVOT_BUTTON.get());
