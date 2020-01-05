@@ -4,31 +4,45 @@ package com.team2813.lib.config;
 import com.team2813.lib.sparkMax.CANSparkMaxWrapper.InvertType;
 
 public class FollowerConfig {
-    private int id;
-    private MotorType type;
+	private int id;
+
+    private MotorType motorType;
+
+    private MotorControllerType motorControllerType;
     private InvertType inverted = InvertType.FOLLOW_LEADER;
 
-    public int getId() {
-        return id;
-    }
+	public void setMotorControllerType(MotorControllerType motorControllerType) {
+		this.motorControllerType = motorControllerType;
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
-    public MotorType getType() {
-        return type;
-    }
 
-    public void setType(MotorType type) {
-        this.type = type;
-    }
+	public MotorControllerType getMotorControllerType() {
+		return motorControllerType;
+	}
 
-    public InvertType getInverted() {
-        return inverted;
-    }
 
-    public void setInverted(InvertType inverted) {
-        this.inverted = inverted;
-    }
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public MotorType getMotorType() {
+		return motorType;
+	}
+
+	public void setMotorType(MotorType motorType) {
+		this.motorType = motorType;
+	}
+
+	public InvertType getInverted() {
+		return inverted;
+	}
+
+	public void setInverted(InvertType inverted) {
+		this.inverted = inverted;
+	}
 }
