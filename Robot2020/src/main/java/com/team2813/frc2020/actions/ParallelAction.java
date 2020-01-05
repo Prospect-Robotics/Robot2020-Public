@@ -1,12 +1,12 @@
 package com.team2813.frc2020.actions;
 
-import com.team2813.frc2019.Robot.RobotMode;
+import com.team2813.frc2020.Robot.RobotMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.team2813.frc2019.subsystems.Subsystems.LOOPER;
+import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
 
 /**
  * @author Adrian Guerra

@@ -1,6 +1,6 @@
 package com.team2813.frc2020.subsystems;
 
-import com.team2813.frc2019.loops.Loop;
+import com.team2813.frc2020.loops.Loop;
 import com.team2813.lib.ctre.CTREException;
 import com.team2813.lib.sparkMax.SparkMaxException;
 
