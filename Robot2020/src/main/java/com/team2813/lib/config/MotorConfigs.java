@@ -25,7 +25,7 @@ import java.util.Map;
 // singleton for motor configs
 public class MotorConfigs {
 	public static Map<String, CANSparkMaxWrapper> sparks = new HashMap<>();
-	public static Map<String, TalonConfig> talons = new HashMap<>();
+	public static Map<String, TalonWrapper> talons = new HashMap<>();
 	public static Map<String, VictorWrapper> victors = new HashMap<>();
 
 	public static RootConfigs motorConfigs;
