@@ -5,11 +5,11 @@ import com.team2813.lib.config.SparkConfig;
 import com.team2813.lib.sparkMax.CANSparkMaxWrapper;
 import com.team2813.lib.sparkMax.SparkMaxException;
 
-public class VelocityDrive {
+public class VelocityDriveSpark {
     private CANSparkMaxWrapper spark;
     private double maxVelocity;
 
-    public VelocityDrive(double maxVelocity) {
+    public VelocityDriveSpark(double maxVelocity) {
         this.maxVelocity = maxVelocity;
     }
 

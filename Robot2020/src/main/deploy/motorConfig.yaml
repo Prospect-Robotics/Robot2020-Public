@@ -1,6 +1,6 @@
 ---
-sparks:
-  driveLeft: # SPARK MAX
+talons:
+  driveLeft: # Talon
     deviceNumber: 3
     type: BRUSHLESS
     subsystemName: Drive
@@ -30,7 +30,7 @@ sparks:
         maxIntegralAccumulator: 0
         integralZone: 0
         allowableClosedLoopError: 0
-  driveRight: # SPARK MAX
+  driveRight: #Talon
     deviceNumber: 1
     type: BRUSHLESS
     subsystemName: Drive
@@ -60,7 +60,6 @@ sparks:
         maxIntegralAccumulator: 0
         integralZone: 0
         allowableClosedLoopError: 0
-talons:
   shooter:
     deviceNumber: 15
     type: BRUSHED
