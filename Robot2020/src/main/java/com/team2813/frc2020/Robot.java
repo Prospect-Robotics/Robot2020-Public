@@ -7,22 +7,28 @@
 
 package com.team2813.frc2020;
 
+import com.team2813.frc2020.util.AutonomousPath;
+import com.team2813.frc2020.util.ShuffleboardData;
+import com.team2813.frc2020.subsystems.Subsystem;
+import com.team2813.frc2020.subsystems.Subsystems;
+import com.team2813.lib.config.MotorConfigs;
+import com.team2813.lib.util.CrashTracker;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the TimedRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the build.gradle file in the
- * project.
- */
+import java.io.IOException;
+
+import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
+import static com.team2813.frc2020.subsystems.Subsystems.allSubsystems;
+
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private static final double MIN_IDLE_VOLTAGE = 11.7;
+  private static final double MIN_DISABLED_VOLTAGE = 12.0;
+
+  public static AutonomousPath chosenPath;
 
   /**
    * This function is run when the robot is first started up and should be
@@ -30,9 +36,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+    try {
+      CrashTracker.logRobotInit();
+      MotorConfigs.read();
+      Subsystems.initializeSubsystems();
+      ShuffleboardData.init();
+      for (Subsystem subsystem : allSubsystems) {
+        LOOPER.addLoop(subsystem);
+        subsystem.zeroSensors();
+      }
+    } catch (IOException e) {
+      System.out.println("Something went wrong while reading config files!");
+      CrashTracker.logThrowableCrash(e);
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -45,24 +62,19 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    boolean disabled = DriverStation.getInstance().isDisabled();
+    double voltage = RobotController.getBatteryVoltage();
+    SmartDashboard.putBoolean("Replace Battery if Red", disabled ? voltage > MIN_DISABLED_VOLTAGE : voltage > MIN_IDLE_VOLTAGE);
+
+    Subsystems.outputTelemetry();
   }
 
   /**
-   * This autonomous (along with the chooser code above) shows how to select
-   * between different autonomous modes using the dashboard. The sendable
-   * chooser code works with the Java SmartDashboard. If you prefer the
-   * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-   * getString line to get the auto name from the text box below the Gyro
-   *
-   * <p>You can add additional auto modes by adding additional comparisons to
-   * the switch structure below with additional strings. If using the
-   * SendableChooser make sure to add them to the chooser code above as well.
+   * Put autonomous initialization code here
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+    chosenPath = ShuffleboardData.pathChooser.getSelected();
   }
 
   /**
@@ -70,15 +82,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
+
   }
 
   /**
@@ -86,6 +90,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    Subsystems.teleopControls();
   }
 
   /**

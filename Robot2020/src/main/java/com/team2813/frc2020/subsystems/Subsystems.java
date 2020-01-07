@@ -42,4 +42,14 @@ public class Subsystems {
 		));
 		LOOPER.addLoop(new SmartDashboardLoop());
 	}
+
+	public static void teleopControls() {
+		for (Subsystem subsystem : allSubsystems)
+			subsystem.teleopControls();
+	}
+
+	public static void outputTelemetry() {
+		for (Subsystem subsystem : allSubsystems)
+			subsystem.outputTelemetry();
+	}
 }

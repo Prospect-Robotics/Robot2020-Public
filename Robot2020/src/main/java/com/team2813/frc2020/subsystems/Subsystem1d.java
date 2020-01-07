@@ -31,15 +31,11 @@ abstract class Subsystem1d<P extends Subsystem1d.Position> extends Subsystem {
 	@Override
 	protected void writePeriodicOutputs_() {
 		try {
-//			System.out.println(motor.subsystemName+"WritePeriodicOutputs: Demand 1: " + periodicIO.demand);
 			resetIfAtLimit();
-//			System.out.println(motor.subsystemName+"WritePeriodicOutputs: Demand 2: " + periodicIO.demand);
-//			System.out.println(motor.getPIDController())
 			if (!periodicIO.openLoop)
 				motor.set(periodicIO.demand, ControlType.kSmartMotion);
 			else
 				motor.set(periodicIO.velocity, ControlType.kVelocity);
-//			motor.set(.4, ControlType.kDutyCycle);
 		} catch(SparkMaxException e) {
 			new SparkMaxException("Subsystem initialization failed", e).printStackTrace();
 		}
@@ -73,16 +69,6 @@ abstract class Subsystem1d<P extends Subsystem1d.Position> extends Subsystem {
 	public boolean isZeroed() {
 		return zeroed;
 	}
-
-//	enum Mode {
-//		HOLDING(0), MOVING(1);
-//
-//		int slot;
-//
-//		Mode(int slot) {
-//			this.slot = slot;
-//		}
-//	}
 
 	class PeriodicIO {
 		double demand;
