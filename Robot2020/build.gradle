@@ -1,6 +1,11 @@
 plugins {
     id "java"
+    id "idea"
     id "edu.wpi.first.GradleRIO" version "2020.1.2"
+}
+
+repositories {
+    mavenCentral()
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -53,6 +58,10 @@ dependencies {
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
     testImplementation 'junit:junit:4.12'
+
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.0'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.0'
+    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.10.0'
 
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging
