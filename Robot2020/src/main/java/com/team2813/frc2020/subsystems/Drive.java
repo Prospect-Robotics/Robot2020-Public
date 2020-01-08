@@ -1,22 +1,25 @@
 package com.team2813.frc2020.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.ControlType;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Axis;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.ctre.CTREException;
+import com.team2813.lib.ctre.TalonWrapper;
 import com.team2813.lib.drive.ArcadeDrive;
 import com.team2813.lib.drive.CurvatureDrive;
 import com.team2813.lib.drive.DriveDemand;
-import com.team2813.lib.drive.VelocityDrive;
+import com.team2813.lib.drive.VelocityDriveTalon;
 import com.team2813.lib.sparkMax.CANSparkMaxWrapper;
 import com.team2813.lib.sparkMax.SparkMaxException;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 /**
  * The Drive subsystem is the main subsystem for
  * the drive train, and handles both driver control
@@ -27,8 +30,10 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
  */
 public class Drive extends Subsystem {
     // Motor Controllers
-    private static final CANSparkMaxWrapper LEFT = MotorConfigs.sparks.get("driveLeft");
-    private static final CANSparkMaxWrapper RIGHT = MotorConfigs.sparks.get("driveRight");
+    private static final TalonWrapper LEFT = MotorConfigs.talons.get("driveLeft");
+    private static final TalonWrapper RIGHT = MotorConfigs.talons.get("driveRight");
+    private double right_demand;
+    private double left_demand;
     private boolean isBrakeMode;
 
     // Controls
@@ -50,13 +55,35 @@ public class Drive extends Subsystem {
     }
 
     private static final int MAX_VELOCITY = 18000; // max velocity of velocity drive in rpm
-    private VelocityDrive velocityDrive = new VelocityDrive(MAX_VELOCITY);
-    private CurvatureDrive curvatureDrive = new CurvatureDrive(TELEOP_DEAD_ZONE);
-    private ArcadeDrive arcadeDrive = curvatureDrive.getArcadeDrive();
-    private DriveDemand driveDemand = new DriveDemand(0, 0);
 
-    Drive() { // put init stuff in here
+    private static final double CORRECTION_MAX_STEER_SPEED = 0.5;
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    NetworkTableEntry tv = table.getEntry("tv");
+    NetworkTableEntry tx = table.getEntry("tx");
+    NetworkTableEntry camtranEntry = table.getEntry("camtran");
 
+    VelocityDriveTalon velocityDrive = new VelocityDriveTalon(MAX_VELOCITY);
+    CurvatureDrive curvatureDrive = new CurvatureDrive(TELEOP_DEAD_ZONE);
+    ArcadeDrive arcadeDrive = curvatureDrive.getArcadeDrive();
+    DriveDemand driveDemand = new DriveDemand(0, 0);
+
+    private NetworkTableEntry velocityEntry = Shuffleboard.getTab("Tuning")
+            .addPersistent("Bruh", 0).getEntry();
+    private boolean velocityEnabled = velocityEntry.getNumber(0).intValue() == 1;
+    private boolean velocityFailed = false;
+
+    Drive() {
+        try {
+            velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getSparks().get("driveLeft"));
+            velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getSparks().get("driveRight"));
+
+            // be sure they're inverted correctly
+//            LEFT.setInverted(LEFT.getConfig().getInverted());
+//            RIGHT.setInverted(RIGHT.getConfig().getInverted());
+        } catch (SparkMaxException | CTREException e) {
+            velocityFailed = true;
+            e.printStackTrace();
+        }
     }
 
     private void teleopDrive(TeleopDriveType driveType) {
@@ -71,10 +98,6 @@ public class Drive extends Subsystem {
     protected void teleopControls_() {
         driveMode = DriveMode.OPEN_LOOP;
         teleopDrive(TELEOP_DRIVE_TYPE);
-    }
-
-    private void autoDrive(double angle) {
-
     }
 
     @Override
@@ -102,34 +125,41 @@ public class Drive extends Subsystem {
     protected void onEnabledStop_(double timestamp) throws CTREException {
     }
 
-    protected synchronized void writePeriodicOutputs_() throws SparkMaxException {
-        double leftVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getLeft());
-        double rightVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getRight());
-        LEFT.set(leftVelocity, ControlType.kSmartVelocity);
-        RIGHT.set(rightVelocity, ControlType.kSmartVelocity);
+
+    protected synchronized void writePeriodicOutputs_() throws SparkMaxException, CTREException {
+        if (!velocityFailed && velocityEnabled) {
+            double leftVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getLeft());
+            double rightVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getRight());
+            LEFT.set(ControlMode.Velocity, leftVelocity);
+            RIGHT.set(ControlMode.Velocity, rightVelocity);
+        } else {
+            LEFT.set(driveMode.controlMode,driveDemand.getLeft());
+            RIGHT.set(driveMode.controlMode,driveDemand.getRight());
+        }
     }
 
     public synchronized void setBrakeMode(boolean brake) {
         if (isBrakeMode != brake) {
             isBrakeMode = brake;
-            IdleMode mode = brake ? IdleMode.kBrake : IdleMode.kCoast;
+            NeutralMode mode = brake ? NeutralMode.Brake : NeutralMode.Coast;
             try {
                 RIGHT.setNeutralMode(mode);
                 LEFT.setNeutralMode(mode);
-            } catch (SparkMaxException e) {
+            } catch (CTREException e) {
                 e.printStackTrace();
             }
         }
     }
 
     private enum DriveMode {
-        OPEN_LOOP(ControlType.kDutyCycle),
-        VELOCITY(ControlType.kVelocity);
+        OPEN_LOOP(ControlMode.PercentOutput),
+        MOTION_MAGIC(ControlMode.MotionMagic),
+        VELOCITY(ControlMode.Velocity);
 
-        ControlType controlType;
+        ControlMode controlMode;
 
-        DriveMode(ControlType controlType) {
-            this.controlType = controlType;
+        DriveMode(ControlMode controlMode) {
+            this.controlMode = controlMode;
         }
     }
 }

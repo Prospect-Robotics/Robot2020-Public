@@ -7,16 +7,17 @@
 
 package com.team2813.frc2020;
 
-import com.team2813.frc2020.util.AutonomousPath;
-import com.team2813.frc2020.util.ShuffleboardData;
+import com.ctre.phoenix.CANifier;
 import com.team2813.frc2020.subsystems.Subsystem;
 import com.team2813.frc2020.subsystems.Subsystems;
+import com.team2813.frc2020.util.AutonomousPath;
+import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.util.CrashTracker;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.io.IOException;
@@ -24,11 +25,21 @@ import java.io.IOException;
 import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
 import static com.team2813.frc2020.subsystems.Subsystems.allSubsystems;
 
+/**
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to each mode, as described in the TimedRobot
+ * documentation. If you change the name of this class or the package after
+ * creating this project, you must also update the build.gradle file in the
+ * project.
+ */
 public class Robot extends TimedRobot {
+
   private static final double MIN_IDLE_VOLTAGE = 11.7;
   private static final double MIN_DISABLED_VOLTAGE = 12.0;
+  private static boolean batteryTooLow = false;
 
-  public static AutonomousPath chosenPath;
+  private CANifier caNifier = new CANifier(0);
+    public static AutonomousPath chosenPath;
 
   /**
    * This function is run when the robot is first started up and should be
@@ -49,6 +60,11 @@ public class Robot extends TimedRobot {
       System.out.println("Something went wrong while reading config files!");
       CrashTracker.logThrowableCrash(e);
       e.printStackTrace();
+      System.out.println("ERROR WHEN READING CONFIG");
+      e.printStackTrace();
+    } catch (Throwable t) {
+      CrashTracker.logThrowableCrash(t);
+      throw t;
     }
   }
 
@@ -67,6 +83,20 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Replace Battery if Red", disabled ? voltage > MIN_DISABLED_VOLTAGE : voltage > MIN_IDLE_VOLTAGE);
 
     Subsystems.outputTelemetry();
+    batteryTooLow = disabled && voltage > MIN_DISABLED_VOLTAGE;
+    SmartDashboard.putBoolean("Replace Battery if Red", disabled ? voltage > MIN_DISABLED_VOLTAGE : voltage > MIN_IDLE_VOLTAGE);
+  }
+
+  @Override
+  public void disabledInit() {
+    try {
+      CrashTracker.logDisabledInit();
+      LOOPER.setMode(RobotMode.DISABLED);
+      LOOPER.start();
+    } catch (Throwable t) {
+      CrashTracker.logThrowableCrash(t);
+      throw t;
+    }
   }
 
   /**
@@ -75,6 +105,40 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     chosenPath = ShuffleboardData.pathChooser.getSelected();
+    try {
+      // A: Green
+      // B: Red
+      // C: Blue
+      caNifier.setLEDOutput(255, CANifier.LEDChannel.LEDChannelA);
+      caNifier.setLEDOutput(0, CANifier.LEDChannel.LEDChannelB);
+      caNifier.setLEDOutput(0, CANifier.LEDChannel.LEDChannelC);
+      CrashTracker.logAutoInit();
+      Compressor compressor = new Compressor(); // FIXME: 11/02/2019 this shouldn't need to be here
+      compressor.start();
+      for (Subsystem subsystem : allSubsystems) {
+        subsystem.zeroSensors();
+      }
+      teleopInit();
+    } catch (Throwable t) {
+      CrashTracker.logThrowableCrash(t);
+      throw t;
+    }
+  }
+
+  @Override
+  public void teleopInit() {
+    try {
+      CrashTracker.logTeleopInit();
+      LOOPER.setMode(RobotMode.ENABLED);
+      LOOPER.start();
+    } catch (Throwable t) {
+      CrashTracker.logThrowableCrash(t);
+      try {
+        throw t;
+      } catch (Throwable e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   /**
@@ -82,7 +146,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-
   }
 
   /**
