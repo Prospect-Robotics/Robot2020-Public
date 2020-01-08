@@ -76,3 +76,6 @@ talons:
       invertSensorPhase: true
       statusFrame: STATUS_2
       inverted: NONINVERTED
+sparks:
+victors:
+...
