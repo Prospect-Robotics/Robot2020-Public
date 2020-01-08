@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.io.IOException;
 
+import static com.team2813.frc2020.Autonomous.RoutineNum.ROUTINE_1;
 import static com.team2813.frc2020.subsystems.Subsystems.*;
 
 /**
@@ -117,7 +118,7 @@ public class Robot extends TimedRobot {
       for (Subsystem subsystem : allSubsystems) {
         subsystem.zeroSensors();
       }
-      teleopInit();
+      Autonomous.run(ROUTINE_1); //TODO 1/7/20 work on decision logic for auto routine
     } catch (Throwable t) {
       CrashTracker.logThrowableCrash(t);
       throw t;
