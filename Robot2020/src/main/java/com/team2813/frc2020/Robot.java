@@ -8,22 +8,22 @@
 package com.team2813.frc2020;
 
 import com.ctre.phoenix.CANifier;
-import com.team2813.frc2020.loops.Loop;
-import com.team2813.frc2020.subsystems.Drive;
 import com.team2813.frc2020.subsystems.Subsystem;
 import com.team2813.frc2020.subsystems.Subsystems;
+import com.team2813.frc2020.util.AutonomousPath;
+import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.util.CrashTracker;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.io.IOException;
 
-import static com.team2813.frc2020.subsystems.Subsystems.*;
+import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
+import static com.team2813.frc2020.subsystems.Subsystems.allSubsystems;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -39,6 +39,7 @@ public class Robot extends TimedRobot {
   private static boolean batteryTooLow = false;
 
   private CANifier caNifier = new CANifier(0);
+    public static AutonomousPath chosenPath;
 
   /**
    * This function is run when the robot is first started up and should be
@@ -50,11 +51,15 @@ public class Robot extends TimedRobot {
       CrashTracker.logRobotInit();
       MotorConfigs.read();
       Subsystems.initializeSubsystems();
+      ShuffleboardData.init();
       for (Subsystem subsystem : allSubsystems) {
         LOOPER.addLoop(subsystem);
         subsystem.zeroSensors();
       }
     } catch (IOException e) {
+      System.out.println("Something went wrong while reading config files!");
+      CrashTracker.logThrowableCrash(e);
+      e.printStackTrace();
       System.out.println("ERROR WHEN READING CONFIG");
       e.printStackTrace();
     } catch (Throwable t) {
@@ -75,6 +80,9 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     boolean disabled = DriverStation.getInstance().isDisabled();
     double voltage = RobotController.getBatteryVoltage();
+    SmartDashboard.putBoolean("Replace Battery if Red", disabled ? voltage > MIN_DISABLED_VOLTAGE : voltage > MIN_IDLE_VOLTAGE);
+
+    Subsystems.outputTelemetry();
     batteryTooLow = disabled && voltage > MIN_DISABLED_VOLTAGE;
     SmartDashboard.putBoolean("Replace Battery if Red", disabled ? voltage > MIN_DISABLED_VOLTAGE : voltage > MIN_IDLE_VOLTAGE);
   }
@@ -92,18 +100,11 @@ public class Robot extends TimedRobot {
   }
 
   /**
-   * This autonomous (along with the chooser code above) shows how to select
-   * between different autonomous modes using the dashboard. The sendable
-   * chooser code works with the Java SmartDashboard. If you prefer the
-   * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-   * getString line to get the auto name from the text box below the Gyro
-   *
-   * <p>You can add additional auto modes by adding additional comparisons to
-   * the switch structure below with additional strings. If using the
-   * SendableChooser make sure to add them to the chooser code above as well.
+   * Put autonomous initialization code here
    */
   @Override
   public void autonomousInit() {
+    chosenPath = ShuffleboardData.pathChooser.getSelected();
     try {
       // A: Green
       // B: Red
@@ -145,7 +146,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    
   }
 
   /**
@@ -153,13 +153,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    /*
-     * this calls every subsystem's controls method which
-     * should contain any code to invoke driver controls
-     */
-    for (Subsystem subsystem : allSubsystems) {
-      subsystem.teleopControls();
-    }
+    Subsystems.teleopControls();
   }
 
   /**
