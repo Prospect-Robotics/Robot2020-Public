@@ -10,8 +10,8 @@ public class Autonomous {
         ROUTINE_2,
         ROUTINE_3
     }
-    public static void run(RoutineNum routineNum) {
-        switch (routineNum) {
+    public static void run(RoutineNum routineNum){
+        switch(routineNum){ // TODO: finish it
             case ROUTINE_1:
                 break;
             case ROUTINE_2:
