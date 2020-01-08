@@ -39,6 +39,9 @@ public class Subsystems {
 		LOOPER.addLoop(new SmartDashboardLoop());
 	}
 
+	/**
+	 * Calls each subsystem's teleopControls()
+	 */
 	public static void teleopControls() {
 		for (Subsystem subsystem : allSubsystems)
 			subsystem.teleopControls();
