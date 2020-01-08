@@ -7,9 +7,23 @@
 
 package com.team2813.frc2020;
 
+import com.ctre.phoenix.CANifier;
+import com.team2813.frc2020.loops.Loop;
+import com.team2813.frc2020.subsystems.Drive;
+import com.team2813.frc2020.subsystems.Subsystem;
+import com.team2813.frc2020.subsystems.Subsystems;
+import com.team2813.lib.config.MotorConfigs;
+import com.team2813.lib.util.CrashTracker;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import java.io.IOException;
+
+import static com.team2813.frc2020.subsystems.Subsystems.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -19,10 +33,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
+  private static final double MIN_IDLE_VOLTAGE = 11.7;
+  private static final double MIN_DISABLED_VOLTAGE = 12.0;
+  private static boolean batteryTooLow = false;
+
+  private CANifier caNifier = new CANifier(0);
 
   /**
    * This function is run when the robot is first started up and should be
@@ -30,9 +46,21 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+    try {
+      CrashTracker.logRobotInit();
+      MotorConfigs.read();
+      Subsystems.initializeSubsystems();
+      for (Subsystem subsystem : allSubsystems) {
+        LOOPER.addLoop(subsystem);
+        subsystem.zeroSensors();
+      }
+    } catch (IOException e) {
+      System.out.println("ERROR WHEN READING CONFIG");
+      e.printStackTrace();
+    } catch (Throwable t) {
+      CrashTracker.logThrowableCrash(t);
+      throw t;
+    }
   }
 
   /**
@@ -45,6 +73,22 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    boolean disabled = DriverStation.getInstance().isDisabled();
+    double voltage = RobotController.getBatteryVoltage();
+    batteryTooLow = disabled && voltage > MIN_DISABLED_VOLTAGE;
+    SmartDashboard.putBoolean("Replace Battery if Red", disabled ? voltage > MIN_DISABLED_VOLTAGE : voltage > MIN_IDLE_VOLTAGE);
+  }
+
+  @Override
+  public void disabledInit() {
+    try {
+      CrashTracker.logDisabledInit();
+      LOOPER.setMode(RobotMode.DISABLED);
+      LOOPER.start();
+    } catch (Throwable t) {
+      CrashTracker.logThrowableCrash(t);
+      throw t;
+    }
   }
 
   /**
@@ -60,9 +104,40 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+    try {
+      // A: Green
+      // B: Red
+      // C: Blue
+      caNifier.setLEDOutput(255, CANifier.LEDChannel.LEDChannelA);
+      caNifier.setLEDOutput(0, CANifier.LEDChannel.LEDChannelB);
+      caNifier.setLEDOutput(0, CANifier.LEDChannel.LEDChannelC);
+      CrashTracker.logAutoInit();
+      Compressor compressor = new Compressor(); // FIXME: 11/02/2019 this shouldn't need to be here
+      compressor.start();
+      for (Subsystem subsystem : allSubsystems) {
+        subsystem.zeroSensors();
+      }
+      teleopInit();
+    } catch (Throwable t) {
+      CrashTracker.logThrowableCrash(t);
+      throw t;
+    }
+  }
+
+  @Override
+  public void teleopInit() {
+    try {
+      CrashTracker.logTeleopInit();
+      LOOPER.setMode(RobotMode.ENABLED);
+      LOOPER.start();
+    } catch (Throwable t) {
+      CrashTracker.logThrowableCrash(t);
+      try {
+        throw t;
+      } catch (Throwable e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   /**
@@ -70,15 +145,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
+    teleopPeriodic();
   }
 
   /**
@@ -86,6 +153,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    /*
+     * this calls every subsystem's controls method which
+     * should contain any code to invoke driver controls
+     */
+    for (Subsystem subsystem : allSubsystems) {
+      subsystem.teleopControls();
+    }
   }
 
   /**
