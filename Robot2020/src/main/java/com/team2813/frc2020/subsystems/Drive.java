@@ -256,7 +256,7 @@ public class Drive extends Subsystem {
 
     protected synchronized void readPeriodicInputs_() {
         try {
-            odometry.updateLocation(LEFT.getSelectedSensorPosition(), RIGHT.getSelectedSensorPosition(), pigeonWrapper.getCompassHeading()); // TODO: fix wrapper
+            odometry.updateLocation(LEFT.getSelectedSensorPosition(), RIGHT.getSelectedSensorPosition(), pigeonWrapper.getPigeon().getCompassHeading()); // TODO: fix wrapper
         } catch(CTREException e){
             e.printStackTrace();
         }
