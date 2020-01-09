@@ -86,7 +86,9 @@ public class Drive extends Subsystem {
         ARCADE, CURVATURE
     }
 
-
+    public static Odometry getOdometry() {
+        return odometry;
+    }
 
     private static final double CORRECTION_MAX_STEER_SPEED = 0.5;
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
