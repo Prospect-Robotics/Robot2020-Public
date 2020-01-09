@@ -8,7 +8,10 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-// interface between Jaci's trajectory (used in Pathweaver), WPILib 2020's trajectory, as well as RamseteAuto
+/**
+ * interface between Jaci's trajectory (used in Pathweaver), WPILib 2020's trajectory, as well as RamseteAuto
+ * @author Samuel Li
+  */
 public class RamseteTrajectory {
     private List<Trajectory> trajectories = new ArrayList<>();
     private List<Boolean> reversed = new ArrayList<>();
