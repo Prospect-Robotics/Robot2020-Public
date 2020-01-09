@@ -1,12 +1,14 @@
 package com.team2813.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.ControlType;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Axis;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.ctre.CTREException;
+import com.team2813.lib.ctre.PigeonWrapper;
 import com.team2813.lib.ctre.TalonWrapper;
 import com.team2813.lib.drive.ArcadeDrive;
 import com.team2813.lib.drive.CurvatureDrive;
@@ -68,6 +70,11 @@ public class Drive extends Subsystem {
     private static final double MIN_AUTO_POS_CHANGE = 0.0; // TODO: 10/05/2019 tune
 //	private static final double MIN_AUTO_SPEED_FPS = 0.33; // TODO: 10/05/2019 tune
 //	private static final double MIN_AUTO_SPEED_ENCODER_TICKS = MIN_AUTO_SPEED_FPS * ENCODER_TICKS_PER_FOOT;
+
+    // Gyro
+    private final int pigeonID = 0;
+    private PigeonWrapper pigeonWrapper = new PigeonWrapper(pigeonID, "Drive");
+    private PigeonIMU pigeonIMU = new PigeonIMU(pigeonID);
 
     public enum TeleopDriveType {
         ARCADE, CURVATURE
