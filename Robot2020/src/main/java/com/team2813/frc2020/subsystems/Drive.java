@@ -84,6 +84,10 @@ public class Drive extends Subsystem {
         return odometry;
     }
 
+    public static void initializeOdometry() {
+        odometry = new Odometry(0, 0);
+    }
+
     private static final double CORRECTION_MAX_STEER_SPEED = 0.5;
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     NetworkTableEntry tv = table.getEntry("tv");
@@ -111,8 +115,6 @@ public class Drive extends Subsystem {
             velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getSparks().get("driveLeft"));
             velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getSparks().get("driveRight"));
 
-            // odometry
-            odometry = new Odometry(LEFT.getSelectedSensorPosition(), RIGHT.getSelectedSensorPosition());
             // be sure they're inverted correctly
 //            LEFT.setInverted(LEFT.getConfig().getInverted());
 //            RIGHT.setInverted(RIGHT.getConfig().getInverted());
