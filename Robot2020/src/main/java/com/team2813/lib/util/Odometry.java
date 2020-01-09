@@ -4,11 +4,11 @@ import java.awt.geom.Point2D;
 
 /**
  * @author Sid Banerjee
+ * @author Abhineet Pal
  **/
-
 public class Odometry {
-    private int previousLeftEncoder;
-    private int previousRightEncoder;
+    private int originalLeftEncoder;
+    private int originalRightEncoder;
 
     public Point2D.Double getLocation() {
         return location;
@@ -16,18 +16,18 @@ public class Odometry {
 
     private Point2D.Double location;
 
-    public Odometry(int currentLeft, int currentRight){
-        previousLeftEncoder = currentLeft;
-        previousRightEncoder = currentRight;
+    public Odometry(int originalLeft, int originalRight){
+        originalLeftEncoder = originalLeft;
+        originalRightEncoder = originalRight;
         location = new Point2D.Double();
     }
 
     public void updateLocation(int currLeft, int currRight, double currAngle){
-        int distance = (Math.abs(currLeft-previousLeftEncoder)+Math.abs(currRight-previousRightEncoder))/2;
+        int distance = ((currLeft-originalLeftEncoder) + (currRight-originalRightEncoder))/2;
         location.x += distance * Math.cos(currAngle);
         location.y += distance * Math.cos(currAngle);
-        previousLeftEncoder = currLeft;
-        previousRightEncoder = currRight;
+        originalLeftEncoder = currLeft;
+        originalRightEncoder = currRight;
     }
 
 }
