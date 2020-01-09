@@ -7,25 +7,27 @@ import java.awt.geom.Point2D;
  **/
 
 public class Odometry {
-    public int leftOdometry;
-    public int rightOdometry;
-    public int startingLeftOdometry;
-    public int startingRightOdometry;
-    public Point2D.Double location = new Point2D.Double();
+    private int previousLeftEncoder;
+    private int previousRightEncoder;
 
-    public Odometry(int leftOdometry, int rightOdometry, int startingLeftOdometry, int startingRightOdometry){
-        this.leftOdometry = leftOdometry;
-        this.rightOdometry = rightOdometry;
-        this.startingLeftOdometry = startingLeftOdometry;
-        this.startingRightOdometry = startingRightOdometry;
+    public Point2D.Double getLocation() {
+        return location;
     }
 
-    public int getXLocation(){
-        int distance = (Math.abs(leftOdometry-startingLeftOdometry)+Math.abs(rightOdometry-startingRightOdometry))/2;
-        location.x += distance * Math.cos();
+    private Point2D.Double location;
+
+    public Odometry(int currentLeft, int currentRight){
+        previousLeftEncoder = currentLeft;
+        previousRightEncoder = currentRight;
+        location = new Point2D.Double();
     }
-    public int getYLocation(){
-        int distance = (Math.abs(leftOdometry-startingLeftOdometry)+Math.abs(rightOdometry-startingRightOdometry))/2;
-        location.y += distance
+
+    public void updateLocation(int currLeft, int currRight, double currAngle){
+        int distance = (Math.abs(currLeft-previousLeftEncoder)+Math.abs(currRight-previousRightEncoder))/2;
+        location.x += distance * Math.cos(currAngle);
+        location.y += distance * Math.cos(currAngle);
+        previousLeftEncoder = currLeft;
+        previousRightEncoder = currRight;
     }
+
 }

@@ -17,11 +17,15 @@ import com.team2813.lib.drive.VelocityDriveTalon;
 import com.team2813.lib.sparkMax.CANSparkMaxWrapper;
 import com.team2813.lib.sparkMax.SparkMaxException;
 
+import com.team2813.lib.util.Odometry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+
+import java.awt.geom.Point2D;
+
 /**
  * The Drive subsystem is the main subsystem for
  * the drive train, and handles both driver control
@@ -74,11 +78,15 @@ public class Drive extends Subsystem {
     // Gyro
     private final int pigeonID = 0;
     private PigeonWrapper pigeonWrapper = new PigeonWrapper(pigeonID, "Drive");
-    private PigeonIMU pigeonIMU = new PigeonIMU(pigeonID);
+
+    // Odometry
+    private static Odometry odometry;
 
     public enum TeleopDriveType {
         ARCADE, CURVATURE
     }
+
+
 
     private static final double CORRECTION_MAX_STEER_SPEED = 0.5;
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -107,6 +115,8 @@ public class Drive extends Subsystem {
             velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getSparks().get("driveLeft"));
             velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getSparks().get("driveRight"));
 
+            // odometry
+            odometry = new Odometry(LEFT.getSelectedSensorPosition(), RIGHT.getSelectedSensorPosition());
             // be sure they're inverted correctly
 //            LEFT.setInverted(LEFT.getConfig().getInverted());
 //            RIGHT.setInverted(RIGHT.getConfig().getInverted());
@@ -241,6 +251,14 @@ public class Drive extends Subsystem {
         } else {
             LEFT.set(driveMode.controlMode,driveDemand.getLeft());
             RIGHT.set(driveMode.controlMode,driveDemand.getRight());
+        }
+    }
+
+    protected synchronized void readPeriodicInputs_() {
+        try {
+            odometry.updateLocation(LEFT.getSelectedSensorPosition(), RIGHT.getSelectedSensorPosition(), pigeonWrapper.getCompassHeading()); // TODO: fix wrapper
+        } catch(CTREException e){
+            e.printStackTrace();
         }
     }
 
