@@ -1,9 +1,6 @@
 package com.team2813.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.sensors.PigeonIMU;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.ControlType;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Axis;
 import com.team2813.lib.controls.Button;
@@ -14,17 +11,14 @@ import com.team2813.lib.drive.ArcadeDrive;
 import com.team2813.lib.drive.CurvatureDrive;
 import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.drive.VelocityDriveTalon;
-import com.team2813.lib.sparkMax.CANSparkMaxWrapper;
 import com.team2813.lib.sparkMax.SparkMaxException;
 
-import com.team2813.lib.util.Odometry;
+import com.team2813.lib.drive.Odometry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-
-import java.awt.geom.Point2D;
 
 /**
  * The Drive subsystem is the main subsystem for
