@@ -1,4 +1,4 @@
-package com.team2813.lib.util;
+package com.team2813.lib.drive;
 
 import java.awt.geom.Point2D;
 
@@ -9,12 +9,12 @@ import java.awt.geom.Point2D;
 public class Odometry {
     private int previousLeftEncoder;
     private int previousRightEncoder;
+    private Point2D.Double location;
+
 
     public Point2D.Double getLocation() {
         return location;
     }
-
-    private Point2D.Double location;
 
     public Odometry(int currentLeft, int currentRight){
         previousLeftEncoder = currentLeft;
