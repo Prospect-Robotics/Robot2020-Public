@@ -25,7 +25,7 @@ public class FunctionAction implements Action {
 	}
 
 	@Override
-	public boolean update(double timestamp) {
+	public boolean ifFinished(double timestamp) {
 		return true;
 	}
 

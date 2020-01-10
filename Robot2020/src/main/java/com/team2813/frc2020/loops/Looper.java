@@ -44,7 +44,7 @@ public class Looper {
 
 					// remove actions that have finished
 					actions.removeIf(action -> {
-						if(action.update(now)){
+						if(action.ifFinished(now)){
 							action.end(now);
 							return true;
 						}

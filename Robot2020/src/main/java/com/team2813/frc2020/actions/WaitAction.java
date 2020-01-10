@@ -14,7 +14,7 @@ public class WaitAction implements Action {
 	}
 
 	@Override
-	public boolean update(double timestamp) {
+	public boolean ifFinished(double timestamp) {
 		return timestamp - startTime >= duration;
 	}
 

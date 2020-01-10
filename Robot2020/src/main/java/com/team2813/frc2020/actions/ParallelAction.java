@@ -38,10 +38,10 @@ public class ParallelAction implements Action {
 	}
 
 	@Override
-	public boolean update(double timestamp) {
+	public boolean ifFinished(double timestamp) {
 
 		actions.removeIf(action -> {
-			if(action.update(timestamp) || (LOOPER.mode == RobotMode.DISABLED && action.getRemoveOnDisabled())){
+			if(action.ifFinished(timestamp) || (LOOPER.mode == RobotMode.DISABLED && action.getRemoveOnDisabled())){
 				action.end(timestamp);
 				return true;
 			}

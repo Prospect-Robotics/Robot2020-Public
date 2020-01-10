@@ -38,9 +38,9 @@ public class SeriesAction implements Action {
 	}
 
 	@Override
-	public boolean update(double timestamp) {
+	public boolean ifFinished(double timestamp) {
 		if (currentAction == null) return true;
-		if (currentAction.update(timestamp)) {
+		if (currentAction.ifFinished(timestamp)) {
 			currentAction.end(timestamp);
 			currentAction = actions.poll();
 			if (currentAction == null) return true;

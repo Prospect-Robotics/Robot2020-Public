@@ -11,7 +11,7 @@ public interface Action {
 	 *
 	 * @return true if finished, false otherwise
 	 */
-	boolean update(double timestamp);
+	boolean ifFinished(double timestamp);
 
 	/**
 	 * Run code once when the action is started, for set up
