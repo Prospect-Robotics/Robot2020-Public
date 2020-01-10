@@ -13,10 +13,13 @@ import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.drive.VelocityDriveTalon;
 import com.team2813.lib.sparkMax.SparkMaxException;
 
-import com.team2813.lib.drive.Odometry;
+//import com.team2813.lib.drive.Odometry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
@@ -74,19 +77,33 @@ public class Drive extends Subsystem {
     private PigeonWrapper pigeonWrapper = new PigeonWrapper(pigeonID, "Drive");
 
     // Odometry
-    private static Odometry odometry;
+    //private static Odometry odometry;
+    private static DifferentialDriveOdometry dd_odometry;
+    private Pose2d robotPosition;
 
     public enum TeleopDriveType {
         ARCADE, CURVATURE
     }
 
+    /*
     public static Odometry getOdometry() {
         return odometry;
     }
+     */
 
+    public static DifferentialDriveOdometry getDd_odometry() {
+        return dd_odometry;
+    }
+
+    public void initializeDd_odometry() {
+        dd_odometry = new DifferentialDriveOdometry(new Rotation2d(pigeonWrapper.getPigeon().getCompassHeading()));
+    }
+
+    /*
     public static void initializeOdometry() {
         odometry = new Odometry(0, 0);
     }
+     */
 
     private static final double CORRECTION_MAX_STEER_SPEED = 0.5;
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -254,7 +271,8 @@ public class Drive extends Subsystem {
 
     protected synchronized void readPeriodicInputs_() {
         try {
-            odometry.updateLocation(LEFT.getSelectedSensorPosition(), RIGHT.getSelectedSensorPosition(), pigeonWrapper.getPigeon().getCompassHeading()); // TODO: fix wrapper
+            // odometry.updateLocation(LEFT.getSelectedSensorPosition(), RIGHT.getSelectedSensorPosition(), pigeonWrapper.getPigeon().getCompassHeading()); // TODO: fix wrapper
+            robotPosition = dd_odometry.update(Rotation2d.fromDegrees(-pigeonWrapper.getPigeon().getCompassHeading()), LEFT.getSelectedSensorPosition(), RIGHT.getSelectedSensorPosition());
         } catch(CTREException e){
             e.printStackTrace();
         }
