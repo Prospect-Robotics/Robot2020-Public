@@ -5,7 +5,7 @@ import com.team2813.frc2020.actions.SeriesAction;
 import com.team2813.frc2020.subsystems.Subsystems;
 
 /**
- * @Author Abhineet Pal
+ * @author Abhineet Pal
  */
 public class RobotTest {
     public void run() {
