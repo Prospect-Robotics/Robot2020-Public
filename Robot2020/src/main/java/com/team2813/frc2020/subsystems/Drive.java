@@ -12,6 +12,7 @@ import com.team2813.lib.drive.CurvatureDrive;
 import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.drive.VelocityDriveTalon;
 import com.team2813.lib.sparkMax.SparkMaxException;
+import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -53,10 +54,7 @@ public class Drive extends Subsystem {
     private static final int MAX_VELOCITY = 18000; // max velocity of velocity drive in rpm
 
     private static final double CORRECTION_MAX_STEER_SPEED = 0.5;
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    NetworkTableEntry tv = table.getEntry("tv");
-    NetworkTableEntry tx = table.getEntry("tx");
-    NetworkTableEntry camtranEntry = table.getEntry("camtran");
+    LimelightValues limelightValues = new LimelightValues();
 
     VelocityDriveTalon velocityDrive = new VelocityDriveTalon(MAX_VELOCITY);
     CurvatureDrive curvatureDrive = new CurvatureDrive(TELEOP_DEAD_ZONE);
