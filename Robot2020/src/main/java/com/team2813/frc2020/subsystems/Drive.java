@@ -2,6 +2,7 @@ package com.team2813.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.*;
 import com.team2813.lib.ctre.CTREException;
@@ -39,13 +40,13 @@ public class Drive extends Subsystem {
     private static final Axis CURVATURE_FORWARD = SubsystemControlsConfig.getDriveForward();
     private static final Axis CURVATURE_REVERSE = SubsystemControlsConfig.getDriveReverse();
     private static final Button PIVOT_BUTTON = SubsystemControlsConfig.getPivotButton();
-    private static final TeleopDriveType TELEOP_DRIVE_TYPE = TeleopDriveType.CURVATURE;
     private static final Button AUTO_BUTTON = SubsystemControlsConfig.getAutoButton();
     private ControlInput arcade_x;
     private ControlInput arcade_y;
 
     // Mode
     private static DriveMode driveMode = DriveMode.OPEN_LOOP;
+    private static TeleopDriveType teleopDriveType = TeleopDriveType.CURVATURE;
 
     public enum TeleopDriveType {
         ARCADE, CURVATURE
@@ -71,6 +72,10 @@ public class Drive extends Subsystem {
 
     Drive() {
         try {
+            ShuffleboardData.driveModeChooser.addOption("Open Loop", DriveMode.OPEN_LOOP);
+            ShuffleboardData.driveModeChooser.addOption("Velocity", DriveMode.VELOCITY);
+            ShuffleboardData.teleopDriveTypeChooser.addOption("Arcade", TeleopDriveType.ARCADE);
+            ShuffleboardData.teleopDriveTypeChooser.addOption("Curvature", TeleopDriveType.CURVATURE);
             velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getSparks().get("driveLeft"));
             velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getSparks().get("driveRight"));
             arcade_x = new ArcsinFilter(new DeadzoneFilter(ARCADE_X_AXIS, TELEOP_DEAD_ZONE));
@@ -87,16 +92,16 @@ public class Drive extends Subsystem {
 
     private void teleopDrive(TeleopDriveType driveType) {
         if (driveType == TeleopDriveType.ARCADE) {
-            driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());
-        } else if (driveType == TeleopDriveType.CURVATURE) {
+            driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());;
+        } else {
             driveDemand = curvatureDrive.getDemand(CURVATURE_FORWARD.get(), CURVATURE_REVERSE.get(), CURVATURE_STEER.get(), PIVOT_BUTTON.get());
         }
     }
 
     @Override
     protected void teleopControls_() {
-        driveMode = DriveMode.OPEN_LOOP;
-        teleopDrive(TELEOP_DRIVE_TYPE);
+        driveMode = ShuffleboardData.driveModeChooser.getSelected();
+        teleopDrive(teleopDriveType);
     }
 
     @Override
@@ -150,7 +155,7 @@ public class Drive extends Subsystem {
         }
     }
 
-    private enum DriveMode {
+    public enum DriveMode {
         OPEN_LOOP(ControlMode.PercentOutput),
         MOTION_MAGIC(ControlMode.MotionMagic),
         VELOCITY(ControlMode.Velocity);

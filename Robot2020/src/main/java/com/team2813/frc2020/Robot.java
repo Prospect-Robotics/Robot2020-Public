@@ -13,6 +13,7 @@ import com.team2813.frc2020.subsystems.Subsystems;
 import com.team2813.frc2020.util.AutonomousPath;
 import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.lib.config.MotorConfigs;
+import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.util.CrashTracker;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -52,6 +53,8 @@ public class Robot extends TimedRobot {
       MotorConfigs.read();
       Subsystems.initializeSubsystems();
       ShuffleboardData.init();
+
+      DriveDemand.circumference = Math.PI * 6;
       for (Subsystem subsystem : allSubsystems) {
         LOOPER.addLoop(subsystem);
         subsystem.zeroSensors();
