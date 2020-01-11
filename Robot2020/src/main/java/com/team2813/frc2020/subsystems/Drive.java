@@ -3,8 +3,7 @@ package com.team2813.frc2020.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.team2813.lib.config.MotorConfigs;
-import com.team2813.lib.controls.Axis;
-import com.team2813.lib.controls.Button;
+import com.team2813.lib.controls.*;
 import com.team2813.lib.ctre.CTREException;
 import com.team2813.lib.ctre.TalonWrapper;
 import com.team2813.lib.drive.ArcadeDrive;
@@ -42,6 +41,8 @@ public class Drive extends Subsystem {
     private static final Button PIVOT_BUTTON = SubsystemControlsConfig.getPivotButton();
     private static final TeleopDriveType TELEOP_DRIVE_TYPE = TeleopDriveType.CURVATURE;
     private static final Button AUTO_BUTTON = SubsystemControlsConfig.getAutoButton();
+    private ControlInput arcade_x;
+    private ControlInput arcade_y;
 
     // Mode
     private static DriveMode driveMode = DriveMode.OPEN_LOOP;
@@ -72,6 +73,8 @@ public class Drive extends Subsystem {
         try {
             velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getSparks().get("driveLeft"));
             velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getSparks().get("driveRight"));
+            arcade_x = new ArcsinFilter(new DeadzoneFilter(ARCADE_X_AXIS, TELEOP_DEAD_ZONE));
+            arcade_y = new ArcsinFilter(new DeadzoneFilter(ARCADE_Y_AXIS, TELEOP_DEAD_ZONE));
 
             // be sure they're inverted correctly
 //            LEFT.setInverted(LEFT.getConfig().getInverted());
@@ -84,7 +87,7 @@ public class Drive extends Subsystem {
 
     private void teleopDrive(TeleopDriveType driveType) {
         if (driveType == TeleopDriveType.ARCADE) {
-            driveDemand = arcadeDrive.getDemand(ARCADE_Y_AXIS.get(), ARCADE_X_AXIS.get());
+            driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());
         } else if (driveType == TeleopDriveType.CURVATURE) {
             driveDemand = curvatureDrive.getDemand(CURVATURE_FORWARD.get(), CURVATURE_REVERSE.get(), CURVATURE_STEER.get(), PIVOT_BUTTON.get());
         }
