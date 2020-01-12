@@ -1,0 +1,8 @@
+{
+  "lengthUnit": "Meter",
+  "maxVelocity": 3.0,
+  "maxAcceleration": 15.0,
+  "wheelBase": 0.6604,
+  "gameName": "Infinite Recharge",
+  "outputDir": "../Robot2020"
+}
