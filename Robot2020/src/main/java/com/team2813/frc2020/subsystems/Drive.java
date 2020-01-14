@@ -86,8 +86,8 @@ public class Drive extends Subsystem {
             // above are alternatives to the arcsin filter (exp filters)
 
             // be sure they're inverted correctly
-//            LEFT.setInverted(LEFT.getConfig().getInverted());
-//            RIGHT.setInverted(RIGHT.getConfig().getInverted());
+            // LEFT.setInverted(LEFT.getConfig().getInverted());
+            // RIGHT.setInverted(RIGHT.getConfig().getInverted());
         } catch (SparkMaxException | CTREException e) {
             velocityFailed = true;
             e.printStackTrace();
