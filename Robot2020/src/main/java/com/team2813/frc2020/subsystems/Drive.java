@@ -81,6 +81,10 @@ public class Drive extends Subsystem {
             arcade_x = new ArcsinFilter(new DeadzoneFilter(ARCADE_X_AXIS, TELEOP_DEAD_ZONE));
             arcade_y = new ArcsinFilter(new DeadzoneFilter(ARCADE_Y_AXIS, TELEOP_DEAD_ZONE));
 
+            // arcade_x = new ExpFilter(new DeadzoneFilter(ARCADE_X_AXIS, TELEOP_DEAD_ZONE));
+            // arcade_y = new ExpFilter(new DeadzoneFilter(ARCADE_X_AXIS, TELEOP_DEAD_ZONE));
+            // above are alternatives to the arcsin filter (exp filters)
+
             // be sure they're inverted correctly
 //            LEFT.setInverted(LEFT.getConfig().getInverted());
 //            RIGHT.setInverted(RIGHT.getConfig().getInverted());
