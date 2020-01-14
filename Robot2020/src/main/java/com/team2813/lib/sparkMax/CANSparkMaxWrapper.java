@@ -1,5 +1,6 @@
 package com.team2813.lib.sparkMax;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.*;
 import com.team2813.lib.config.Inverted;
 import com.team2813.lib.config.PeriodicFrame;
