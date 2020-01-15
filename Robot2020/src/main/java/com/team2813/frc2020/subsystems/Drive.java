@@ -89,6 +89,22 @@ public class Drive extends Subsystem {
         }
     }
 
+    public void driveForwardTest(){
+        driveDemand = new DriveDemand(MAX_VELOCITY, MAX_VELOCITY);
+    }
+
+    public void driveBackwardsTest(){
+        driveDemand = new DriveDemand(-MAX_VELOCITY, -MAX_VELOCITY);
+    }
+
+    public void driveRightTest(){
+        driveDemand = new DriveDemand(MAX_VELOCITY, -MAX_VELOCITY);
+    }
+
+    public void driveLeftTest(){
+        driveDemand = new DriveDemand(-MAX_VELOCITY, MAX_VELOCITY);
+    }
+
     @Override
     protected void teleopControls_() {
         driveMode = DriveMode.OPEN_LOOP;
