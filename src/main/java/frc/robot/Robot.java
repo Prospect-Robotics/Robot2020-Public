@@ -27,18 +27,30 @@ public class Robot extends TimedRobot {
 
     //    private VictorSPX victor = new VictorSPX(11);
     private CANSparkMax hood = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
-    private CANEncoder hoodEncoder = hood.getAlternateEncoder(AlternateEncoderType.kQuadrature, 1);
+    private CANEncoder hoodEncoder = hood.getEncoder();
     private CANPIDController hoodPid = hood.getPIDController();
 
     private CANSparkMax shooter = new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless);
     private CANSparkMax shooterSlave = new CANSparkMax(3, CANSparkMaxLowLevel.MotorType.kBrushless);
     private CANEncoder shooterEncoder = shooter.getEncoder();
     private CANPIDController shooterPid = shooter.getPIDController();
+    private double fineControl = 0;
 
     private NetworkTableEntry shooterVelocity = Shuffleboard.getTab("Tuning")
             .addPersistent("Flywheel Speed", 0)
             .getEntry();
 
+    private NetworkTableEntry hoodP = Shuffleboard.getTab("P")
+              .addPersistent("P", 0.0001)
+              .getEntry();
+
+    private NetworkTableEntry hoodD = Shuffleboard.getTab("D")
+              .addPersistent("D", 0.0001)
+              .getEntry();
+
+    private NetworkTableEntry hoodI = Shuffleboard.getTab("I")
+              .addPersistent("I", 0)
+              .getEntry();
 
     /**
      * This method is run when the robot is first started up and should be
@@ -49,9 +61,12 @@ public class Robot extends TimedRobot {
         shooterSlave.follow(shooter, true);
 
         hoodEncoder.setPosition(0);
-
+        hood.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0);
+        hood.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 48);
+        hood.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+        hood.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
         hoodPid.setFeedbackDevice(hoodEncoder);
-        hoodPid.setP(0.0002);
+        hoodPid.setP(0.0001);
 //        hoodPid.setP(0.03);
         hoodPid.setD(.00001);
         hoodPid.setSmartMotionMaxVelocity(10000, 0);
@@ -103,7 +118,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        hoodEncoder.setPosition(0);
+//        hoodEncoder.setPosition(0);
     }
 
     /**
@@ -111,13 +126,23 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        if (logitech.getRawButton(2)) {
+        if (logitech.getRawButtonPressed(2)) {
             hoodEncoder.setPosition(0);
         }
 
         // 32.57 revolutions of neo 550
-        double fineControl = Math.abs(logitech.getRawAxis(3));
-        if (fineControl < 0.01)
+//        double fineControl = Math.abs(logitech.getRawAxis(3));
+
+        double multiplier = 0.2;
+        if(logitech.getRawButtonPressed(8)) {
+            fineControl = fineControl + multiplier;
+        }
+
+        if (logitech.getRawButtonPressed(7)) {
+            fineControl = fineControl - multiplier;
+        }
+
+        if (Math.abs(fineControl) < 0.1)
             fineControl = 0;
 //        double position = 0;
 //        double max = 32.5;
@@ -125,7 +150,17 @@ public class Robot extends TimedRobot {
 //        if (logitech.getRawButton(4)) position = max * .66;
 //        if (logitech.getRawButton(3)) position = max;
 //        pid.setReference(position, ControlType.kSmartMotion);
-        hoodPid.setReference(fineControl * 47.5, ControlType.kSmartMotion);
+        double reference = fineControl * 47.5;
+
+        if (logitech.getRawButtonPressed(10)) {
+            reference = 47;
+            fineControl = 1;
+        } else if (logitech.getRawButtonPressed(9)) {
+            reference = 1;
+            fineControl = 0;
+        }
+
+        hoodPid.setReference(reference, ControlType.kSmartMotion);
 //        hoodPid.setReference(fineControl, ControlType.kDutyCycle);
 //        pid.setReference(Math.abs(logitech.getRawAxis(3)) * 4096, ControlType.kSmartMotion);
 
@@ -143,5 +178,11 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
+        teleopPeriodic();
+        hoodPid.setP(hoodP.getDouble(0.0001));
+        hoodPid.setD(hoodD.getDouble(0.0001));
+        hoodPid.setI(hoodI.getDouble(0));
+
+        System.out.println("In testperiodic");
     }
 }
