@@ -11,12 +11,10 @@ import com.team2813.lib.drive.ArcadeDrive;
 import com.team2813.lib.drive.CurvatureDrive;
 import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.drive.VelocityDriveTalon;
-import com.team2813.lib.sparkMax.SparkMaxException;
 import com.team2813.lib.util.LimelightValues;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+
 /**
  * The Drive subsystem is the main subsystem for
  * the drive train, and handles both driver control
@@ -68,13 +66,13 @@ public class Drive extends Subsystem {
 
     Drive() {
         try {
-            velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getSparks().get("driveLeft"));
-            velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getSparks().get("driveRight"));
+            velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getTalons().get("driveLeft"));
+            velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getTalons().get("driveRight"));
 
             // be sure they're inverted correctly
 //            LEFT.setInverted(LEFT.getConfig().getInverted());
 //            RIGHT.setInverted(RIGHT.getConfig().getInverted());
-        } catch (SparkMaxException | CTREException e) {
+        } catch (CTREException e) {
             velocityFailed = true;
             e.printStackTrace();
         }
@@ -120,7 +118,7 @@ public class Drive extends Subsystem {
     }
 
 
-    protected synchronized void writePeriodicOutputs_() throws SparkMaxException, CTREException {
+    protected synchronized void writePeriodicOutputs_() throws CTREException {
         if (!velocityFailed && velocityEnabled) {
             double leftVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getLeft());
             double rightVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getRight());
