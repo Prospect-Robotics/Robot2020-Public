@@ -39,6 +39,8 @@ public class Robot extends TimedRobot {
   private static final double MIN_DISABLED_VOLTAGE = 12.0;
   private static boolean batteryTooLow = false;
 
+  private Autonomous autonomous;
+
   private CANifier caNifier = new CANifier(0);
 
   /**
@@ -51,6 +53,7 @@ public class Robot extends TimedRobot {
       CrashTracker.logRobotInit();
       MotorConfigs.read();
       Subsystems.initializeSubsystems();
+      autonomous = new Autonomous();
       for (Subsystem subsystem : allSubsystems) {
         LOOPER.addLoop(subsystem);
         subsystem.zeroSensors();
@@ -118,7 +121,7 @@ public class Robot extends TimedRobot {
       for (Subsystem subsystem : allSubsystems) {
         subsystem.zeroSensors();
       }
-      Autonomous.run(ROUTINE_1); //TODO 1/7/20 work on decision logic for auto routine
+      autonomous.run(ROUTINE_1); //TODO 1/7/20 work on decision logic for auto routine
     } catch (Throwable t) {
       CrashTracker.logThrowableCrash(t);
       throw t;
