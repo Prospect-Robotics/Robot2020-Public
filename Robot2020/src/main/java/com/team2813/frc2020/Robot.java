@@ -38,6 +38,7 @@ public class Robot extends TimedRobot {
   private static final double MIN_IDLE_VOLTAGE = 11.7;
   private static final double MIN_DISABLED_VOLTAGE = 12.0;
   private static boolean batteryTooLow = false;
+  private final double wheelDiameter = 6.0;
 
   private CANifier caNifier = new CANifier(0);
     public static AutonomousPath chosenPath;
@@ -54,7 +55,7 @@ public class Robot extends TimedRobot {
       Subsystems.initializeSubsystems();
       ShuffleboardData.init();
 
-      DriveDemand.circumference = Math.PI * 6;
+      DriveDemand.circumference = Math.PI * wheelDiameter;
       for (Subsystem subsystem : allSubsystems) {
         LOOPER.addLoop(subsystem);
         subsystem.zeroSensors();
