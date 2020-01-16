@@ -133,7 +133,7 @@ public class Robot extends TimedRobot {
         // 32.57 revolutions of neo 550
 //        double fineControl = Math.abs(logitech.getRawAxis(3));
 
-        double multiplier = 0.2;
+        double multiplier = 0.125;
         if(logitech.getRawButtonPressed(8)) {
             fineControl = fineControl + multiplier;
         }
