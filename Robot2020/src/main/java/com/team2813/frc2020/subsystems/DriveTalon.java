@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
  * @author Grady Whelan
  * @author Samuel Li
  */
-public class Drive extends Subsystem {
+public class DriveTalon extends Subsystem {
     // Motor Controllers
     private static final TalonWrapper LEFT = MotorConfigs.talons.get("driveLeft");
     private static final TalonWrapper RIGHT = MotorConfigs.talons.get("driveRight");
@@ -68,7 +68,7 @@ public class Drive extends Subsystem {
     private boolean velocityEnabled = velocityEntry.getNumber(0).intValue() == 1;
     private boolean velocityFailed = false;
 
-    Drive() {
+    DriveTalon() {
         try {
             velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getSparks().get("driveLeft"));
             velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getSparks().get("driveRight"));
