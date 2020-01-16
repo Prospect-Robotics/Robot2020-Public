@@ -35,6 +35,8 @@ public class Robot extends TimedRobot {
     private CANEncoder shooterEncoder = shooter.getEncoder();
     private CANPIDController shooterPid = shooter.getPIDController();
     private double fineControl = 0;
+    private final int NUMBER_OF_INCREMENTS = 8;
+    private final double MULTIPLIER = 1 / (double) NUMBER_OF_INCREMENTS;
 
     private NetworkTableEntry shooterVelocity = Shuffleboard.getTab("Tuning")
             .addPersistent("Flywheel Speed", 0)
@@ -133,13 +135,13 @@ public class Robot extends TimedRobot {
         // 32.57 revolutions of neo 550
 //        double fineControl = Math.abs(logitech.getRawAxis(3));
 
-        double multiplier = 0.125;
+        
         if(logitech.getRawButtonPressed(8)) {
-            fineControl = fineControl + multiplier;
+            fineControl = fineControl + MULTIPLIER;
         }
 
         if (logitech.getRawButtonPressed(7)) {
-            fineControl = fineControl - multiplier;
+            fineControl = fineControl - MULTIPLIER;
         }
 
         if (Math.abs(fineControl) < 0.1)
