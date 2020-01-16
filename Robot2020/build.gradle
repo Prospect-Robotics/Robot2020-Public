@@ -1,4 +1,4 @@
-plugins {
+echoplugins {
     id "java"
     id "idea"
     id "edu.wpi.first.GradleRIO" version "2020.1.2"

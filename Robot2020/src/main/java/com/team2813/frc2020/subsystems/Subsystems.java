@@ -16,7 +16,7 @@ public class Subsystems {
 
 	public static List<Subsystem> allSubsystems;
 
-	public static Drive DRIVE;
+	public static DriveSparkMax DRIVE;
 	public static final Looper LOOPER = new Looper(RobotMode.DISABLED); //FIXME put looper somewhere else
 
 	private static class SmartDashboardLoop implements Loop{
@@ -32,7 +32,7 @@ public class Subsystems {
 	};
 
 	public static void initializeSubsystems() {
-		DRIVE = new Drive();
+		DRIVE = new DriveSparkMax();
 		allSubsystems = Collections.unmodifiableList(Arrays.asList(
 				DRIVE
 		));
