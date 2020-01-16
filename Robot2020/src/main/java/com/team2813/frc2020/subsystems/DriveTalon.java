@@ -11,11 +11,10 @@ import com.team2813.lib.drive.ArcadeDrive;
 import com.team2813.lib.drive.CurvatureDrive;
 import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.drive.VelocityDriveTalon;
-import com.team2813.lib.sparkMax.SparkMaxException;
-import edu.wpi.first.networktables.NetworkTable;
+import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+
 /**
  * The Drive subsystem is the main subsystem for
  * the drive train, and handles both driver control
@@ -53,10 +52,7 @@ public class DriveTalon extends Subsystem {
     private static final int MAX_VELOCITY = 18000; // max velocity of velocity drive in rpm
 
     private static final double CORRECTION_MAX_STEER_SPEED = 0.5;
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    NetworkTableEntry tv = table.getEntry("tv");
-    NetworkTableEntry tx = table.getEntry("tx");
-    NetworkTableEntry camtranEntry = table.getEntry("camtran");
+    LimelightValues limelightValues = new LimelightValues();
 
     VelocityDriveTalon velocityDrive = new VelocityDriveTalon(MAX_VELOCITY);
     CurvatureDrive curvatureDrive = new CurvatureDrive(TELEOP_DEAD_ZONE);
@@ -70,13 +66,13 @@ public class DriveTalon extends Subsystem {
 
     DriveTalon() {
         try {
-            velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getSparks().get("driveLeft"));
-            velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getSparks().get("driveRight"));
+            velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getTalons().get("driveLeft"));
+            velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getTalons().get("driveRight"));
 
             // be sure they're inverted correctly
 //            LEFT.setInverted(LEFT.getConfig().getInverted());
 //            RIGHT.setInverted(RIGHT.getConfig().getInverted());
-        } catch (SparkMaxException | CTREException e) {
+        } catch (CTREException e) {
             velocityFailed = true;
             e.printStackTrace();
         }
@@ -88,6 +84,22 @@ public class DriveTalon extends Subsystem {
         } else if (driveType == TeleopDriveType.CURVATURE) {
             driveDemand = curvatureDrive.getDemand(CURVATURE_FORWARD.get(), CURVATURE_REVERSE.get(), CURVATURE_STEER.get(), PIVOT_BUTTON.get());
         }
+    }
+
+    public void driveForwardTest(){
+        driveDemand = new DriveDemand(MAX_VELOCITY, MAX_VELOCITY);
+    }
+
+    public void driveBackwardsTest(){
+        driveDemand = new DriveDemand(-MAX_VELOCITY, -MAX_VELOCITY);
+    }
+
+    public void driveRightTest(){
+        driveDemand = new DriveDemand(MAX_VELOCITY, -MAX_VELOCITY);
+    }
+
+    public void driveLeftTest(){
+        driveDemand = new DriveDemand(-MAX_VELOCITY, MAX_VELOCITY);
     }
 
     @Override
@@ -122,7 +134,7 @@ public class DriveTalon extends Subsystem {
     }
 
 
-    protected synchronized void writePeriodicOutputs_() throws SparkMaxException, CTREException {
+    protected synchronized void writePeriodicOutputs_() throws CTREException {
         if (!velocityFailed && velocityEnabled) {
             double leftVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getLeft());
             double rightVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getRight());

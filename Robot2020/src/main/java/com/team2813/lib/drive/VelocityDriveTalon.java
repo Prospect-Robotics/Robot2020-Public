@@ -1,12 +1,11 @@
 package com.team2813.lib.drive;
 
 import com.team2813.lib.config.PIDControllerConfig;
-import com.team2813.lib.config.SparkConfig;
+import com.team2813.lib.config.TalonConfig;
 import com.team2813.lib.ctre.CTREException;
-import com.team2813.lib.sparkMax.CANSparkMaxWrapper;
-import com.team2813.lib.sparkMax.SparkMaxException;
-import com.team2813.lib.ctre.TalonWrapper;
 import com.team2813.lib.ctre.PIDProfile;
+import com.team2813.lib.ctre.TalonWrapper;
+
 public class VelocityDriveTalon {
     private TalonWrapper talon;
     private double maxVelocity;
@@ -16,12 +15,12 @@ public class VelocityDriveTalon {
     }
 
     /**
-     * Configure a CANSparkMaxWrapper with configuration for velocity drive.
+     * Configure a TalonWrapper with configuration for velocity drive.
      * @param talon
      * @param config
-     * @throws SparkMaxException
+     * @throws CTREException
      */
-    public void configureMotor(TalonWrapper talon, SparkConfig config) throws SparkMaxException, CTREException {
+    public void configureMotor(TalonWrapper talon, TalonConfig config) throws CTREException {
         this.talon = talon;
         PIDControllerConfig pidConfig = config.getPidControllers().get(0);
         talon.setPIDF(PIDProfile.Profile.PRIMARY, pidConfig.getP(), pidConfig.getI(), pidConfig.getD(), pidConfig.getF());
