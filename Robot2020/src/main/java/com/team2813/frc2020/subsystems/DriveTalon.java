@@ -60,7 +60,7 @@ public class DriveTalon extends Subsystem {
     DriveDemand driveDemand = new DriveDemand(0, 0);
 
     private NetworkTableEntry velocityEntry = Shuffleboard.getTab("Tuning")
-            .addPersistent("Bruh", 0).getEntry();
+            .addPersistent("Velocity Drive", 0).getEntry();
     private boolean velocityEnabled = velocityEntry.getNumber(0).intValue() == 1;
     private boolean velocityFailed = false;
 
