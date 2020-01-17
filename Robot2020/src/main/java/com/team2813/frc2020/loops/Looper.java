@@ -1,7 +1,7 @@
 package com.team2813.frc2020.loops;
 
 import com.team2813.frc2020.Robot.RobotMode;
-import com.team2813.frc2020.actions.Action;
+import com.team2813.lib.actions.Action;
 import com.team2813.lib.util.CrashTrackingRunnable;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
