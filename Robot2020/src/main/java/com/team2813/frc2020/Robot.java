@@ -11,6 +11,7 @@ import com.ctre.phoenix.CANifier;
 import com.team2813.frc2020.subsystems.Subsystem;
 import com.team2813.frc2020.subsystems.Subsystems;
 import com.team2813.frc2020.util.AutonomousPath;
+import com.team2813.frc2020.util.RobotTest;
 import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.drive.DriveDemand;
@@ -166,7 +167,11 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
   }
-
+  @Override
+  public void testInit(){
+    RobotTest robotTest = new RobotTest();
+    robotTest.run();
+  }
   public enum RobotMode {
     DISABLED, ENABLED
   }
