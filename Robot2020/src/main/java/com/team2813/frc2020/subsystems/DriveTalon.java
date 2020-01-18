@@ -40,6 +40,7 @@ public class DriveTalon extends Subsystem {
     private static final Axis CURVATURE_REVERSE = SubsystemControlsConfig.getDriveReverse();
     private static final Button PIVOT_BUTTON = SubsystemControlsConfig.getPivotButton();
     private static final Button AUTO_BUTTON = SubsystemControlsConfig.getAutoButton();
+    private static final Button SHOOTER_BUTTON = SubsystemControlsConfig.getShooterButton();
     private ControlInput arcade_x;
     private ControlInput arcade_y;
 

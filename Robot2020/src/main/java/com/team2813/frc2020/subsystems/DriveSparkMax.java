@@ -47,6 +47,7 @@ public class DriveSparkMax extends Subsystem {
     private static final Button PIVOT_BUTTON = SubsystemControlsConfig.getPivotButton();
     private static final TeleopDriveType TELEOP_DRIVE_TYPE = TeleopDriveType.CURVATURE;
     private static final Button AUTO_BUTTON = SubsystemControlsConfig.getAutoButton();
+    private static final Button SHOOTER_BUTTON = SubsystemControlsConfig.getShooterButton();
 
     // Mode
     private static DriveMode driveMode = DriveMode.OPEN_LOOP;

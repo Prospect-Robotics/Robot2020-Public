@@ -1,18 +1,26 @@
 package com.team2813.frc2020.subsystems;
 
-import com.team2813.lib.ctre.CTREException;
-import com.team2813.lib.sparkMax.CANSparkMaxWrapper;
-import com.team2813.lib.sparkMax.SparkMaxException;
+import com.team2813.lib.config.MotorConfig;
+import com.team2813.lib.config.MotorConfigs;
+import com.team2813.lib.controls.Button;
+import com.team2813.lib.motors.SparkMaxWrapper;
+import com.team2813.lib.motors.TalonWrapper;
 
-public class Shooter extends Subsystem1d {
+public class Shooter extends Subsystem1d<Shooter.Position>{
 
-    Shooter(CANSparkMaxWrapper motor) {
-        super(motor);
+    private static final SparkMaxWrapper MOTOR = MotorConfigs.sparks.get("shooter");
+    private static final Button SHOOTER_BUTTON = SubsystemControlsConfig.getShooterButton();
+    private static Position currentPosition = Position.ONE;
+
+    Shooter() {
+        super(MOTOR);
     }
+
 
     @Override
     void setNextPosition(boolean clockwise) {
-
+        currentPosition = currentPosition.getClock(clockwise);
+        setPosition(currentPosition);
     }
 
     @Override
@@ -21,32 +29,135 @@ public class Shooter extends Subsystem1d {
     }
 
     @Override
-    protected boolean checkSystem_() throws CTREException, SparkMaxException {
-        return false;
-    }
-
-    @Override
-    protected void outputTelemetry_() throws CTREException, SparkMaxException {
+    public void outputTelemetry() {
 
     }
 
     @Override
-    protected void teleopControls_() throws CTREException, SparkMaxException {
-
+    public void teleopControls() {
+        SHOOTER_BUTTON.whenPressed(() -> setNextPosition(true));
     }
 
-    @Override
-    protected void onEnabledStart_(double timestamp) throws CTREException, SparkMaxException {
+    public enum Position implements Subsystem1d.Position<Shooter.Position> {
+        ONE(0.0){
+            @Override
+            public Position getNextClockwise() {
+                return TWO;
+            }
 
-    }
+            @Override
+            public Position getNextCounter() {
+                return EIGHT;
+            }
+        }, TWO(6.857){
+            @Override
+            public Position getNextClockwise() {
+                return THREE;
+            }
 
-    @Override
-    protected void onEnabledLoop_(double timestamp) throws CTREException, SparkMaxException {
+            @Override
+            public Position getNextCounter() {
+                return ONE;
+            }
+        }, THREE(13.714){
+            @Override
+            public Position getNextClockwise() {
+                return FOUR;
+            }
 
-    }
+            @Override
+            public Position getNextCounter() {
+                return TWO;
+            }
+        }, FOUR(20.571){
+            @Override
+            public Position getNextClockwise() {
+                return FIVE;
+            }
 
-    @Override
-    protected void onEnabledStop_(double timestamp) throws CTREException, SparkMaxException {
+            @Override
+            public Position getNextCounter() {
+                return THREE;
+            }
+        }, FIVE(27.428){
+            @Override
+            public Position getNextClockwise() {
+                return SIX;
+            }
 
+            @Override
+            public Position getNextCounter() {
+                return FOUR;
+            }
+        }, SIX(34.285){
+            @Override
+            public Position getNextClockwise() {
+                return SEVEN;
+            }
+
+            @Override
+            public Position getNextCounter() {
+                return FIVE;
+            }
+
+        }, SEVEN(41.142){
+            @Override
+            public Position getNextClockwise() {
+                return SIX;
+            }
+
+            @Override
+            public Position getNextCounter() {
+                return EIGHT;
+            }
+
+        }, EIGHT(48.0){
+            @Override
+            public Position getNextClockwise() {
+                return ONE;
+            }
+
+            @Override
+            public Position getNextCounter() {
+                return SEVEN;
+            }};
+
+
+        private double position;
+
+        Position(double position){
+            this.position = position;
+        }
+
+
+        @Override
+        public double getPos() {
+            return position;
+        }
+
+        @Override
+        public Position getNextClockwise() {
+            return this;
+        }
+
+        @Override
+        public Position getNextCounter() {
+            return this;
+        }
+
+        @Override
+        public Position getMin() {
+            return ONE;
+        }
+
+        @Override
+        public Position getMax() {
+            return EIGHT;
+        }
+
+        @Override
+        public Position getClock(boolean clockwise) {
+            return clockwise ? getNextClockwise() : getNextCounter();
+        }
     }
 }

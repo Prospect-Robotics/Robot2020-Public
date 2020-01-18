@@ -44,6 +44,21 @@ abstract class Subsystem1d<P extends Subsystem1d.Position> extends Subsystem {
     }
 
     @Override
+    public void onEnabledStart(double timestamp) {
+
+    }
+
+    @Override
+    public void onEnabledLoop(double timestamp) {
+
+    }
+
+    @Override
+    public void onEnabledStop(double timestamp) {
+
+    }
+
+    @Override
     public void writePeriodicOutputs() {
         try {
             resetIfAtLimit();
