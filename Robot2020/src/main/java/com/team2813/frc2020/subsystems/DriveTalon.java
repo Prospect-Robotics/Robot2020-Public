@@ -1,16 +1,15 @@
 package com.team2813.frc2020.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.*;
-import com.team2813.lib.ctre.CTREException;
 import com.team2813.lib.drive.ArcadeDrive;
 import com.team2813.lib.drive.CurvatureDrive;
 import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.drive.VelocityDriveTalon;
 import com.team2813.lib.motors.TalonWrapper;
+import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -25,8 +24,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
  */
 public class DriveTalon extends Subsystem {
     // Motor Controllers
-    private static final TalonWrapper LEFT = MotorConfigs.talons.get("driveLeft");
-    private static final TalonWrapper RIGHT = MotorConfigs.talons.get("driveRight");
+    private final TalonWrapper LEFT;
+    private final TalonWrapper RIGHT;
     private double right_demand;
     private double left_demand;
     private boolean isBrakeMode;
@@ -75,8 +74,11 @@ public class DriveTalon extends Subsystem {
         arcade_x = new ArcsinFilter(new DeadzoneFilter(ARCADE_X_AXIS, TELEOP_DEAD_ZONE));
         arcade_y = new ArcsinFilter(new DeadzoneFilter(ARCADE_Y_AXIS, TELEOP_DEAD_ZONE));
 
-        velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getTalons().get("driveLeft"));
-        velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getTalons().get("driveRight"));
+        LEFT = MotorConfigs.talons.get("driveLeft");
+        RIGHT = MotorConfigs.talons.get("driveRight");
+
+//        velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getTalons().get("driveLeft"));
+//        velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getTalons().get("driveRight"));
     }
 
     private void teleopDrive(TeleopDriveType driveType) {
@@ -131,9 +133,11 @@ public class DriveTalon extends Subsystem {
         if (!velocityFailed && velocityEnabled) {
             double leftVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getLeft());
             double rightVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getRight());
-            LEFT.set(ControlMode.Velocity, leftVelocity);
-            RIGHT.set(ControlMode.Velocity, rightVelocity);
+            LEFT.set(ControlMode.VELOCITY, leftVelocity);
+            RIGHT.set(ControlMode.VELOCITY, rightVelocity);
         } else {
+//            System.out.println(driveDemand.getLeft() + ", " + driveDemand.getRight());
+//            System.out.println(LEFT);
             LEFT.set(driveMode.controlMode, driveDemand.getLeft());
             RIGHT.set(driveMode.controlMode, driveDemand.getRight());
         }
@@ -149,9 +153,9 @@ public class DriveTalon extends Subsystem {
     }
 
     public enum DriveMode {
-        OPEN_LOOP(ControlMode.PercentOutput),
-        MOTION_MAGIC(ControlMode.MotionMagic),
-        VELOCITY(ControlMode.Velocity);
+        OPEN_LOOP(ControlMode.DUTY_CYCLE),
+        MOTION_MAGIC(ControlMode.MOTION_MAGIC),
+        VELOCITY(ControlMode.VELOCITY);
 
         ControlMode controlMode;
 

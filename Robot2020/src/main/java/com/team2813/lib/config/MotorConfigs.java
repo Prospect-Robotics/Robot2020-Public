@@ -36,8 +36,10 @@ public class MotorConfigs {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         motorConfigs = mapper.readValue(configFile, RootConfigs.class);
 
-        motorConfigs.getSparks().forEach(((s, sparkConfig) -> sparks.put(s, initializeSpark(sparkConfig))));
-        motorConfigs.getVictors().forEach(((s, victorConfig) -> victors.put(s, initializeVictor(victorConfig))));
+        motorConfigs.getTalons().forEach(((s, talonConfig) -> talons.put(s, initializeTalon(talonConfig))));
+
+//        motorConfigs.getSparks().forEach(((s, sparkConfig) -> sparks.put(s, initializeSpark(sparkConfig))));
+//        motorConfigs.getVictors().forEach(((s, victorConfig) -> victors.put(s, initializeVictor(victorConfig))));
 
         System.out.println("Successful!");
     }
@@ -71,16 +73,16 @@ public class MotorConfigs {
 //				// FIXME remake limit switch stuff differently since it is called differently -- Grady 10/30 I'm not sure this is how it works for Spark Maxs
 //			}
 
-        for (LimitSwitchConfig limitSwitch : config.getLimitSwitches()) {
-            talon.setLimitSwitchSource(limitSwitch.direction, LimitSwitchSource.FeedbackConnector, limitSwitch.polarity.ctre);
-            talon.setClearPositionOnLimit(limitSwitch.direction, limitSwitch.clearOnLimit);
-            talon.enableLimitSwitches();
-        }
-
-        for (SoftLimitConfig softLimit : config.getSoftLimits()) {
-            talon.setSoftLimit(softLimit.direction, softLimit.threshold, softLimit.enable);
-            talon.setClearPositionOnLimit(softLimit.direction, softLimit.clearOnLimit);
-        }
+//        for (LimitSwitchConfig limitSwitch : config.getLimitSwitches()) {
+//            talon.setLimitSwitchSource(limitSwitch.direction, LimitSwitchSource.FeedbackConnector, limitSwitch.polarity.ctre);
+//            talon.setClearPositionOnLimit(limitSwitch.direction, limitSwitch.clearOnLimit);
+//            talon.enableLimitSwitches();
+//        }
+//
+//        for (SoftLimitConfig softLimit : config.getSoftLimits()) {
+//            talon.setSoftLimit(softLimit.direction, softLimit.threshold, softLimit.enable);
+//            talon.setClearPositionOnLimit(softLimit.direction, softLimit.clearOnLimit);
+//        }
 
 //
 //			for (com.team2813.lib.talon.options.SoftLimit softLimit : field.getAnnotationsByType(com.team2813co.lib.talon.options.SoftLimit.class)) {
@@ -215,9 +217,9 @@ public class MotorConfigs {
 
     @SuppressWarnings({"unused", "WeakerAccess"})
     public static class RootConfigs {
-        private Map<String, SparkConfig> sparks;
-        private Map<String, TalonConfig> talons;
-        private Map<String, VictorConfig> victors;
+        private Map<String, SparkConfig> sparks = new HashMap<>();
+        private Map<String, TalonConfig> talons = new HashMap<>();
+        private Map<String, VictorConfig> victors = new HashMap<>();
 
         public Map<String, SparkConfig> getSparks() {
             return sparks;

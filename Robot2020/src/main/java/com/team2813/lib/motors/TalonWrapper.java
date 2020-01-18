@@ -23,11 +23,14 @@ public class TalonWrapper extends TalonSRX implements Motor {
     public TalonWrapper(int deviceNumber, String subsystem) {
         super(deviceNumber);
         this.subsystemName = subsystem;
+        System.out.println("Initializing Talon with ID " + deviceNumber);
     }
 
     @Override
     public Object set(ControlMode controlMode, double demand) {
+        System.out.println("Set method");
         set(controlMode.getTalonMode(), demand);
+        System.out.println("Set method 2");
         return null;
     }
 
