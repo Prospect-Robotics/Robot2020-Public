@@ -29,7 +29,11 @@ public class Autonomous {
 				new GeneratedTrajectory("3-ball 1", false),
 				new GeneratedTrajectory("2-ball", false),
 				new GeneratedTrajectory("go back", true),
-				new GeneratedTrajectory("return", false)
+				new GeneratedTrajectory("return", false),
+				new GeneratedTrajectory("back trench", true),
+				new GeneratedTrajectory("2-ball shield generator", false),
+				new GeneratedTrajectory("3-ball 2", false),
+				new GeneratedTrajectory("return 8-ball", false)
 		));
 		switch(routineNum){ // TODO: finish it
 			case ROUTINE_1://6-ball
