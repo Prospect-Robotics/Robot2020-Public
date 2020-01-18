@@ -12,7 +12,7 @@ import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
  * @author Adrian Guerra
  * @author Grady Whelan
  */
-public class ParallelAction implements Action {
+public class ParallelAction extends Action {
 
 	private List<Action> actions;
 
@@ -38,10 +38,10 @@ public class ParallelAction implements Action {
 	}
 
 	@Override
-	public boolean ifFinished(double timestamp) {
-
+	void execute(double timestamp) {
 		actions.removeIf(action -> {
-			if(action.ifFinished(timestamp) || (LOOPER.mode == RobotMode.DISABLED && action.getRemoveOnDisabled())){
+			action.execute(timestamp);
+			if(action.isFinished(timestamp) || (LOOPER.mode == RobotMode.DISABLED && action.getRemoveOnDisabled())){
 				action.end(timestamp);
 				return true;
 			}
@@ -49,6 +49,10 @@ public class ParallelAction implements Action {
 		});
 
 		// actions.removeIf(action -> action.update(timestamp));
+	}
+
+	@Override
+	public boolean isFinished(double timestamp) {
 		return actions.size() == 0; // done if no actions left
 	}
 

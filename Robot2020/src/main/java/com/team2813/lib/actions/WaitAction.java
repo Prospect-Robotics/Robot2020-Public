@@ -1,6 +1,6 @@
 package com.team2813.lib.actions;
 
-public class WaitAction implements Action {
+public class WaitAction extends Action {
 
 	private double duration;
 	private double startTime;
@@ -14,7 +14,12 @@ public class WaitAction implements Action {
 	}
 
 	@Override
-	public boolean ifFinished(double timestamp) {
+	void execute(double timestamp) {
+
+	}
+
+	@Override
+	public boolean isFinished(double timestamp) {
 		return timestamp - startTime >= duration;
 	}
 
