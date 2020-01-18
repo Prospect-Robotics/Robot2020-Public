@@ -82,6 +82,7 @@ public class DriveTalon extends Subsystem {
     }
 
     private void teleopDrive(TeleopDriveType driveType) {
+//        System.out.println("Teleop Drive");
         if (driveType == TeleopDriveType.ARCADE) {
             driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());;
         } else {
@@ -108,6 +109,8 @@ public class DriveTalon extends Subsystem {
     @Override
     public void teleopControls() {
         driveMode = ShuffleboardData.driveModeChooser.getSelected();
+        if (driveMode == null) driveMode = DriveMode.OPEN_LOOP;
+//        System.out.println("Teleop Controls");
         teleopDrive(teleopDriveType);
     }
 
@@ -136,8 +139,9 @@ public class DriveTalon extends Subsystem {
             LEFT.set(ControlMode.VELOCITY, leftVelocity);
             RIGHT.set(ControlMode.VELOCITY, rightVelocity);
         } else {
-//            System.out.println(driveDemand.getLeft() + ", " + driveDemand.getRight());
+            System.out.println(driveDemand.getLeft() + ", " + driveDemand.getRight());
 //            System.out.println(LEFT);
+//            System.out.println(driveMode);
             LEFT.set(driveMode.controlMode, driveDemand.getLeft());
             RIGHT.set(driveMode.controlMode, driveDemand.getRight());
         }

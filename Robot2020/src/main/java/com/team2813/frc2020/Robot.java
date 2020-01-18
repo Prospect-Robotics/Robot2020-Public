@@ -133,9 +133,12 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     try {
+      System.out.println("teleopInit");
+
       CrashTracker.logTeleopInit();
       LOOPER.setMode(RobotMode.ENABLED);
       LOOPER.start();
+
     } catch (Throwable t) {
       CrashTracker.logThrowableCrash(t);
       try {

@@ -3,7 +3,7 @@ package com.team2813.lib.motors.interfaces;
 import com.revrobotics.ControlType;
 
 public enum ControlMode {
-    DUTY_CYCLE(com.ctre.phoenix.motorcontrol.ControlMode.MotionMagic, ControlType.kDutyCycle),
+    DUTY_CYCLE(com.ctre.phoenix.motorcontrol.ControlMode.PercentOutput, ControlType.kDutyCycle),
     VELOCITY(com.ctre.phoenix.motorcontrol.ControlMode.Velocity, ControlType.kVelocity),
     MOTION_MAGIC(com.ctre.phoenix.motorcontrol.ControlMode.MotionMagic, ControlType.kSmartMotion);
 

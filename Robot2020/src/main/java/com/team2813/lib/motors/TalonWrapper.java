@@ -28,9 +28,7 @@ public class TalonWrapper extends TalonSRX implements Motor {
 
     @Override
     public Object set(ControlMode controlMode, double demand) {
-        System.out.println("Set method");
         set(controlMode.getTalonMode(), demand);
-        System.out.println("Set method 2");
         return null;
     }
 
