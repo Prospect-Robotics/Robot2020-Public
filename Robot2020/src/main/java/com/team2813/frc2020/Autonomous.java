@@ -14,7 +14,8 @@ public class Autonomous {
 	enum RoutineNum {
 		ROUTINE_1,
 		ROUTINE_2,
-		ROUTINE_3
+		ROUTINE_3,
+		ROUTINE_4
 	}
 
 	public void run(RoutineNum routineNum){
@@ -46,6 +47,12 @@ public class Autonomous {
 						  
 				);
 
+				break;
+			case ROUTINE_4://3-ball
+				autoAction = new SeriesAction(
+						//shoot 3 balls
+
+				);
 				break;
 			default:
 				autoAction = new SeriesAction();
