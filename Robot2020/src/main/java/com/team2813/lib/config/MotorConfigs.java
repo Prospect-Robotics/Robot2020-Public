@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.revrobotics.SparkMax;
 import com.team2813.lib.motors.VictorWrapper;
 import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.motors.TalonWrapper;
@@ -114,29 +115,41 @@ public class MotorConfigs {
                     "\tCreating follower w/ id of " + followerConfig.getId() + " on " + config.getSubsystemName()
             );
 
-            if (followerConfig.getMotorControllerType() == MotorControllerType.TALON_SRX) {
-                talon.set(ControlMode.Follower, followerConfig.getId());
+            TalonWrapper follower = new TalonWrapper(followerConfig.getId(), config.getSubsystemName());
+            follower.follow(talon);
 
-                TalonSRX follower = new TalonSRX(followerConfig.getId());
-                follower.follow(talon);
-                if (followerConfig.getInverted() == SparkMaxWrapper.InvertType.OPPOSE_LEADER) {
-                    follower.setInverted(InvertType.OpposeMaster);
-                } else {
+            switch (followerConfig.getInverted()) {
+                case FOLLOW_LEADER:
                     follower.setInverted(InvertType.FollowMaster);
-                }
-            } else if (followerConfig.getMotorControllerType() == MotorControllerType.VICTOR_SPX) {
-                VictorSPX follower = new VictorSPX(followerConfig.getId());
-                follower.follow(talon);
-                if (followerConfig.getInverted() == SparkMaxWrapper.InvertType.OPPOSE_LEADER) {
+                    break;
+                case OPPOSE_LEADER:
                     follower.setInverted(InvertType.OpposeMaster);
-                } else {
-                    follower.setInverted(InvertType.FollowMaster);
-                }
+                    break;
             }
         }
 
+//            if (followerConfig.getMotorControllerType() == MotorControllerType.TALON_SRX) {
+//                talon.set(ControlMode.Follower, followerConfig.getId());
+//
+//                TalonSRX follower = new TalonSRX(followerConfig.getId());
+//                follower.follow(talon);
+//                if (followerConfig.getInverted() == SparkMaxWrapper.InvertType.OPPOSE_LEADER) {
+//                    follower.setInverted(InvertType.OpposeMaster);
+//                } else {
+//                    follower.setInverted(InvertType.FollowMaster);
+//                }
+//            } else if (followerConfig.getMotorControllerType() == MotorControllerType.VICTOR_SPX) {
+//                VictorSPX follower = new VictorSPX(followerConfig.getId());
+//                follower.follow(talon);
+//                if (followerConfig.getInverted() == SparkMaxWrapper.InvertType.OPPOSE_LEADER) {
+//                    follower.setInverted(InvertType.OpposeMaster);
+//                } else {
+//                    follower.setInverted(InvertType.FollowMaster);
+//                }
+//            }
+
         return talon;
-    }
+}
 
     private static SparkMaxWrapper initializeSpark(SparkConfig config) {
         for (Integer id : ids)
@@ -215,34 +228,34 @@ public class MotorConfigs {
         return new VictorWrapper(config.getDeviceNumber(), config.getSubsystemName());
     }
 
-    @SuppressWarnings({"unused", "WeakerAccess"})
-    public static class RootConfigs {
-        private Map<String, SparkConfig> sparks = new HashMap<>();
-        private Map<String, TalonConfig> talons = new HashMap<>();
-        private Map<String, VictorConfig> victors = new HashMap<>();
+@SuppressWarnings({"unused", "WeakerAccess"})
+public static class RootConfigs {
+    private Map<String, SparkConfig> sparks = new HashMap<>();
+    private Map<String, TalonConfig> talons = new HashMap<>();
+    private Map<String, VictorConfig> victors = new HashMap<>();
 
-        public Map<String, SparkConfig> getSparks() {
-            return sparks;
-        }
-
-        public void setSparks(Map<String, SparkConfig> sparks) {
-            this.sparks = sparks;
-        }
-
-        public Map<String, TalonConfig> getTalons() {
-            return talons;
-        }
-
-        public void setTalons(Map<String, TalonConfig> talons) {
-            this.talons = talons;
-        }
-
-        public Map<String, VictorConfig> getVictors() {
-            return victors;
-        }
-
-        public void setVictors(Map<String, VictorConfig> victors) {
-            this.victors = victors;
-        }
+    public Map<String, SparkConfig> getSparks() {
+        return sparks;
     }
+
+    public void setSparks(Map<String, SparkConfig> sparks) {
+        this.sparks = sparks;
+    }
+
+    public Map<String, TalonConfig> getTalons() {
+        return talons;
+    }
+
+    public void setTalons(Map<String, TalonConfig> talons) {
+        this.talons = talons;
+    }
+
+    public Map<String, VictorConfig> getVictors() {
+        return victors;
+    }
+
+    public void setVictors(Map<String, VictorConfig> victors) {
+        this.victors = victors;
+    }
+}
 }
