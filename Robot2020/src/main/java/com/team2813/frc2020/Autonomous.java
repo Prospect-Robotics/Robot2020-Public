@@ -25,6 +25,12 @@ public class Autonomous {
 	}
 
 	public void run(RoutineNum routineNum){
+		RamseteTrajectory trajectory = new RamseteTrajectory(List.of(
+				new GeneratedTrajectory("3-ball 1", false),
+				new GeneratedTrajectory("2-ball", false),
+				new GeneratedTrajectory("go back", true),
+				new GeneratedTrajectory("return", false)
+		));
 		switch(routineNum){ // TODO: finish it
 			case ROUTINE_1://6-ball
 				autoAction = new SeriesAction(
@@ -59,12 +65,6 @@ public class Autonomous {
 //						//shoot 3 balls
 //						new GeneratedTrajectory("3-ball 1.wpilib.json", false)
 //				);
-				RamseteTrajectory trajectory = new RamseteTrajectory(List.of(
-						new GeneratedTrajectory("3-ball 1", false),
-						new GeneratedTrajectory("2-ball", false),
-						new GeneratedTrajectory("go back", true),
-						new GeneratedTrajectory("return", false)				
-				));
 				break;
 			default:
 				autoAction = new SeriesAction();
