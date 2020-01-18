@@ -42,7 +42,7 @@ public class Looper {
 				if (running) {
 					double now = Timer.getFPGATimestamp();
 
-					Action.updateActions(actions, now);
+					Action.updateActions(actions, mode, now);
 
 					// Go thru each of the subsystem loops and run appropriate
 					// enabled or disabled loop
