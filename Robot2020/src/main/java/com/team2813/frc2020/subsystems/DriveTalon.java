@@ -5,12 +5,11 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Axis;
 import com.team2813.lib.controls.Button;
-import com.team2813.lib.ctre.CTREException;
-import com.team2813.lib.ctre.TalonWrapper;
 import com.team2813.lib.drive.ArcadeDrive;
 import com.team2813.lib.drive.CurvatureDrive;
 import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.drive.VelocityDriveTalon;
+import com.team2813.lib.motors.TalonWrapper;
 import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -65,17 +64,8 @@ public class DriveTalon extends Subsystem {
     private boolean velocityFailed = false;
 
     DriveTalon() {
-        try {
-            velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getTalons().get("driveLeft"));
-            velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getTalons().get("driveRight"));
-
-            // be sure they're inverted correctly
-//            LEFT.setInverted(LEFT.getConfig().getInverted());
-//            RIGHT.setInverted(RIGHT.getConfig().getInverted());
-        } catch (CTREException e) {
-            velocityFailed = true;
-            e.printStackTrace();
-        }
+        velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getTalons().get("driveLeft"));
+        velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getTalons().get("driveRight"));
     }
 
     private void teleopDrive(TeleopDriveType driveType) {
@@ -86,63 +76,55 @@ public class DriveTalon extends Subsystem {
         }
     }
 
-    public void driveForwardTest(){
+    public void driveForwardTest() {
         driveDemand = new DriveDemand(MAX_VELOCITY, MAX_VELOCITY);
     }
 
-    public void driveBackwardsTest(){
+    public void driveBackwardsTest() {
         driveDemand = new DriveDemand(-MAX_VELOCITY, -MAX_VELOCITY);
     }
 
-    public void driveRightTest(){
+    public void driveRightTest() {
         driveDemand = new DriveDemand(MAX_VELOCITY, -MAX_VELOCITY);
     }
 
-    public void driveLeftTest(){
+    public void driveLeftTest() {
         driveDemand = new DriveDemand(-MAX_VELOCITY, MAX_VELOCITY);
     }
 
     @Override
-    protected void teleopControls_() {
+    public void teleopControls() {
         driveMode = DriveMode.OPEN_LOOP;
         teleopDrive(TELEOP_DRIVE_TYPE);
     }
 
-    @Override
-    protected boolean checkSystem_() throws CTREException {
+    public boolean checkSystem() {
         return false;
     }
 
-    @Override
-    protected void outputTelemetry_() throws CTREException {
-
-    }
-
-
+    public void outputTelemetry() {}
 
     @Override
-    protected void onEnabledStart_(double timestamp) throws CTREException {
+    public void onEnabledStart(double timestamp) {
 //		setBrakeMode(false);
     }
 
     @Override
-    protected void onEnabledLoop_(double timestamp) throws CTREException {
-    }
+    public void onEnabledLoop(double timestamp) {}
 
     @Override
-    protected void onEnabledStop_(double timestamp) throws CTREException {
-    }
+    public void onEnabledStop(double timestamp) {}
 
-
-    protected synchronized void writePeriodicOutputs_() throws CTREException {
+    @Override
+    public synchronized void writePeriodicOutputs() {
         if (!velocityFailed && velocityEnabled) {
             double leftVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getLeft());
             double rightVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getRight());
             LEFT.set(ControlMode.Velocity, leftVelocity);
             RIGHT.set(ControlMode.Velocity, rightVelocity);
         } else {
-            LEFT.set(driveMode.controlMode,driveDemand.getLeft());
-            RIGHT.set(driveMode.controlMode,driveDemand.getRight());
+            LEFT.set(driveMode.controlMode, driveDemand.getLeft());
+            RIGHT.set(driveMode.controlMode, driveDemand.getRight());
         }
     }
 
@@ -150,12 +132,8 @@ public class DriveTalon extends Subsystem {
         if (isBrakeMode != brake) {
             isBrakeMode = brake;
             NeutralMode mode = brake ? NeutralMode.Brake : NeutralMode.Coast;
-            try {
-                RIGHT.setNeutralMode(mode);
-                LEFT.setNeutralMode(mode);
-            } catch (CTREException e) {
-                e.printStackTrace();
-            }
+            RIGHT.setNeutralMode(mode);
+            LEFT.setNeutralMode(mode);
         }
     }
 

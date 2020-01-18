@@ -1,7 +1,7 @@
 package com.team2813.lib.config;
 
 
-import com.team2813.lib.sparkMax.CANSparkMaxWrapper.InvertType;
+import com.team2813.lib.motors.SparkMaxWrapper.InvertType;
 
 public class FollowerConfig {
 	private int id;

@@ -2,11 +2,11 @@ package com.team2813.lib.drive;
 
 import com.team2813.lib.config.PIDControllerConfig;
 import com.team2813.lib.config.SparkConfig;
-import com.team2813.lib.sparkMax.CANSparkMaxWrapper;
+import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.sparkMax.SparkMaxException;
 
 public class VelocityDriveSpark {
-    private CANSparkMaxWrapper spark;
+    private SparkMaxWrapper spark;
     private double maxVelocity;
 
     public VelocityDriveSpark(double maxVelocity) {
@@ -17,9 +17,8 @@ public class VelocityDriveSpark {
      * Configure a CANSparkMaxWrapper with configuration for velocity drive.
      * @param spark
      * @param config
-     * @throws SparkMaxException
      */
-    public void configureMotor(CANSparkMaxWrapper spark, SparkConfig config) throws SparkMaxException {
+    public void configureMotor(SparkMaxWrapper spark, SparkConfig config) {
         this.spark = spark;
         PIDControllerConfig pidConfig = config.getPidControllers().get(0);
         spark.setPIDF(0, pidConfig.getP(), pidConfig.getI(), pidConfig.getD(), pidConfig.getF());
