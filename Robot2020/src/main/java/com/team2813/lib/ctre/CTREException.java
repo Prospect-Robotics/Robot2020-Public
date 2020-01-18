@@ -7,9 +7,9 @@ import java.util.Map;
 
 public class CTREException extends Exception {
 
-	ErrorCode errorCode;
+	private ErrorCode errorCode;
 
-	String message;
+	private String message;
 
 	private static final Map<Integer, String> errorDescriptions = new HashMap<>();
 
@@ -69,6 +69,10 @@ public class CTREException extends Exception {
 			sb.append(errorDescriptions.get(errorCode.value));
 		}
 		return sb.toString();
+	}
+
+	public ErrorCode getErrorCode() {
+		return errorCode;
 	}
 
 }

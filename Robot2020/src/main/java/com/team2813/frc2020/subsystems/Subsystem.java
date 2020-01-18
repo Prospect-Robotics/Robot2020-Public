@@ -17,189 +17,65 @@ import com.team2813.lib.sparkMax.SparkMaxException;
  */
 public abstract class Subsystem implements Loop {
 
-	public void writeToLog() {
-	}
+    public void writeToLog() {
+    }
 
-	/**
-	 * Read in current status from motors
-	 *
-	 * Optional design pattern for caching periodic reads to avoid hammering the HAL/CAN.
-	 *
-	 * @throws CTREException
-	 */
-	protected void readPeriodicInputs_() throws CTREException, SparkMaxException {
-	}
+    /**
+     * Read in current status from motors
+     * <p>
+     * Optional design pattern for caching periodic reads to avoid hammering the HAL/CAN.
+     */
+    protected void readPeriodicInputs() {
+    }
 
-	/**
-	 * Catches the CTREException to avoid having to catch or throw where method is called
-	 */
-	private final void readPeriodicInputs() {
-		try {
-			readPeriodicInputs_();
-		}
-		catch (CTREException | SparkMaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+    /**
+     * Output to motors
+     * <p>
+     * Optional design pattern for caching periodic writes to avoid hammering the HAL/CAN.
+     */
+    protected void writePeriodicOutputs() {
+    }
 
-	/**
-	 * Output to motors
-	 *
-	 * Optional design pattern for caching periodic writes to avoid hammering the HAL/CAN.
-	 *
-	 * @throws CTREException
-	 */
-	protected void writePeriodicOutputs_() throws CTREException, SparkMaxException {
-	}
+    public abstract void outputTelemetry();
 
+    public void zeroSensors() {
+    }
 
-	/**
-	 * Catches the CTREException to avoid having to catch or throw where method is called
-	 */
-	private final void writePeriodicOutputs() {
-		try {
-			writePeriodicOutputs_();
-		}
-		catch (CTREException | SparkMaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+    public abstract void teleopControls();
 
-
-	// TODO remove checkSystem or use it for a good purpose
-	protected abstract boolean checkSystem_() throws CTREException, SparkMaxException;
-
-	public final void checkSystem() {
-		try {
-			checkSystem_();
-		}
-		catch (CTREException | SparkMaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	protected abstract void outputTelemetry_() throws CTREException, SparkMaxException;
-
-	public final void outputTelemetry() {
-		try {
-			outputTelemetry_();
-		}
-		catch (CTREException | SparkMaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	protected void zeroSensors_() throws CTREException, SparkMaxException {
-	}
-
-	public final void zeroSensors() {
-		try {
-			zeroSensors_();
-		}
-		catch (CTREException | SparkMaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	protected void constructorFailed() {
-		System.exit(1);
-	}
-
-	protected abstract void teleopControls_() throws CTREException, SparkMaxException;
-
-	public final void teleopControls() {
-		try {
-			teleopControls_();
-		} catch (SparkMaxException | CTREException e) {
-			e.printStackTrace();
-		}
-	}
-
-	//#region Looping
-
-	protected abstract void onEnabledStart_(double timestamp) throws CTREException, SparkMaxException;
+    //#region Looping
 
 	@Override
-	public synchronized final void onEnabledStart(double timestamp) {
-		System.out.println("Subsystem OnEnabledStart");
-		try {
-			onEnabledStart_(timestamp);
-		}
-		catch (CTREException | SparkMaxException e) {
-			e.printStackTrace();
-		}
-	}
+    public abstract void onEnabledStart(double timestamp);
 
-	protected abstract void onEnabledLoop_(double timestamp) throws CTREException, SparkMaxException;
+    public synchronized final void onEnabledStart_(double timestamp) {
+        System.out.println("Subsystem OnEnabledStart");
+        onEnabledStart(timestamp);
+    }
 
-	@Override
-	public synchronized final void onEnabledLoop(double timestamp) {
-		readPeriodicInputs();
-		try {
-			onEnabledLoop_(timestamp);
-			// System.out.println("Subsystem onEnabledLoop");
-		}
-		catch (CTREException | SparkMaxException e) {
-			e.printStackTrace();
-		}
-		writePeriodicOutputs();
-	}
+    @Override
+    public abstract void onEnabledLoop(double timestamp);
 
-	protected abstract void onEnabledStop_(double timestamp) throws CTREException, SparkMaxException;
+    public synchronized final void onEnabledLoop_(double timestamp) {
+        readPeriodicInputs();
+        onEnabledLoop(timestamp);
+        writePeriodicOutputs();
+    }
 
-	@Override
-	public synchronized final void onEnabledStop(double timestamp) {
-		try {
-			onEnabledStop_(timestamp);
-		}
-		catch (CTREException | SparkMaxException e) {
-			e.printStackTrace();
-		}
-	}
+    @Override
+    public abstract void onEnabledStop(double timestamp);
 
-	protected void onDisabledStart_(double timestamp) throws CTREException, SparkMaxException {};
+    @Override
+    public void onDisabledStart(double timestamp) {};
 
-	@Override
-	public synchronized final void onDisabledStart(double timestamp) {
-		try {
-			onDisabledStart_(timestamp);
-		}
-		catch (CTREException | SparkMaxException e) {
-			e.printStackTrace();
-		}
-	}
+    @Override
+    public synchronized final void onDisabledLoop(double timestamp) {
+        readPeriodicInputs();
+        onDisabledLoop(timestamp);
+        writePeriodicOutputs();
+    }
 
-	protected void onDisabledLoop_(double timestamp) throws CTREException, SparkMaxException {};
+    public void onAnyLoop(double timestamp) {}
 
-	@Override
-	public synchronized final void onDisabledLoop(double timestamp) {
-		readPeriodicInputs();
-		// System.out.println("Subsystem onDisabledLoop");
-		try {
-			onDisabledLoop_(timestamp);
-		}
-		catch (CTREException | SparkMaxException e) {
-			e.printStackTrace();
-		}
-		writePeriodicOutputs();
-	}
-
-	protected void onAnyLoop_(double timestamp) throws CTREException, SparkMaxException {}
-
-	@Override
-	public synchronized final void onAnyLoop(double timestamp) {
-		try {
-			onAnyLoop_(timestamp);
-		} catch (CTREException | SparkMaxException e) {
-			e.printStackTrace();
-		}
-	}
-
-
-	//#endregion
+    //#endregion
 }

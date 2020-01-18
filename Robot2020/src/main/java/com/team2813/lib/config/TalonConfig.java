@@ -2,7 +2,6 @@ package com.team2813.lib.config;
 
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
-import com.team2813.lib.ctre.BaseMotorControllerWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +27,6 @@ public class TalonConfig extends MotorConfig {
     private StatusFrameEnhanced statusFrame; // cannot serialize into PeriodicFrame (see getStatusFrame)
     private int statusFramePeriod = 5;
     private VelocityMeasPeriod velocityMeasurementPeriod;
-    private BaseMotorControllerWrapper.VelocityMeasurementWindow velocityMeasurementWindow;
 
     @Override
     public int getDeviceNumber() {
@@ -142,10 +140,6 @@ public class TalonConfig extends MotorConfig {
 
     public void setVelocityMeasurementPeriod(VelocityMeasPeriod velocityMeasurementPeriod) {
         this.velocityMeasurementPeriod = velocityMeasurementPeriod;
-    }
-
-    public BaseMotorControllerWrapper.VelocityMeasurementWindow getVelocityMeasurementWindow() {
-        return velocityMeasurementWindow;
     }
 
 

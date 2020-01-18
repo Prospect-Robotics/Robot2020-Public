@@ -1,4 +1,4 @@
-package com.team2813.lib.ctre;
+package com.team2813.lib.motors;
 
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 /*
@@ -11,10 +11,12 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 /**
  * @author Adrian Guerra
  */
-public class VictorWrapper extends BaseMotorControllerWrapper<VictorSPX> {
+public class VictorWrapper extends VictorSPX {
+	public String subsystem;
+
 	public VictorWrapper(int deviceNumber, String subsystemName) {
-		motorController = new VictorSPX(deviceNumber);
-		this.subsystemName = subsystemName;
+		super(deviceNumber);
+		this.subsystem = subsystemName;
 	}
 	
 	public VictorWrapper(int deviceNumber) {

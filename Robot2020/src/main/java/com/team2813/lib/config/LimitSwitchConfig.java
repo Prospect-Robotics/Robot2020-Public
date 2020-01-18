@@ -2,7 +2,7 @@ package com.team2813.lib.config;
 
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
-import com.team2813.lib.ctre.LimitDirection;
+import com.team2813.lib.motors.interfaces.LimitDirection;
 
 class LimitSwitchConfig {
 
