@@ -2,15 +2,16 @@ package com.team2813.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.lib.config.MotorConfigs;
-import com.team2813.lib.controls.Axis;
-import com.team2813.lib.controls.Button;
+import com.team2813.lib.controls.*;
 import com.team2813.lib.ctre.CTREException;
 import com.team2813.lib.ctre.TalonWrapper;
 import com.team2813.lib.drive.ArcadeDrive;
 import com.team2813.lib.drive.CurvatureDrive;
 import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.drive.VelocityDriveTalon;
+import com.team2813.lib.sparkMax.SparkMaxException;
 import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -39,11 +40,13 @@ public class DriveTalon extends Subsystem {
     private static final Axis CURVATURE_FORWARD = SubsystemControlsConfig.getDriveForward();
     private static final Axis CURVATURE_REVERSE = SubsystemControlsConfig.getDriveReverse();
     private static final Button PIVOT_BUTTON = SubsystemControlsConfig.getPivotButton();
-    private static final TeleopDriveType TELEOP_DRIVE_TYPE = TeleopDriveType.CURVATURE;
     private static final Button AUTO_BUTTON = SubsystemControlsConfig.getAutoButton();
+    private ControlInput arcade_x;
+    private ControlInput arcade_y;
 
     // Mode
     private static DriveMode driveMode = DriveMode.OPEN_LOOP;
+    private static TeleopDriveType teleopDriveType = TeleopDriveType.CURVATURE;
 
     public enum TeleopDriveType {
         ARCADE, CURVATURE
@@ -66,12 +69,23 @@ public class DriveTalon extends Subsystem {
 
     DriveTalon() {
         try {
+            ShuffleboardData.driveModeChooser.addOption("Open Loop", DriveMode.OPEN_LOOP);
+            ShuffleboardData.driveModeChooser.addOption("Velocity", DriveMode.VELOCITY);
+            ShuffleboardData.teleopDriveTypeChooser.addOption("Arcade", TeleopDriveType.ARCADE);
+            ShuffleboardData.teleopDriveTypeChooser.addOption("Curvature", TeleopDriveType.CURVATURE);
+            arcade_x = new ArcsinFilter(new DeadzoneFilter(ARCADE_X_AXIS, TELEOP_DEAD_ZONE));
+            arcade_y = new ArcsinFilter(new DeadzoneFilter(ARCADE_Y_AXIS, TELEOP_DEAD_ZONE));
+
             velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getTalons().get("driveLeft"));
             velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getTalons().get("driveRight"));
 
+            // arcade_x = new ExpFilter(new DeadzoneFilter(ARCADE_X_AXIS, TELEOP_DEAD_ZONE));
+            // arcade_y = new ExpFilter(new DeadzoneFilter(ARCADE_X_AXIS, TELEOP_DEAD_ZONE));
+            // above are alternatives to the arcsin filter (exp filters)
+
             // be sure they're inverted correctly
-//            LEFT.setInverted(LEFT.getConfig().getInverted());
-//            RIGHT.setInverted(RIGHT.getConfig().getInverted());
+            // LEFT.setInverted(LEFT.getConfig().getInverted());
+            // RIGHT.setInverted(RIGHT.getConfig().getInverted());
         } catch (CTREException e) {
             velocityFailed = true;
             e.printStackTrace();
@@ -80,8 +94,8 @@ public class DriveTalon extends Subsystem {
 
     private void teleopDrive(TeleopDriveType driveType) {
         if (driveType == TeleopDriveType.ARCADE) {
-            driveDemand = arcadeDrive.getDemand(ARCADE_Y_AXIS.get(), ARCADE_X_AXIS.get());
-        } else if (driveType == TeleopDriveType.CURVATURE) {
+            driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());;
+        } else {
             driveDemand = curvatureDrive.getDemand(CURVATURE_FORWARD.get(), CURVATURE_REVERSE.get(), CURVATURE_STEER.get(), PIVOT_BUTTON.get());
         }
     }
@@ -104,8 +118,8 @@ public class DriveTalon extends Subsystem {
 
     @Override
     protected void teleopControls_() {
-        driveMode = DriveMode.OPEN_LOOP;
-        teleopDrive(TELEOP_DRIVE_TYPE);
+        driveMode = ShuffleboardData.driveModeChooser.getSelected();
+        teleopDrive(teleopDriveType);
     }
 
     @Override
@@ -159,7 +173,7 @@ public class DriveTalon extends Subsystem {
         }
     }
 
-    private enum DriveMode {
+    public enum DriveMode {
         OPEN_LOOP(ControlMode.PercentOutput),
         MOTION_MAGIC(ControlMode.MotionMagic),
         VELOCITY(ControlMode.Velocity);

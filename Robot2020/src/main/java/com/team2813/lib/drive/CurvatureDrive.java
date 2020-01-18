@@ -9,7 +9,7 @@ public class CurvatureDrive {
     private ArcadeDrive arcadeDrive;
 
     public CurvatureDrive(double deadzone) {
-        arcadeDrive = new ArcadeDrive(deadzone);
+        arcadeDrive = new ArcadeDrive();
     }
 
     public DriveDemand getDemand(double throttleForward, double throttleReverse, double steerX, boolean pivot) {
