@@ -14,10 +14,14 @@ public class GeneratedTrajectory {
 
     private Trajectory trajectory;
 
-    public GeneratedTrajectory(String pathName, boolean reversed) throws IOException {
+    public GeneratedTrajectory(String pathName, boolean reversed) {
         this.reversed = reversed;
 
-        trajectory = TrajectoryUtil.fromPathweaverJson(Paths.get(Filesystem.getDeployDirectory().getAbsolutePath(), "deploy", pathName + ".wpilib.json"));
+        try {
+            trajectory = TrajectoryUtil.fromPathweaverJson(Paths.get(Filesystem.getDeployDirectory().getAbsolutePath(), "deploy", pathName + ".wpilib.json"));
+        } catch (IOException e) {
+            e.printStackTrace(); // todo samuel li
+        }
     }
 
     public boolean isReversed() {

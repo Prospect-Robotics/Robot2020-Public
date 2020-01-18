@@ -1,7 +1,13 @@
 package com.team2813.frc2020;
 
+import com.team2813.frc2020.actions.Action;
 import com.team2813.frc2020.actions.SeriesAction;
 import com.team2813.frc2020.subsystems.Subsystems;
+import com.team2813.lib.auto.GeneratedTrajectory;
+import com.team2813.lib.auto.RamseteTrajectory;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+
+import java.util.List;
 
 /**
  * method to run autonomous in {@link Robot} autonomousPeriodic
@@ -49,10 +55,16 @@ public class Autonomous {
 
 				break;
 			case ROUTINE_4://3-ball
-				autoAction = new SeriesAction(
-						//shoot 3 balls
-
-				);
+//				autoAction = new SeriesAction(
+//						//shoot 3 balls
+//						new GeneratedTrajectory("3-ball 1.wpilib.json", false)
+//				);
+				RamseteTrajectory trajectory = new RamseteTrajectory(List.of(
+						new GeneratedTrajectory("3-ball 1", false),
+						new GeneratedTrajectory("2-ball", false),
+						new GeneratedTrajectory("go back", true),
+						new GeneratedTrajectory("return", false)				
+				));
 				break;
 			default:
 				autoAction = new SeriesAction();
