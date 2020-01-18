@@ -14,6 +14,7 @@ import com.team2813.frc2020.util.AutonomousPath;
 import com.team2813.frc2020.util.RobotTest;
 import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.lib.config.MotorConfigs;
+import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.util.CrashTracker;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -37,7 +38,8 @@ public class Robot extends TimedRobot {
 
   private static final double MIN_IDLE_VOLTAGE = 11.7;
   private static final double MIN_DISABLED_VOLTAGE = 12.0;
-  private static boolean batteryTooLow = false;
+  private static boolean BATTERY_TOO_LOW = false;
+  private final double WHEEL_DIAMETER = 6.0;
 
   private CANifier caNifier = new CANifier(0);
     public static AutonomousPath chosenPath;
@@ -53,6 +55,8 @@ public class Robot extends TimedRobot {
       MotorConfigs.read();
       Subsystems.initializeSubsystems();
       ShuffleboardData.init();
+
+      DriveDemand.circumference = Math.PI * WHEEL_DIAMETER;
       for (Subsystem subsystem : allSubsystems) {
         LOOPER.addLoop(subsystem);
         subsystem.zeroSensors();
@@ -84,7 +88,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Replace Battery if Red", disabled ? voltage > MIN_DISABLED_VOLTAGE : voltage > MIN_IDLE_VOLTAGE);
 
     Subsystems.outputTelemetry();
-    batteryTooLow = disabled && voltage > MIN_DISABLED_VOLTAGE;
+    BATTERY_TOO_LOW = disabled && voltage > MIN_DISABLED_VOLTAGE;
     SmartDashboard.putBoolean("Replace Battery if Red", disabled ? voltage > MIN_DISABLED_VOLTAGE : voltage > MIN_IDLE_VOLTAGE);
   }
 
