@@ -6,6 +6,13 @@ import com.team2813.lib.controls.Button;
 import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.motors.TalonWrapper;
 
+/**
+ * Class for the shooter on the robot.
+ *
+ * @author Sid Banerjee
+ *
+ */
+
 public class Shooter extends Subsystem1d<Shooter.Position>{
 
     private static final SparkMaxWrapper MOTOR = MotorConfigs.sparks.get("shooter");
