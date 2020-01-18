@@ -10,7 +10,6 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.team2813.lib.motors.VictorWrapper;
 import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.motors.TalonWrapper;
-import com.team2813.lib.sparkMax.SparkMaxException;
 import edu.wpi.first.wpilibj.Filesystem;
 
 import java.io.File;
@@ -194,7 +193,7 @@ public class MotorConfigs {
             System.out.println(
                     "\tCreating follower w/ id of " + followerConfig.getId() + " on " + config.getSubsystemName()
             );
-            new SparkMaxWrapper(followerConfig.getId(), followerConfig.getMotorType().getValue(), spark);
+            new SparkMaxWrapper(followerConfig.getId(), followerConfig.getType().getValue(), spark);
         }
 
         return spark;
