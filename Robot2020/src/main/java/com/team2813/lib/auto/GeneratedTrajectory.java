@@ -17,7 +17,7 @@ public class GeneratedTrajectory {
     public GeneratedTrajectory(String pathName, boolean reversed) throws IOException {
         this.reversed = reversed;
 
-        trajectory = TrajectoryUtil.fromPathweaverJson(Paths.get(Filesystem.getDeployDirectory().getAbsolutePath(), "deploy", pathName));
+        trajectory = TrajectoryUtil.fromPathweaverJson(Paths.get(Filesystem.getDeployDirectory().getAbsolutePath(), "deploy", pathName + ".wpilib.json"));
     }
 
     public boolean isReversed() {
