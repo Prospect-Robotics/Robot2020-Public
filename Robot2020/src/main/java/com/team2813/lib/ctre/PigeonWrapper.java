@@ -6,8 +6,8 @@ import com.ctre.phoenix.sensors.*;
 
 public class PigeonWrapper {
 
-	String subsystemName;
-	PigeonIMU pigeon;
+	private String subsystemName;
+	private PigeonIMU pigeon;
 
 	public PigeonWrapper(int deviceNumber, String subsystemName) {
 		pigeon = new PigeonIMU(deviceNumber);
@@ -17,6 +17,14 @@ public class PigeonWrapper {
 	public PigeonWrapper(TalonWrapper talon) {
 		pigeon = new PigeonIMU(talon.motorController);
 		subsystemName = talon.subsystemName;
+	}
+
+	public String getSubsystemName() {
+		return subsystemName;
+	}
+
+	public PigeonIMU getPigeon() {
+		return pigeon;
 	}
 
 	protected void throwIfNotOk(ErrorCode error) throws CTREException {
