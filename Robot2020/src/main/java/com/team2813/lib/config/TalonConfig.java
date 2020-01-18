@@ -24,7 +24,7 @@ public class TalonConfig extends MotorConfig {
     private List<PIDControllerConfig> pidControllers;
     private List<SoftLimitConfig> softLimits;
     private List<LimitSwitchConfig> limitSwitches;
-    private StatusFrameEnhanced statusFrame; // cannot serialize into PeriodicFrame (see getStatusFrame)
+//    private StatusFrameEnhanced statusFrame; // cannot serialize into PeriodicFrame (see getStatusFrame)
     private int statusFramePeriod = 5;
     private VelocityMeasPeriod velocityMeasurementPeriod;
 
@@ -118,13 +118,13 @@ public class TalonConfig extends MotorConfig {
         this.invertSensorPhase = invertSensorPhase;
     }
 
-    public StatusFrameEnhanced getStatusFrame() {
-        return statusFrame;
-    }
-
-    public void setStatusFrame(StatusFrameEnhanced statusFrame) {
-        this.statusFrame = statusFrame;
-    }
+//    public StatusFrameEnhanced getStatusFrame() {
+//        return statusFrame;
+//    }
+//
+//    public void setStatusFrame(StatusFrameEnhanced statusFrame) {
+//        this.statusFrame = statusFrame;
+//    }
 
     public int getStatusFramePeriod() {
         return statusFramePeriod;

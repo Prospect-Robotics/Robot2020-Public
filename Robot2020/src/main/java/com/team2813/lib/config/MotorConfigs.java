@@ -61,7 +61,7 @@ public class MotorConfigs {
 
         talon.setClosedLoopRamp(config.getClosedLoopRampRate());
 
-        talon.setStatusFramePeriod(config.getStatusFrame(), config.getStatusFramePeriod());
+//        talon.setStatusFramePeriod(config.getStatusFrame(), config.getStatusFramePeriod());
 //					talon.setSmartMotionMaxVelocity(config.motionCruiseVelocity()); // FIXME: 09/20/2019 need to change parameters/types
 //					talon.setSmartMotionMaxAccel(config.motionAcceleration()); // FIXME: 09/20/2019 need to change parameters/types
 
