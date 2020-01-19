@@ -15,7 +15,7 @@ public class TalonFXWrapper extends TalonWrapper<TalonFX> {
 	public TalonFXWrapper(int deviceNumber, String subsystem) {
 		controller = new TalonFX(deviceNumber);
 		this.subsystemName = subsystem;
-		System.out.println("Initializing Talon with ID " + deviceNumber);
+		System.out.println("Initializing Talon FX with ID " + deviceNumber);
 	}
 
 	public Object setCurrentLimit(int amps) {

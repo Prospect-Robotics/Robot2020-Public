@@ -13,7 +13,7 @@ public class TalonSRXWrapper extends TalonWrapper<TalonSRX> {
 	public TalonSRXWrapper(int deviceNumber, String subsystem) {
 		controller = new TalonSRX(deviceNumber);
 		this.subsystemName = subsystem;
-		System.out.println("Initializing Talon with ID " + deviceNumber);
+		System.out.println("Initializing Talon SRX with ID " + deviceNumber);
 	}
 
 	public Object setCurrentLimit(int limitAmps) {
