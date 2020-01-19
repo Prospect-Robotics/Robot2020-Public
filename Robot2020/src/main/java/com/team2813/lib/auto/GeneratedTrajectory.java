@@ -1,7 +1,7 @@
 package com.team2813.lib.auto;
 
-import jaci.pathfinder.PathfinderFRC;
-import jaci.pathfinder.Trajectory;
+
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ public class GeneratedTrajectory {
     public GeneratedTrajectory(String pathName, boolean reversed) throws IOException {
         this.reversed = reversed;
 
-        trajectory = PathfinderFRC.getTrajectory(pathName);
+//        trajectory = PathfinderFRC.getTrajectory(pathName);
     }
 
     public boolean isReversed() {

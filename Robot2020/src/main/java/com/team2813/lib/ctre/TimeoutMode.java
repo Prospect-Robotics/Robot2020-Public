@@ -11,7 +11,7 @@ public enum TimeoutMode {
 	RUNNING(20),
 	NO_TIMEOUT(0);
 
-	final int valueMs;
+	public final int valueMs;
 
 	TimeoutMode(int valueMs) {
 		this.valueMs = valueMs;

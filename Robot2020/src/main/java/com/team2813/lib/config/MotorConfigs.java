@@ -7,12 +7,10 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.team2813.lib.ctre.CTREException;
-import com.team2813.lib.ctre.PIDProfile;
-import com.team2813.lib.ctre.TalonWrapper;
-import com.team2813.lib.ctre.VictorWrapper;
-import com.team2813.lib.sparkMax.CANSparkMaxWrapper;
-import com.team2813.lib.sparkMax.SparkMaxException;
+import com.revrobotics.SparkMax;
+import com.team2813.lib.motors.VictorWrapper;
+import com.team2813.lib.motors.SparkMaxWrapper;
+import com.team2813.lib.motors.TalonWrapper;
 import edu.wpi.first.wpilibj.Filesystem;
 
 import java.io.File;
@@ -24,68 +22,68 @@ import java.util.Map;
 
 // singleton for motor configs
 public class MotorConfigs {
-	public static Map<String, CANSparkMaxWrapper> sparks = new HashMap<>();
-	public static Map<String, TalonWrapper> talons = new HashMap<>();
-	public static Map<String, VictorWrapper> victors = new HashMap<>();
+    public static Map<String, SparkMaxWrapper> sparks = new HashMap<>();
+    public static Map<String, TalonWrapper> talons = new HashMap<>();
+    public static Map<String, VictorWrapper> victors = new HashMap<>();
 
-	public static RootConfigs motorConfigs;
+    public static RootConfigs motorConfigs;
 
-	private static List<Integer> ids = new ArrayList<>();
+    private static List<Integer> ids = new ArrayList<>();
 
-	public static void read() throws IOException {
-		File deployDirectory = Filesystem.getDeployDirectory();
-		File configFile = new File(deployDirectory.getAbsolutePath() + "/motorConfig.yaml");
+    public static void read() throws IOException {
+        File deployDirectory = Filesystem.getDeployDirectory();
+        File configFile = new File(deployDirectory.getAbsolutePath() + "/motorConfig.yaml");
 
-		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-		motorConfigs = mapper.readValue(configFile, RootConfigs.class);
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        motorConfigs = mapper.readValue(configFile, RootConfigs.class);
 
-		motorConfigs.getSparks().forEach(((s, sparkConfig) -> sparks.put(s, initializeSpark(sparkConfig))));
-		motorConfigs.getVictors().forEach(((s, victorConfig) -> victors.put(s, initializeVictor(victorConfig))));
+        motorConfigs.getTalons().forEach(((s, talonConfig) -> talons.put(s, initializeTalon(talonConfig))));
 
-		System.out.println("Successful!");
-	}
+//        motorConfigs.getSparks().forEach(((s, sparkConfig) -> sparks.put(s, initializeSpark(sparkConfig))));
+//        motorConfigs.getVictors().forEach(((s, victorConfig) -> victors.put(s, initializeVictor(victorConfig))));
 
-	private static <TalonException extends Throwable> TalonWrapper initializeTalon(TalonConfig config) throws TalonException, CTREException, SparkMaxException {
-		for (Integer id : ids)
-			if (id == config.getDeviceNumber()) {
-				System.err.println("Tried to register talon with already used id");
-			}
-		ids.add(config.getDeviceNumber());
+        System.out.println("Successful!");
+    }
 
-		System.out.println("Configuring" + config.getSubsystemName());
+    private static TalonWrapper initializeTalon(TalonConfig config) {
+        for (Integer id : ids)
+            if (id == config.getDeviceNumber()) {
+                System.err.println("Tried to register talon with already used id");
+            }
+        ids.add(config.getDeviceNumber());
 
-		TalonWrapper talon = new TalonWrapper(config.getDeviceNumber(), config.getSubsystemName());
+        System.out.println("Configuring" + config.getSubsystemName());
 
-		talon.setFactoryDefaults();
+        TalonWrapper talon = new TalonWrapper(config.getDeviceNumber(), config.getSubsystemName());
 
-		talon.setPeakCurrentLimit(config.getPeakCurrentLimit());
-		talon.enableVoltageCompensation();
+        talon.setFactoryDefaults();
 
+        talon.setPeakCurrentLimit(config.getPeakCurrentLimit());
+        talon.enableVoltageCompensation();
 
-		talon.setOpenLoopRamp(config.getOpenLoopRampRate());
-		talon.setClosedLoopRamp(config.getClosedLoopRampRate());
+        talon.setClosedLoopRamp(config.getClosedLoopRampRate());
 
-		talon.setStatusFramePeriod(config.getStatusFrame(), config.getStatusFramePeriod());
+//        talon.setStatusFramePeriod(config.getStatusFrame(), config.getStatusFramePeriod());
 //					talon.setSmartMotionMaxVelocity(config.motionCruiseVelocity()); // FIXME: 09/20/2019 need to change parameters/types
 //					talon.setSmartMotionMaxAccel(config.motionAcceleration()); // FIXME: 09/20/2019 need to change parameters/types
 
-		talon.setContinuousCurrentLimit(config.getContinuousCurrentLimitAmps());// TODO check this is actually continuous limit
+        talon.setContinuousCurrentLimit(config.getContinuousCurrentLimitAmps());// TODO check this is actually continuous limit
 
 //			for (com.team2813.lib.talon.options.HardLimitSwitch hardLimitSwitch : field.getAnnotationsByType(com.team2813.lib.talon.options.HardLimitSwitch.class)) {
 //				System.out.println("\tconfiguring hard limit switch " + hardLimitSwitch.direction());
 //				// FIXME remake limit switch stuff differently since it is called differently -- Grady 10/30 I'm not sure this is how it works for Spark Maxs
 //			}
 
-		for (LimitSwitchConfig limitSwitch : config.getLimitSwitches()) {
-			talon.setLimitSwitchSource(limitSwitch.direction, LimitSwitchSource.FeedbackConnector, limitSwitch.polarity.ctre);
-			talon.setClearPositionOnLimit(limitSwitch.direction, limitSwitch.clearOnLimit);
-			talon.enableLimitSwitches();
-		}
-
-		for (SoftLimitConfig softLimit : config.getSoftLimits()) {
-			talon.setSoftLimit(softLimit.direction, softLimit.threshold, softLimit.enable);
-			talon.setClearPositionOnLimit(softLimit.direction, softLimit.clearOnLimit);
-		}
+//        for (LimitSwitchConfig limitSwitch : config.getLimitSwitches()) {
+//            talon.setLimitSwitchSource(limitSwitch.direction, LimitSwitchSource.FeedbackConnector, limitSwitch.polarity.ctre);
+//            talon.setClearPositionOnLimit(limitSwitch.direction, limitSwitch.clearOnLimit);
+//            talon.enableLimitSwitches();
+//        }
+//
+//        for (SoftLimitConfig softLimit : config.getSoftLimits()) {
+//            talon.setSoftLimit(softLimit.direction, softLimit.threshold, softLimit.enable);
+//            talon.setClearPositionOnLimit(softLimit.direction, softLimit.clearOnLimit);
+//        }
 
 //
 //			for (com.team2813.lib.talon.options.SoftLimit softLimit : field.getAnnotationsByType(com.team2813co.lib.talon.options.SoftLimit.class)) {
@@ -95,82 +93,66 @@ public class MotorConfigs {
 //			}
 
 
-		for (
-				  PIDControllerConfig pidController : config.getPidControllers()) {
-			PIDProfile.Profile slotID = config.getPidControllers().indexOf(pidController) == 0 ?
-					  PIDProfile.Profile.PRIMARY : PIDProfile.Profile.SECONDARY;
-			talon.setPIDF(slotID, pidController.getP(), pidController.getI(),
-					  pidController.getD(), pidController.getF());
-			talon.setMotionMagicCruiseVelocity((int) pidController.getMaxVelocity()); // FIXME: 1/3/2020 Casting because
-			// talon uses encoder ticks
-			// TODO deal with units issue
-			talon.setMotionMagicAcceleration((int) pidController.getMaxAcceleration()); // FIXME see above
-			// TODO: 1/3/2020 figure out min velocity with Talons / remove from PID controller so as not to have that attribute
-		}
+        for (
+                PIDControllerConfig pidController : config.getPidControllers()) {
+            int slotID = config.getPidControllers().indexOf(pidController);
+            talon.setPIDF(slotID, pidController.getP(), pidController.getI(),
+                    pidController.getD(), pidController.getF());
+            talon.setMotionMagicVelocity((int) pidController.getMaxVelocity()); // FIXME: 1/3/2020 Casting because
+            // talon uses encoder ticks
+            // TODO deal with units issue
+            talon.setMotionMagicAcceleration((int) pidController.getMaxAcceleration()); // FIXME see above
+            // TODO: 1/3/2020 figure out min velocity with Talons / remove from PID controller so as not to have that attribute
+        }
 
 
-		Inverted inverted = config.getInverted();
-		if (inverted != null)
-			talon.setInverted(inverted.value);
+        Inverted inverted = config.getInverted();
+        if (inverted != null)
+            talon.setInverted(inverted.value);
 
-		for (FollowerConfig followerConfig : config.getFollowers()) {
-			System.out.println(
-					  "\tCreating follower w/ id of " + followerConfig.getId() + " on " + config.getSubsystemName()
-			);
+        for (FollowerConfig followerConfig : config.getFollowers()) {
+            System.out.println(
+                    "\tCreating follower w/ id of " + followerConfig.getId() + " on " + config.getSubsystemName()
+            );
 
-			if (followerConfig.getMotorControllerType() == MotorControllerType.TALON_SRX) {
-			    talon.set(ControlMode.Follower, followerConfig.getId());
+            TalonWrapper follower = new TalonWrapper(followerConfig.getId(), config.getSubsystemName());
+            follower.follow(talon);
 
-			    TalonSRX follower = new TalonSRX(followerConfig.getId());
-                follower.follow(talon.motorController);
-                if (followerConfig.getInverted() == CANSparkMaxWrapper.InvertType.OPPOSE_LEADER) {
-                    follower.setInverted(InvertType.OpposeMaster);
-                } else {
+            switch (followerConfig.getInverted()) {
+                case FOLLOW_LEADER:
                     follower.setInverted(InvertType.FollowMaster);
-                }
-            } else if (followerConfig.getMotorControllerType() == MotorControllerType.VICTOR_SPX) {
-                VictorSPX follower = new VictorSPX(followerConfig.getId());
-                follower.follow(talon.motorController);
-                if (followerConfig.getInverted() == CANSparkMaxWrapper.InvertType.OPPOSE_LEADER) {
+                    break;
+                case OPPOSE_LEADER:
                     follower.setInverted(InvertType.OpposeMaster);
-                } else {
-                    follower.setInverted(InvertType.FollowMaster);
-                }
+                    break;
             }
-		}
+        }
+        return talon;
+}
 
-		return talon;
-	}
+    private static SparkMaxWrapper initializeSpark(SparkConfig config) {
+        for (Integer id : ids)
+            if (id == config.getDeviceNumber()) {
+                System.err.println("Tried to register spark max with already used id");
+            }
 
-	private static CANSparkMaxWrapper initializeSpark(SparkConfig config) {
-		for (Integer id : ids)
-			if (id == config.getDeviceNumber()) {
-				System.err.println("Tried to register spark max with already used id");
-			}
+        ids.add(config.getDeviceNumber());
 
-		ids.add(config.getDeviceNumber());
+        System.out.println("Configuring " + config.getSubsystemName());
 
-		System.out.println("Configuring " + config.getSubsystemName());
+        SparkMaxWrapper spark = new SparkMaxWrapper(config.getDeviceNumber(), config.getSubsystemName(), config.getType().getValue());
 
-		CANSparkMaxWrapper spark = new CANSparkMaxWrapper(config.getDeviceNumber(), config.getSubsystemName(), config.getType().getValue());
-
-		try {
-			spark.factoryDefault();
-
-//					spark.setPeakCurrentDuration(config.peakCurrentDuration()); // FIXME: 09/20/2019 for the spark
-			spark.setCurrLimit(config.getPeakCurrentLimit());
-
-			spark.enableVoltageCompensation(config.getCompSaturationVoltage());
-
-			spark.setOpenLoopRamp(config.getOpenLoopRampRate());
-			spark.setClosedLoopRamp(config.getClosedLoopRampRate());
-
-			spark.setPeriodicFrame(config.getStatusFrame().getValue(), config.getStatusFramePeriod());
+        spark.setFactoryDefaults();
+//        spark.setPeakCurrentDuration(config.peakCurrentDuration()); // FIXME: 09/20/2019 for the spark
+        spark.setPeakCurrentLimit(config.getPeakCurrentLimit());
+        spark.enableVoltageCompensation(config.getCompSaturationVoltage());
+        spark.setClosedLoopRampRate(config.getClosedLoopRampRate());
+        spark.setPeriodicFrame(config.getStatusFrame().getValue(), config.getStatusFramePeriod());
 
 //					spark.setSmartMotionMaxVelocity(config.motionCruiseVelocity()); // FIXME: 09/20/2019 need to change parameters/types
 //					spark.setSmartMotionMaxAccel(config.motionAcceleration()); // FIXME: 09/20/2019 need to change parameters/types
 
-			spark.setSecondaryCurrLimit(config.getContinuousCurrentLimitAmps());// TODO check this is actually continuous limit
+        spark.setSecondaryCurrentLimit(config.getContinuousCurrentLimitAmps());// TODO check this is actually continuous limit
 
 //			for (com.team2813.lib.sparkMax.options.HardLimitSwitch hardLimitSwitch : field.getAnnotationsByType(com.team2813.lib.sparkMax.options.HardLimitSwitch.class)) {
 //				System.out.println("\tconfiguring hard limit switch " + hardLimitSwitch.direction());
@@ -184,81 +166,75 @@ public class MotorConfigs {
 //			}
 
 
-			for (PIDControllerConfig pidController : config.getPidControllers()) {
-				int slotID = config.getPidControllers().indexOf(pidController);
-				spark.setPIDF(slotID, pidController.getP(), pidController.getI(),
-						  pidController.getD(), pidController.getF());
-				spark.getPIDController().setSmartMotionMaxVelocity(pidController.getMaxVelocity(), slotID);
-				spark.getPIDController().setSmartMotionMaxAccel(pidController.getMaxAcceleration(), slotID);
-				spark.getPIDController().setSmartMotionMinOutputVelocity(pidController.getMinVelocity(), slotID);
-			}
+        for (PIDControllerConfig pidController : config.getPidControllers()) {
+            int slotID = config.getPidControllers().indexOf(pidController);
+            spark.setPIDF(slotID, pidController.getP(), pidController.getI(),
+                    pidController.getD(), pidController.getF());
+            spark.setMotionMagicVelocity(slotID, pidController.getMaxVelocity());
+            spark.setMotionMagicAcceleration(slotID, pidController.getMaxAcceleration());
+            spark.setMotionMagicMinOutputVelocity(slotID, pidController.getMinVelocity());
+        }
 
 
-			Inverted inverted = config.getInverted();
+        Inverted inverted = config.getInverted();
 
-			if (inverted != null)
-				spark.setInverted(inverted == Inverted.INVERTED);
-			else
-				spark.setInverted(com.team2813.lib.sparkMax.CANSparkMaxWrapper.InvertType.NORMAL.inverted);
+        if (inverted != null)
+            spark.setInverted(inverted == Inverted.INVERTED);
+        else
+            spark.setInverted(SparkMaxWrapper.InvertType.NORMAL.inverted);
 
-			for (FollowerConfig followerConfig : config.getFollowers()) {
-				System.out.println(
-						  "\tCreating follower w/ id of " + followerConfig.getId() + " on " + config.getSubsystemName()
-				);
-				CANSparkMaxWrapper sparkMaxFollower = new CANSparkMaxWrapper(followerConfig.getId(), followerConfig.getMotorType().getValue());
-				sparkMaxFollower.follow(spark, followerConfig.getInverted().inverted);
-			}
+        for (FollowerConfig followerConfig : config.getFollowers()) {
+            System.out.println(
+                    "\tCreating follower w/ id of " + followerConfig.getId() + " on " + config.getSubsystemName()
+            );
+            new SparkMaxWrapper(followerConfig.getId(), followerConfig.getType().getValue(), spark);
+        }
 
-			spark.setConfig(config);
-		} catch (SparkMaxException e) {
-			e.printStackTrace();
-		}
+        return spark;
+    }
 
-		return spark;
-	}
+    private static VictorWrapper initializeVictor(VictorConfig config) {
 
-	private static VictorWrapper initializeVictor(VictorConfig config) {
+        for (Integer id : ids)
+            if (id == config.getDeviceNumber()) {
+                System.err.println("Tried to register VICTOR SPX with already used id");
+            }
 
-		for (Integer id : ids)
-			if (id == config.getDeviceNumber()) {
-				System.err.println("Tried to register VICTOR SPX with already used id");
-			}
+        ids.add(config.getDeviceNumber());
 
-		ids.add(config.getDeviceNumber());
+        System.out.println("Configuring " + config.getSubsystemName());
+        // TODO IMPLEMENT OPTIONS
+        return new VictorWrapper(config.getDeviceNumber(), config.getSubsystemName());
+    }
 
-		System.out.println("Configuring " + config.getSubsystemName());
-		// TODO IMPLEMENT OPTIONS
-		return new VictorWrapper(config.getDeviceNumber(), config.getSubsystemName());
-	}
+@SuppressWarnings({"unused", "WeakerAccess"})
+public static class RootConfigs {
+    private Map<String, SparkConfig> sparks = new HashMap<>();
+    private Map<String, TalonConfig> talons = new HashMap<>();
+    private Map<String, VictorConfig> victors = new HashMap<>();
 
-	@SuppressWarnings({"unused", "WeakerAccess"})
-	public static class RootConfigs {
-		private Map<String, SparkConfig> sparks;
-		private Map<String, TalonConfig> talons;
-		private Map<String, VictorConfig> victors;
+    public Map<String, SparkConfig> getSparks() {
+        return sparks;
+    }
 
-		public Map<String, SparkConfig> getSparks() {
-			return sparks;
-		}
+    public void setSparks(Map<String, SparkConfig> sparks) {
+        this.sparks = sparks;
+    }
 
-		public void setSparks(Map<String, SparkConfig> sparks) {
-			this.sparks = sparks;
-		}
+    public Map<String, TalonConfig> getTalons() {
+        return talons;
+    }
 
-		public Map<String, TalonConfig> getTalons() {
-			return talons;
-		}
+    public void setTalons(Map<String, TalonConfig> talons) {
+        this.talons = talons;
+    }
 
-		public void setTalons(Map<String, TalonConfig> talons) {
-			this.talons = talons;
-		}
+    public Map<String, VictorConfig> getVictors() {
+        return victors;
+    }
 
-		public Map<String, VictorConfig> getVictors() {
-			return victors;
-		}
-
-		public void setVictors(Map<String, VictorConfig> victors) {
-			this.victors = victors;
-		}
-	}
+    public void setVictors(Map<String, VictorConfig> victors) {
+        this.victors = victors;
+    }
+}
 }

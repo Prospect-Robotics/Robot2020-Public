@@ -1,17 +1,15 @@
 package com.team2813.frc2020.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.*;
-import com.team2813.lib.ctre.CTREException;
-import com.team2813.lib.ctre.TalonWrapper;
 import com.team2813.lib.drive.ArcadeDrive;
 import com.team2813.lib.drive.CurvatureDrive;
 import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.drive.VelocityDriveTalon;
-import com.team2813.lib.sparkMax.SparkMaxException;
+import com.team2813.lib.motors.TalonWrapper;
+import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -26,8 +24,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
  */
 public class DriveTalon extends Subsystem {
     // Motor Controllers
-    private static final TalonWrapper LEFT = MotorConfigs.talons.get("driveLeft");
-    private static final TalonWrapper RIGHT = MotorConfigs.talons.get("driveRight");
+    private final TalonWrapper LEFT;
+    private final TalonWrapper RIGHT;
     private double right_demand;
     private double left_demand;
     private boolean isBrakeMode;
@@ -68,31 +66,23 @@ public class DriveTalon extends Subsystem {
     private boolean velocityFailed = false;
 
     DriveTalon() {
-        try {
-            ShuffleboardData.driveModeChooser.addOption("Open Loop", DriveMode.OPEN_LOOP);
-            ShuffleboardData.driveModeChooser.addOption("Velocity", DriveMode.VELOCITY);
-            ShuffleboardData.teleopDriveTypeChooser.addOption("Arcade", TeleopDriveType.ARCADE);
-            ShuffleboardData.teleopDriveTypeChooser.addOption("Curvature", TeleopDriveType.CURVATURE);
-            arcade_x = new ArcsinFilter(new DeadzoneFilter(ARCADE_X_AXIS, TELEOP_DEAD_ZONE));
-            arcade_y = new ArcsinFilter(new DeadzoneFilter(ARCADE_Y_AXIS, TELEOP_DEAD_ZONE));
 
-            velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getTalons().get("driveLeft"));
-            velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getTalons().get("driveRight"));
+        ShuffleboardData.driveModeChooser.addOption("Open Loop", DriveMode.OPEN_LOOP);
+        ShuffleboardData.driveModeChooser.addOption("Velocity", DriveMode.VELOCITY);
+        ShuffleboardData.teleopDriveTypeChooser.addOption("Arcade", TeleopDriveType.ARCADE);
+        ShuffleboardData.teleopDriveTypeChooser.addOption("Curvature", TeleopDriveType.CURVATURE);
+        arcade_x = new ArcsinFilter(new DeadzoneFilter(ARCADE_X_AXIS, TELEOP_DEAD_ZONE));
+        arcade_y = new ArcsinFilter(new DeadzoneFilter(ARCADE_Y_AXIS, TELEOP_DEAD_ZONE));
 
-            // arcade_x = new ExpFilter(new DeadzoneFilter(ARCADE_X_AXIS, TELEOP_DEAD_ZONE));
-            // arcade_y = new ExpFilter(new DeadzoneFilter(ARCADE_X_AXIS, TELEOP_DEAD_ZONE));
-            // above are alternatives to the arcsin filter (exp filters)
+        LEFT = MotorConfigs.talons.get("driveLeft");
+        RIGHT = MotorConfigs.talons.get("driveRight");
 
-            // be sure they're inverted correctly
-            // LEFT.setInverted(LEFT.getConfig().getInverted());
-            // RIGHT.setInverted(RIGHT.getConfig().getInverted());
-        } catch (CTREException e) {
-            velocityFailed = true;
-            e.printStackTrace();
-        }
+//        velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getTalons().get("driveLeft"));
+//        velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getTalons().get("driveRight"));
     }
 
     private void teleopDrive(TeleopDriveType driveType) {
+//        System.out.println("Teleop Drive");
         if (driveType == TeleopDriveType.ARCADE) {
             driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());;
         } else {
@@ -100,83 +90,79 @@ public class DriveTalon extends Subsystem {
         }
     }
 
-    public void driveForwardTest(){
+    public void driveForwardTest() {
         driveDemand = new DriveDemand(MAX_VELOCITY, MAX_VELOCITY);
     }
 
-    public void driveBackwardsTest(){
+    public void driveBackwardsTest() {
         driveDemand = new DriveDemand(-MAX_VELOCITY, -MAX_VELOCITY);
     }
 
-    public void driveRightTest(){
+    public void driveRightTest() {
         driveDemand = new DriveDemand(MAX_VELOCITY, -MAX_VELOCITY);
     }
 
-    public void driveLeftTest(){
+    public void driveLeftTest() {
         driveDemand = new DriveDemand(-MAX_VELOCITY, MAX_VELOCITY);
     }
 
     @Override
-    protected void teleopControls_() {
+    public void teleopControls() {
         driveMode = ShuffleboardData.driveModeChooser.getSelected();
+        if (driveMode == null) driveMode = DriveMode.OPEN_LOOP;
+//        System.out.println("Teleop Controls");
         teleopDrive(teleopDriveType);
     }
 
-    @Override
-    protected boolean checkSystem_() throws CTREException {
+    public boolean checkSystem() {
         return false;
     }
 
-    @Override
-    protected void outputTelemetry_() throws CTREException {
-
-    }
-
-
+    public void outputTelemetry() {}
 
     @Override
-    protected void onEnabledStart_(double timestamp) throws CTREException {
-//		setBrakeMode(false);
+    public void onEnabledStart(double timestamp) {
+        // TODO: 01/18/2020 verify true and false
+		setBrakeMode(false);
     }
 
     @Override
-    protected void onEnabledLoop_(double timestamp) throws CTREException {
+    public void onDisabledStart(double timestamp) {
+        setBrakeMode(true);
     }
 
     @Override
-    protected void onEnabledStop_(double timestamp) throws CTREException {
-    }
+    public void onEnabledLoop(double timestamp) {}
 
+    @Override
+    public void onEnabledStop(double timestamp) {}
 
-    protected synchronized void writePeriodicOutputs_() throws CTREException {
+    @Override
+    public synchronized void writePeriodicOutputs() {
         if (!velocityFailed && velocityEnabled) {
             double leftVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getLeft());
             double rightVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getRight());
-            LEFT.set(ControlMode.Velocity, leftVelocity);
-            RIGHT.set(ControlMode.Velocity, rightVelocity);
+            LEFT.set(ControlMode.VELOCITY, leftVelocity);
+            RIGHT.set(ControlMode.VELOCITY, rightVelocity);
         } else {
-            LEFT.set(driveMode.controlMode,driveDemand.getLeft());
-            RIGHT.set(driveMode.controlMode,driveDemand.getRight());
+//            System.out.println(driveDemand.getLeft() + ", " + driveDemand.getRight());
+//            System.out.println(LEFT);
+//            System.out.println(driveMode);
+            LEFT.set(driveMode.controlMode, driveDemand.getLeft());
+            RIGHT.set(driveMode.controlMode, driveDemand.getRight());
         }
     }
 
     public synchronized void setBrakeMode(boolean brake) {
-        if (isBrakeMode != brake) {
-            isBrakeMode = brake;
-            NeutralMode mode = brake ? NeutralMode.Brake : NeutralMode.Coast;
-            try {
-                RIGHT.setNeutralMode(mode);
-                LEFT.setNeutralMode(mode);
-            } catch (CTREException e) {
-                e.printStackTrace();
-            }
-        }
+        NeutralMode mode = brake ? NeutralMode.Brake : NeutralMode.Coast;
+        RIGHT.setNeutralMode(mode);
+        LEFT.setNeutralMode(mode);
     }
 
     public enum DriveMode {
-        OPEN_LOOP(ControlMode.PercentOutput),
-        MOTION_MAGIC(ControlMode.MotionMagic),
-        VELOCITY(ControlMode.Velocity);
+        OPEN_LOOP(ControlMode.DUTY_CYCLE),
+        MOTION_MAGIC(ControlMode.MOTION_MAGIC),
+        VELOCITY(ControlMode.VELOCITY);
 
         ControlMode controlMode;
 
