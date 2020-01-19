@@ -1,8 +1,8 @@
 package com.team2813.frc2020.util;
 
-import com.team2813.frc2020.actions.FunctionAction;
-import com.team2813.frc2020.actions.SeriesAction;
 import com.team2813.frc2020.subsystems.Subsystems;
+import com.team2813.lib.actions.FunctionAction;
+import com.team2813.lib.actions.SeriesAction;
 
 /**
  * Automatic tests all robot functions
