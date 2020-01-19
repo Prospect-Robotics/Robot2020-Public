@@ -1,6 +1,5 @@
 package com.team2813.lib.config;
 
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 
 import java.util.ArrayList;
@@ -9,6 +8,7 @@ import java.util.List;
 public class TalonConfig extends MotorConfig {
 
     private int deviceNumber;
+    private MotorControllerType motorControllerType;
     private int peakCurrentDuration;
     private int peakCurrentLimit;
     private boolean enableVoltageCompensation;
@@ -36,6 +36,14 @@ public class TalonConfig extends MotorConfig {
     @Override
     public void setDeviceNumber(int deviceNumber) {
         this.deviceNumber = deviceNumber;
+    }
+
+    public MotorControllerType getMotorControllerType() {
+        return motorControllerType;
+    }
+
+    public void setMotorControllerType(MotorControllerType motorControllerType) {
+        this.motorControllerType = motorControllerType;
     }
 
     public int getPeakCurrentDuration() {

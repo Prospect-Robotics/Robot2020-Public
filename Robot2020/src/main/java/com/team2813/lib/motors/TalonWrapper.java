@@ -1,82 +1,69 @@
 package com.team2813.lib.motors;
 
 import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
-import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
-import com.ctre.phoenix.motorcontrol.StatusFrame;
+import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.team2813.lib.ctre.CTREException;
 import com.team2813.lib.ctre.TimeoutMode;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.motors.interfaces.LimitDirection;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
-public class TalonWrapper extends TalonSRX implements Motor {
+public abstract class TalonWrapper<Controller extends BaseTalon> implements Motor {
     private TimeoutMode timeoutMode = TimeoutMode.CONSTRUCTING;
     public String subsystemName;
 
-    /**
-     * Constructor for TalonSRX object
-     *
-     * @param deviceNumber CAN Device ID of Device
-     */
-    public TalonWrapper(int deviceNumber, String subsystem) {
-        super(deviceNumber);
-        this.subsystemName = subsystem;
-        System.out.println("Initializing Talon with ID " + deviceNumber);
-    }
+    public Controller controller;
 
     @Override
     public Object set(ControlMode controlMode, double demand) {
-        set(controlMode.getTalonMode(), demand);
+        controller.set(controlMode.getTalonMode(), demand);
         return null;
     }
 
     @Override
     public Object set(ControlMode controlMode, double demand, double feedForward) {
-        set(controlMode.getTalonMode(), demand, DemandType.ArbitraryFeedForward, feedForward);
+        controller.set(controlMode.getTalonMode(), demand, DemandType.ArbitraryFeedForward, feedForward);
         return null;
     }
 
     @Override
     public ErrorCode setPosition(double position) {
-        return setSelectedSensorPosition(0);
+        return controller.setSelectedSensorPosition(0);
     }
 
     @Override
     public double getPosition() {
-        return getSelectedSensorPosition();
+        return controller.getSelectedSensorPosition();
     }
 
     @Override
     public ErrorCode setFactoryDefaults() {
-        return configFactoryDefault();
+        return controller.configFactoryDefault();
     }
 
     @Override
-    public ErrorCode setPeakCurrentLimit(double amps) {
-        return configPeakCurrentLimit((int) amps);
-    }
+    public abstract ErrorCode setPeakCurrentLimit(double amps);
 
     @Override
     public void enableVoltageCompensation() {
-        enableVoltageCompensation(true);
+        controller.enableVoltageCompensation(true);
     }
 
-    @Override
     public ErrorCode setStatusFramePeriod(StatusFrame statusFrame, int period) {
-        return super.setStatusFramePeriod(statusFrame, period);
+        return controller.setStatusFramePeriod(statusFrame, period);
     }
 
     @Override
     public ErrorCode setSoftLimit(LimitDirection direction, double limit, boolean enable) {
         try {
             if (direction == LimitDirection.FORWARD) {
-                CTREException.throwIfNotOk(configForwardSoftLimitThreshold((int) limit));
-                CTREException.throwIfNotOk(configForwardSoftLimitEnable(enable));
+                CTREException.throwIfNotOk(controller.configForwardSoftLimitThreshold((int) limit));
+                CTREException.throwIfNotOk(controller.configForwardSoftLimitEnable(enable));
             } else {
-                CTREException.throwIfNotOk(configReverseSoftLimitThreshold((int) limit));
-                CTREException.throwIfNotOk(configReverseSoftLimitEnable(enable));
+                CTREException.throwIfNotOk(controller.configReverseSoftLimitThreshold((int) limit));
+                CTREException.throwIfNotOk(controller.configReverseSoftLimitEnable(enable));
             }
             return ErrorCode.OK;
         } catch (CTREException e) {
@@ -91,10 +78,10 @@ public class TalonWrapper extends TalonSRX implements Motor {
 
     @Override
     public void setPIDF(int slot, double p, double i, double d, double f) {
-        config_kP(slot, p);
-        config_kP(slot, i);
-        config_kP(slot, d);
-        config_kF(slot, f);
+        controller.config_kP(slot, p);
+        controller.config_kP(slot, i);
+        controller.config_kP(slot, d);
+        controller.config_kF(slot, f);
     }
 
     @Override
@@ -114,12 +101,12 @@ public class TalonWrapper extends TalonSRX implements Motor {
 
     @Override
     public ErrorCode setMotionMagicVelocity(double velocity) {
-        return configMotionCruiseVelocity((int) velocity);
+        return controller.configMotionCruiseVelocity((int) velocity);
     }
 
     @Override
     public ErrorCode setMotionMagicAcceleration(double acceleration) {
-        return configMotionAcceleration((int) acceleration);
+        return controller.configMotionAcceleration((int) acceleration);
     }
 
     @Override
@@ -127,16 +114,14 @@ public class TalonWrapper extends TalonSRX implements Motor {
         return subsystemName;
     }
 
-    public Object setContinuousCurrentLimit(int limitAmps) {
-        return super.configContinuousCurrentLimit(limitAmps);
-    }
+    public abstract Object setCurrentLimit(int limitAmps);
 
     public void enableLimitSwitches() {
-        overrideLimitSwitchesEnable(true);
+        controller.overrideLimitSwitchesEnable(true);
     }
 
     public Object setClosedLoopRamp(double rate) {
-        return super.configClosedloopRamp(rate);
+        return controller.configClosedloopRamp(rate);
     }
 
     /**
@@ -151,19 +136,35 @@ public class TalonWrapper extends TalonSRX implements Motor {
     }
 
     public void setClearPositionOnLimitF(boolean enable) {
-        configClearPositionOnLimitF(enable, timeoutMode.valueMs);
+        controller.configClearPositionOnLimitF(enable, timeoutMode.valueMs);
     }
 
     public void setClearPositionOnLimitR(boolean enable) {
-        configClearPositionOnLimitF(enable, timeoutMode.valueMs);
+        controller.configClearPositionOnLimitF(enable, timeoutMode.valueMs);
     }
 
     public void setLimitSwitchSource(LimitDirection direction, LimitSwitchSource type, LimitSwitchNormal normalOpenOrClose) {
         if (direction == LimitDirection.FORWARD) {
-            configForwardLimitSwitchSource(type, normalOpenOrClose);
+            controller.configForwardLimitSwitchSource(type, normalOpenOrClose);
         } else if (direction == LimitDirection.REVERSE) {
-            configReverseLimitSwitchSource(type, normalOpenOrClose);
+            controller.configReverseLimitSwitchSource(type, normalOpenOrClose);
         }
+    }
+
+    public void setNeutralMode(NeutralMode mode) {
+        controller.setNeutralMode(mode);
+    }
+
+    public void setInverted(boolean inverted) {
+        controller.setInverted(inverted);
+    }
+
+    public void setInverted(InvertType invertType) {
+        controller.setInverted(invertType);
+    }
+
+    public void follow(TalonWrapper master) {
+        controller.follow(master.controller);
     }
 
     public enum PIDProfile {

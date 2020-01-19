@@ -2,6 +2,7 @@
 talons:
   driveLeft: # Talon
     deviceNumber: 1
+    motorControllerType: TALON_FX
     type: BRUSHLESS
     subsystemName: Drive
     peakCurrentDuration: 0
@@ -32,6 +33,7 @@ talons:
         allowableClosedLoopError: 0
   driveRight: #Talon
     deviceNumber: 3
+    motorControllerType: TALON_FX
     type: BRUSHLESS
     subsystemName: Drive
     peakCurrentDuration: 0

@@ -1,16 +1,11 @@
 package com.team2813.lib.config;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.revrobotics.SparkMax;
-import com.team2813.lib.motors.VictorWrapper;
-import com.team2813.lib.motors.SparkMaxWrapper;
-import com.team2813.lib.motors.TalonWrapper;
+import com.team2813.lib.motors.*;
 import edu.wpi.first.wpilibj.Filesystem;
 
 import java.io.File;
@@ -54,7 +49,13 @@ public class MotorConfigs {
 
         System.out.println("Configuring" + config.getSubsystemName());
 
-        TalonWrapper talon = new TalonWrapper(config.getDeviceNumber(), config.getSubsystemName());
+        TalonWrapper talon;
+
+        if (config.getMotorControllerType() == MotorControllerType.TALON_FX) {
+            talon = new TalonFXWrapper(config.getDeviceNumber(), config.getSubsystemName());
+        } else {
+            talon = new TalonSRXWrapper(config.getDeviceNumber(), config.getSubsystemName());
+        }
 
         talon.setFactoryDefaults();
 
@@ -67,7 +68,7 @@ public class MotorConfigs {
 //					talon.setSmartMotionMaxVelocity(config.motionCruiseVelocity()); // FIXME: 09/20/2019 need to change parameters/types
 //					talon.setSmartMotionMaxAccel(config.motionAcceleration()); // FIXME: 09/20/2019 need to change parameters/types
 
-        talon.setContinuousCurrentLimit(config.getContinuousCurrentLimitAmps());// TODO check this is actually continuous limit
+        talon.setCurrentLimit(config.getContinuousCurrentLimitAmps());// TODO check this is actually continuous limit
 
 //			for (com.team2813.lib.talon.options.HardLimitSwitch hardLimitSwitch : field.getAnnotationsByType(com.team2813.lib.talon.options.HardLimitSwitch.class)) {
 //				System.out.println("\tconfiguring hard limit switch " + hardLimitSwitch.direction());
@@ -115,7 +116,14 @@ public class MotorConfigs {
                     "\tCreating follower w/ id of " + followerConfig.getId() + " on " + config.getSubsystemName()
             );
 
-            TalonWrapper follower = new TalonWrapper(followerConfig.getId(), config.getSubsystemName());
+            TalonWrapper follower;
+
+            if (followerConfig.getMotorControllerType() == MotorControllerType.TALON_FX) {
+                follower = new TalonFXWrapper(followerConfig.getId(), config.getSubsystemName());
+            } else {
+                follower = new TalonSRXWrapper(followerConfig.getId(), config.getSubsystemName());
+            }
+
             follower.follow(talon);
 
             switch (followerConfig.getInverted()) {
