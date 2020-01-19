@@ -1,11 +1,9 @@
 package com.team2813.frc2020;
 
-import com.team2813.frc2020.actions.Action;
-import com.team2813.frc2020.actions.SeriesAction;
 import com.team2813.frc2020.subsystems.Subsystems;
+import com.team2813.lib.actions.SeriesAction;
 import com.team2813.lib.auto.GeneratedTrajectory;
 import com.team2813.lib.auto.RamseteTrajectory;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
 
 import java.util.List;
 
