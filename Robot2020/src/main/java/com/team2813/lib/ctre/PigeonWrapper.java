@@ -7,8 +7,8 @@ import com.team2813.lib.motors.TalonWrapper;
 
 public class PigeonWrapper {
 
-	private String subsystemName;
-	private PigeonIMU pigeon;
+	String subsystemName;
+	PigeonIMU pigeon;
 
 	public PigeonWrapper(int deviceNumber, String subsystemName) {
 		pigeon = new PigeonIMU(deviceNumber);
@@ -20,11 +20,259 @@ public class PigeonWrapper {
 		subsystemName = talon.subsystemName;
 	}
 
-
 	public PigeonIMU getPigeon() {
 		return pigeon;
 	}
 
+	/**
+	 * Get the absolute compass heading.
+	 * @return compass heading [0,360) degrees.
+	 */
+	public double getAbsoluteCompassHeading() throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.getAbsoluteCompassHeading());
+	}
+
+	/**
+	 * Get the continuous compass heading.
+	 * @return continuous compass heading [-23040, 23040) degrees. Use
+	 *         SetCompassHeading to modify the wrap-around portion.
+	 */
+	public double getCompassHeading() throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.getCompassHeading());
+	}
+
+	/**
+	 * Gets the compass' measured magnetic field strength.
+	 * @return field strength in Microteslas (uT).
+	 */
+	public double getCompassFieldStrength() throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.getCompassFieldStrength());
+	}
+
+	/**
+	 * Gets the temperature of the pigeon.
+	 *
+	 * @return Temperature in ('C)
+	 */
+	public double getTemp() throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.getTemp());
+	}
+
+	/**
+	 * Gets the current Pigeon state
+	 *
+	 * @return PigeonState enum
+	 */
+	public PigeonIMU.PigeonState getState() throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.getState());
+	}
+
+	/**
+	 * Gets the current Pigeon uptime.
+	 *
+	 * @return How long has Pigeon been running in whole seconds. Value caps at
+	 *         255.
+	 */
+	public int getUpTime() throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.getUpTime());
+	}
+
+	/**
+	 * Gets the Fused Heading
+	 *
+	 * @return The fused heading in degrees.
+	 */
+	public double getFusedHeading() throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.getFusedHeading());
+	}
+
+	/**
+	 * Gets the firmware version of the device.
+	 *
+	 * @return param holds the firmware version of the device. Device must be powered
+	 * cycled at least once.
+	 */
+	public int getFirmwareVersion() throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.getFirmwareVersion());
+	}
+
+	/**
+	 * @return true iff a reset has occurred since last call.
+	 */
+	public boolean hasResetOccurred() throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.hasResetOccurred());
+	}
+
+	/**
+	 * Gets the value of a custom parameter. This is for arbitrary use.
+	 *
+	 * Sometimes it is necessary to save calibration/declination/offset
+	 * information in the device. Particularly if the
+	 * device is part of a subsystem that can be replaced.
+	 *
+	 * @param paramIndex
+	 *            Index of custom parameter. [0-1]
+	 * @param timoutMs
+	 *            Timeout value in ms. If nonzero, function will wait for
+	 *            config success and report an error if it times out.
+	 *            If zero, no blocking or checking is performed.
+	 * @return Value of the custom param.
+	 */
+	public int configGetCustomParam(int paramIndex, int timoutMs) throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.configGetCustomParam(paramIndex, timoutMs));
+	}
+
+	/**
+	 * Gets the value of a custom parameter. This is for arbitrary use.
+	 *
+	 * Sometimes it is necessary to save calibration/declination/offset
+	 * information in the device. Particularly if the
+	 * device is part of a subsystem that can be replaced.
+	 *
+	 * @param paramIndex
+	 *            Index of custom parameter. [0-1]
+	 * @return Value of the custom param.
+	 */
+	public int configGetCustomParam(int paramIndex) throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.configGetCustomParam(paramIndex));
+	}
+
+	/**
+	 * Gets a parameter. Generally this is not used.
+	 * This can be utilized in
+	 * - Using new features without updating API installation.
+	 * - Errata workarounds to circumvent API implementation.
+	 * - Allows for rapid testing / unit testing of firmware.
+	 *
+	 * @param param
+	 *            Parameter enumeration.
+	 * @param ordinal
+	 *            Ordinal of parameter.
+	 * @param timeoutMs
+	 *            Timeout value in ms. If nonzero, function will wait for
+	 *            config success and report an error if it times out.
+	 *            If zero, no blocking or checking is performed.
+	 * @return Value of parameter.
+	 */
+	public double configGetParameter(ParamEnum param, int ordinal, int timeoutMs) throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.configGetParameter(param, ordinal, timeoutMs));
+	}
+
+	/**
+	 * Gets a parameter. Generally this is not used.
+	 * This can be utilized in
+	 * - Using new features without updating API installation.
+	 * - Errata workarounds to circumvent API implementation.
+	 * - Allows for rapid testing / unit testing of firmware.
+	 *
+	 * @param param
+	 *            Parameter enumeration.
+	 * @param ordinal
+	 *            Ordinal of parameter.
+	 * @return Value of parameter.
+	 */
+	public double configGetParameter(ParamEnum param, int ordinal ) throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.configGetParameter(param, ordinal));
+	}
+
+	/**
+	 * Gets a parameter.
+	 *
+	 * @param param
+	 *            Parameter enumeration.
+	 * @param ordinal
+	 *            Ordinal of parameter.
+	 * @param timeoutMs
+	 *            Timeout value in ms. If nonzero, function will wait for
+	 *            config success and report an error if it times out.
+	 *            If zero, no blocking or checking is performed.
+	 * @return Value of parameter.
+	 */
+	public double configGetParameter(int param, int ordinal, int timeoutMs) throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.configGetParameter(param, ordinal, timeoutMs));
+	}
+
+	/**
+	 * Gets a parameter.
+	 *
+	 * @param param
+	 *            Parameter enumeration.
+	 * @param ordinal
+	 *            Ordinal of parameter.
+	 * @return Value of parameter.
+	 */
+	public double configGetParameter(int param, int ordinal) throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.configGetParameter(param, ordinal));
+	}
+
+	/**
+	 * Gets the period of the given status frame.
+	 *
+	 * @param frame
+	 *            Frame to get the period of.
+	 * @param timeoutMs
+	 *            Timeout value in ms. If nonzero, function will wait for
+	 *            config success and report an error if it times out.
+	 *            If zero, no blocking or checking is performed.
+	 * @return Period of the given status frame.
+	 */
+	public int getStatusFramePeriod(PigeonIMU_StatusFrame frame, int timeoutMs) throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.getStatusFramePeriod(frame, timeoutMs));
+	}
+
+	/**
+	 * Gets the period of the given status frame.
+	 *
+	 * @param frame
+	 *            Frame to get the period of.
+	 * @return Period of the given status frame.
+	 */
+	public int getStatusFramePeriod(PigeonIMU_StatusFrame frame) throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.getStatusFramePeriod(frame));
+	}
+
+	/**
+	 * @return The Device Number
+	 */
+	public int getDeviceID() throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.getDeviceID());
+	}
+
+	/**
+	 * Gets all persistant settings.
+	 *
+	 * @param allConfigs        Object with all of the persistant settings
+	 * @param timeoutMs
+	 *              Timeout value in ms. If nonzero, function will wait for
+	 *              config success and report an error if it times out.
+	 *              If zero, no blocking or checking is performed.
+	 */
+	public void getAllConfigs(PigeonIMUConfiguration allConfigs, int timeoutMs) throws CTREException {
+		pigeon.getAllConfigs(allConfigs, timeoutMs);
+		throwLastError();
+	}
+
+	/**
+	 * Gets all persistant settings (overloaded so timeoutMs is 50 ms).
+	 *
+	 * @param allConfigs        Object with all of the persistant settings
+	 */
+	public void getAllConfigs(PigeonIMUConfiguration allConfigs) throws CTREException {
+		pigeon.getAllConfigs(allConfigs);
+		throwLastError();
+	}
+
+
+	/**
+	 * Get the current Fusion Status (including fused heading)
+	 *
+	 * @param toFill 	object reference to fill with fusion status flags.
+	 *					Caller may pass null if flags are not needed.
+	 * @return The fused heading in degrees.
+	 */
+	public double getFusedHeading(PigeonIMU.FusionStatus toFill) throws CTREException {
+		return throwIfNotOkElseReturn(pigeon.getFusedHeading(toFill));
+	}
 
 	protected void throwIfNotOk(ErrorCode error) throws CTREException {
 		CTREException.throwIfNotOk(subsystemName, error);
