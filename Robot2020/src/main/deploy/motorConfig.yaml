@@ -3,7 +3,7 @@ talons:
   driveLeft: # Talon
     deviceNumber: 3
     type: BRUSHLESS
-    subsystemName: Drive
+    subsystemName: TalonDrive
     peakCurrentDuration: 0
     peakCurrentLimit: 0
     enableVoltageCompensation: true
@@ -33,7 +33,7 @@ talons:
   driveRight: #Talon
     deviceNumber: 1
     type: BRUSHLESS
-    subsystemName: Drive
+    subsystemName: TalonDrive
     peakCurrentDuration: 0
     peakCurrentLimit: 0
     enableVoltageCompensation: true

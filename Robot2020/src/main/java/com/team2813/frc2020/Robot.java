@@ -8,8 +8,6 @@
 package com.team2813.frc2020;
 
 import com.ctre.phoenix.CANifier;
-import com.team2813.frc2020.loops.Loop;
-import com.team2813.frc2020.subsystems.Drive;
 import com.team2813.frc2020.subsystems.Subsystem;
 import com.team2813.frc2020.subsystems.Subsystems;
 import com.team2813.lib.config.MotorConfigs;
@@ -18,7 +16,6 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.io.IOException;

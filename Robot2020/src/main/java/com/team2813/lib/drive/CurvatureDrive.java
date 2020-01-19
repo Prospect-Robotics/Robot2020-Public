@@ -1,7 +1,7 @@
 package com.team2813.lib.drive;
 
 /**
- * Curvature Drive: use one axis for forward, another
+ * Curvature TalonDrive: use one axis for forward, another
  * for reverse, and a third for steering, with a pivot
  * button
  */

@@ -24,14 +24,14 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 /**
- * The Drive subsystem is the main subsystem for
+ * The TalonDrive subsystem is the main subsystem for
  * the drive train, and handles both driver control
  * and autonomous path control.
  *
  * @author Grady Whelan
  * @author Samuel Li
  */
-public class Drive extends Subsystem {
+public class TalonDrive extends Subsystem {
 
     // Physical Constants
     private static final double WHEEL_DIAMETER_INCHES = 1.0; // TODO: 10/05/2019 correct number
@@ -74,7 +74,7 @@ public class Drive extends Subsystem {
 
     // Gyro
     private final int pigeonID = 0;
-    private PigeonWrapper pigeonWrapper = new PigeonWrapper(pigeonID, "Drive");
+    private PigeonWrapper pigeonWrapper = new PigeonWrapper(pigeonID, "TalonDrive");
 
     // Odometry
     //private static Odometry odometry;
@@ -127,7 +127,7 @@ public class Drive extends Subsystem {
     private boolean velocityEnabled = velocityEntry.getNumber(0).intValue() == 1;
     private boolean velocityFailed = false;
 
-    Drive() {
+    TalonDrive() {
         try {
             velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getSparks().get("driveLeft"));
             velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getSparks().get("driveRight"));

@@ -1,7 +1,7 @@
 package com.team2813.lib.drive;
 
 /**
- * Arcade Drive: determine steer using x, y, and a deadzone
+ * Arcade TalonDrive: determine steer using x, y, and a deadzone
  */
 public class ArcadeDrive {
     private double deadzone;
