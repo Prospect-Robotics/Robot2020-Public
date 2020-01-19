@@ -8,6 +8,7 @@ import com.team2813.lib.drive.ArcadeDrive;
 import com.team2813.lib.drive.CurvatureDrive;
 import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.drive.VelocityDriveTalon;
+import com.team2813.lib.motors.TalonFXWrapper;
 import com.team2813.lib.motors.TalonWrapper;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.util.LimelightValues;
@@ -24,8 +25,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
  */
 public class DriveTalon extends Subsystem {
     // Motor Controllers
-    private final TalonWrapper LEFT;
-    private final TalonWrapper RIGHT;
+    private final TalonFXWrapper LEFT;
+    private final TalonFXWrapper RIGHT;
     private double right_demand;
     private double left_demand;
     private boolean isBrakeMode;
@@ -74,8 +75,8 @@ public class DriveTalon extends Subsystem {
         arcade_x = new ArcsinFilter(new DeadzoneFilter(ARCADE_X_AXIS, TELEOP_DEAD_ZONE));
         arcade_y = new ArcsinFilter(new DeadzoneFilter(ARCADE_Y_AXIS, TELEOP_DEAD_ZONE));
 
-        LEFT = MotorConfigs.talons.get("driveLeft");
-        RIGHT = MotorConfigs.talons.get("driveRight");
+        LEFT = (TalonFXWrapper) MotorConfigs.talons.get("driveLeft");
+        RIGHT = (TalonFXWrapper) MotorConfigs.talons.get("driveRight");
 
 //        velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getTalons().get("driveLeft"));
 //        velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getTalons().get("driveRight"));
