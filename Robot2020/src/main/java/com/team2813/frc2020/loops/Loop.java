@@ -19,7 +19,7 @@ public interface Loop {
 	 *
 	 * @param timestamp timestamp in seconds
 	 */
-	default void onEnabledLoop(double timestamp) {}
+	default void onEnabledLoop_(double timestamp) {}
 
 	/**
 	 * Code to run once when robot is disabled

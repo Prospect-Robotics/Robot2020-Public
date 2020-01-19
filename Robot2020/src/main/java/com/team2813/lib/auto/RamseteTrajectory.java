@@ -25,6 +25,32 @@ public class RamseteTrajectory {
         }
     }
 
+    private Trajectory pathweaverToWPI(GeneratedTrajectory generatedTrajectory) {
+        List<Trajectory.State> states = new ArrayList<Trajectory.State>();
+//        jaci.pathfinder.Trajectory trajectory = generatedTrajectory.getTrajectory();
+//        for (int i = 0; i < trajectory.length(); i++) {
+//            double time = i * .02; // milliseconds
+//            jaci.pathfinder.Trajectory.Segment segment = trajectory.get(i);
+//
+//            // find curvature
+//            double curvature;
+//            if (i == 0)
+//                curvature = calculateCurvature(segment, trajectory.get(i + 1), trajectory.get(i + 2));
+//            else if (i == trajectory.length() - 1)
+//                curvature = calculateCurvature(trajectory.get(i - 2), trajectory.get(i - 1), segment);
+//            else
+//                curvature = calculateCurvature(trajectory.get(i - 1), segment, trajectory.get(i + 1));
+//
+//            states.add(new Trajectory.State(time,
+//                    segment.velocity,
+//                    segment.acceleration,
+//                    new Pose2d(segment.x, segment.y, Rotation2d.fromDegrees(Math.toDegrees(segment.heading))),
+//                    curvature));
+//        }
+//
+        return new Trajectory(states);
+    }
+
     public TrajectorySample sample(double dt) {
         double time = 0;
         for (int i = 0; i < trajectories.size(); i++) {

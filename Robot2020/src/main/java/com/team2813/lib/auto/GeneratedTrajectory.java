@@ -4,10 +4,9 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+
 
 public class GeneratedTrajectory {
     private boolean reversed;

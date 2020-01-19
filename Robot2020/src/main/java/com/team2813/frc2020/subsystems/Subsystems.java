@@ -16,7 +16,7 @@ public class Subsystems {
 
 	public static List<Subsystem> allSubsystems;
 
-	public static Drive DRIVE;
+	public static DriveTalon DRIVE;
 	public static final Looper LOOPER = new Looper(RobotMode.DISABLED); //FIXME put looper somewhere else
 
 	private static class SmartDashboardLoop implements Loop{
@@ -32,10 +32,23 @@ public class Subsystems {
 	};
 
 	public static void initializeSubsystems() {
-		DRIVE = new Drive();
+		DRIVE = new DriveTalon();
 		allSubsystems = Collections.unmodifiableList(Arrays.asList(
 				DRIVE
 		));
 		LOOPER.addLoop(new SmartDashboardLoop());
+	}
+
+	/**
+	 * Calls each subsystem's teleopControls()
+	 */
+	public static void teleopControls() {
+		for (Subsystem subsystem : allSubsystems)
+			subsystem.teleopControls();
+	}
+
+	public static void outputTelemetry() {
+		for (Subsystem subsystem : allSubsystems)
+			subsystem.outputTelemetry();
 	}
 }

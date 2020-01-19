@@ -37,4 +37,8 @@ public class SparkMaxException extends Exception {
 			throw new SparkMaxException(canError);
 		}
 	}
+
+	public CANError getError() {
+		return canError;
+	}
 }
