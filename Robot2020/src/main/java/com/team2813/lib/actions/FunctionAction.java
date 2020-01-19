@@ -1,10 +1,10 @@
-package com.team2813.frc2020.actions;
+package com.team2813.lib.actions;
 
 /**
  * Takes a Runnable and executes it
  * @author Adrian Guerra
  */
-public class FunctionAction implements Action {
+public class FunctionAction extends Action {
 
 	private final Runnable function;
 	private final boolean removeOnDisabled;
@@ -25,7 +25,12 @@ public class FunctionAction implements Action {
 	}
 
 	@Override
-	public boolean update(double timestamp) {
+	void execute(double timestamp) {
+
+	}
+
+	@Override
+	public boolean isFinished(double timestamp) {
 		return true;
 	}
 

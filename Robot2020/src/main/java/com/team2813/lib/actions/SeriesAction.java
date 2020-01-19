@@ -1,4 +1,4 @@
-package com.team2813.frc2020.actions;
+package com.team2813.lib.actions;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -9,7 +9,7 @@ import java.util.Queue;
  * @author Adrian Guerra
  * @author Grady Whelan
  */
-public class SeriesAction implements Action {
+public class SeriesAction extends Action {
 
 	private Queue<Action> actions;
 
@@ -38,15 +38,19 @@ public class SeriesAction implements Action {
 	}
 
 	@Override
-	public boolean update(double timestamp) {
-		if (currentAction == null) return true;
-		if (currentAction.update(timestamp)) {
+	void execute(double timestamp) {
+		currentAction.execute(timestamp);
+		if (currentAction.isFinished(timestamp)) {
 			currentAction.end(timestamp);
 			currentAction = actions.poll();
-			if (currentAction == null) return true;
+			if (currentAction == null) return;
 			currentAction.start(timestamp);
 		}
-		return false;
+	}
+
+	@Override
+	public boolean isFinished(double timestamp) {
+		return currentAction == null;
 	}
 
 	@Override
