@@ -21,6 +21,9 @@ public class PigeonWrapper {
 	}
 
 
+	public PigeonIMU getPigeon() {
+		return pigeon;
+	}
 
 
 	protected void throwIfNotOk(ErrorCode error) throws CTREException {

@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.*;
+import com.team2813.lib.ctre.PigeonWrapper;
 import com.team2813.lib.drive.ArcadeDrive;
 import com.team2813.lib.drive.CurvatureDrive;
 import com.team2813.lib.drive.DriveDemand;
@@ -12,6 +13,9 @@ import com.team2813.lib.motors.TalonWrapper;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 /**
@@ -23,6 +27,11 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
  * @author Samuel Li
  */
 public class DriveTalon extends Subsystem {
+
+    // Physical Constants
+    private static final double WHEEL_DIAMETER_INCHES = 6.0;
+    private static final double WHEEL_CIRCUMFERENCE_INCHES = Math.PI * WHEEL_DIAMETER_INCHES;
+
     // Motor Controllers
     private final TalonWrapper LEFT;
     private final TalonWrapper RIGHT;
@@ -42,9 +51,30 @@ public class DriveTalon extends Subsystem {
     private ControlInput arcade_x;
     private ControlInput arcade_y;
 
+    // Encoders
+    private static final double ENCODER_TICKS_PER_REVOLUTION = 2048;
+    private static final double ENCODER_TICKS_PER_INCH = ENCODER_TICKS_PER_REVOLUTION / WHEEL_CIRCUMFERENCE_INCHES;
+    private static final double ENCODER_TICKS_PER_FOOT = ENCODER_TICKS_PER_INCH / 12;
+
     // Mode
     private static DriveMode driveMode = DriveMode.OPEN_LOOP;
     private static TeleopDriveType teleopDriveType = TeleopDriveType.CURVATURE;
+
+    // Gyro
+    private final int pigeonID = 0;
+    private PigeonWrapper pigeonWrapper = new PigeonWrapper(pigeonID, "Drive");
+
+    // Odometry
+    private static DifferentialDriveOdometry odometry;
+    private Pose2d robotPosition;
+
+    public static DifferentialDriveOdometry getOdometry() {
+        return odometry;
+    }
+
+    public void initializeOdometry() {
+        odometry = new DifferentialDriveOdometry(new Rotation2d(pigeonWrapper.getPigeon().getCompassHeading()));
+    }
 
     public enum TeleopDriveType {
         ARCADE, CURVATURE
@@ -151,6 +181,11 @@ public class DriveTalon extends Subsystem {
             LEFT.set(driveMode.controlMode, driveDemand.getLeft());
             RIGHT.set(driveMode.controlMode, driveDemand.getRight());
         }
+    }
+
+    @Override
+    protected void readPeriodicInputs() {
+        robotPosition = odometry.update(Rotation2d.fromDegrees(-pigeonWrapper.getPigeon().getCompassHeading()), LEFT.getSelectedSensorPosition(), RIGHT.getSelectedSensorPosition());
     }
 
     public synchronized void setBrakeMode(boolean brake) {
