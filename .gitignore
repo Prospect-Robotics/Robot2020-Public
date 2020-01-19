@@ -1,4 +1,3 @@
-
 Robot2020/.gradle/5.2.1/executionHistory/executionHistory.bin
 Robot2020/.gradle/5.2.1/executionHistory/executionHistory.lock
 Robot2020/.gradle/5.2.1/fileChanges/last-build.bin
@@ -25,3 +24,6 @@ Robot2020/.idea/jarRepositories.xml
 Robot2020/.idea/$PRODUCT_WORKSPACE_FILE$
 .idea/
 Robot2020/out/production/classes/META-INF/Robot2020_main.kotlin_module
+/.gradle
+/libraries
+/.vscode

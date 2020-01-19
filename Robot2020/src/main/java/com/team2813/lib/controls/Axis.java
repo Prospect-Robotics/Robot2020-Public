@@ -7,7 +7,7 @@ package com.team2813.lib.controls;
  *
  * @author Grady Whelan
  */
-public class Axis {
+public class Axis implements ControlInput {
 	private Controller controller;
 	private int axisNumber;
 

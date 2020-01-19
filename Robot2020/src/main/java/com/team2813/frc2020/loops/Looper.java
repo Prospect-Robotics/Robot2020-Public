@@ -1,7 +1,7 @@
 package com.team2813.frc2020.loops;
 
 import com.team2813.frc2020.Robot.RobotMode;
-import com.team2813.frc2020.actions.Action;
+import com.team2813.lib.actions.Action;
 import com.team2813.lib.util.CrashTrackingRunnable;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
@@ -42,21 +42,14 @@ public class Looper {
 				if (running) {
 					double now = Timer.getFPGATimestamp();
 
-					// remove actions that have finished
-					actions.removeIf(action -> {
-						if(action.update(now)){
-							action.end(now);
-							return true;
-						}
-						else return false;
-					});
+					Action.updateActions(actions, mode, now);
 
 					// Go thru each of the subsystem loops and run appropriate
 					// enabled or disabled loop
 					for (Loop loop : loops) {
 						double start = Timer.getFPGATimestamp();
 						loop.onAnyLoop(timestamp);
-						if(mode == RobotMode.ENABLED) loop.onEnabledLoop(timestamp);
+						if(mode == RobotMode.ENABLED) loop.onEnabledLoop_(timestamp);
 						else if(mode == RobotMode.DISABLED) loop.onDisabledLoop(timestamp);
 						double dt = Timer.getFPGATimestamp()-start;
 						if(dt >= worstTime) {
@@ -89,7 +82,6 @@ public class Looper {
 		synchronized (taskRunningLock) {
 			timestamp = Timer.getFPGATimestamp();
 			// some actions should not continue after disabling. Remove these.
-			if (newMode == RobotMode.DISABLED) actions.removeIf(Action::getRemoveOnDisabled);
 			// Run the stop method of each loop.
 			for (Loop loop : loops) {
 				if(mode == RobotMode.ENABLED) loop.onEnabledStop(timestamp);

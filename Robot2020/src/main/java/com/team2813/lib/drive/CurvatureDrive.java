@@ -1,7 +1,7 @@
 package com.team2813.lib.drive;
 
 /**
- * Curvature TalonDrive: use one axis for forward, another
+ * Curvature Drive: use one axis for forward, another
  * for reverse, and a third for steering, with a pivot
  * button
  */
@@ -9,7 +9,7 @@ public class CurvatureDrive {
     private ArcadeDrive arcadeDrive;
 
     public CurvatureDrive(double deadzone) {
-        arcadeDrive = new ArcadeDrive(deadzone);
+        arcadeDrive = new ArcadeDrive();
     }
 
     public DriveDemand getDemand(double throttleForward, double throttleReverse, double steerX, boolean pivot) {

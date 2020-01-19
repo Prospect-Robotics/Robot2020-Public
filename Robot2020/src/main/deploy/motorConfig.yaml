@@ -1,14 +1,14 @@
 ---
 talons:
   driveLeft: # Talon
-    deviceNumber: 3
+    deviceNumber: 1
     type: BRUSHLESS
-    subsystemName: TalonDrive
+    subsystemName: Drive
     peakCurrentDuration: 0
     peakCurrentLimit: 0
     enableVoltageCompensation: true
     compSaturationVoltage: 12
-    continuousCurrentLimitAmps: 30
+    continuousCurrentLimitAmps: 40
     motionAcceleration: 0
     motionCruiseVelocity: 0
     closedLoopRampRate: 0
@@ -16,7 +16,7 @@ talons:
     invertSensorPhase: true
     statusFrame: STATUS_2
     followers:
-      - id: 4
+      - id: 2
         type: BRUSHLESS
         inverted: FOLLOW_LEADER
     inverted: NONINVERTED
@@ -31,14 +31,14 @@ talons:
         integralZone: 0
         allowableClosedLoopError: 0
   driveRight: #Talon
-    deviceNumber: 1
+    deviceNumber: 3
     type: BRUSHLESS
-    subsystemName: TalonDrive
+    subsystemName: Drive
     peakCurrentDuration: 0
     peakCurrentLimit: 0
     enableVoltageCompensation: true
     compSaturationVoltage: 12
-    continuousCurrentLimitAmps: 30
+    continuousCurrentLimitAmps: 40
     motionAcceleration: 0
     motionCruiseVelocity: 0
     closedLoopRampRate: 0
@@ -46,7 +46,7 @@ talons:
     invertSensorPhase: true
     statusFrame: STATUS_2
     followers:
-      - id: 2
+      - id: 4
         type: BRUSHLESS
         inverted: FOLLOW_LEADER
     inverted: INVERTED
@@ -60,22 +60,22 @@ talons:
         maxIntegralAccumulator: 0
         integralZone: 0
         allowableClosedLoopError: 0
-  shooter:
-    deviceNumber: 15
-    type: BRUSHED
-    subsystemName: Shooter
-    peakCurrentDuration: 0
-      peakCurrentLimit: 0
-      enableVoltageCompensation: true
-      compSaturationVoltage: 12
-      continuousCurrentLimitAmps: 30
-      motionAcceleration: 0
-      motionCruiseVelocity: 0
-      closedLoopRampRate: 0
-      openLoopRampRate: 0
-      invertSensorPhase: true
-      statusFrame: STATUS_2
-      inverted: NONINVERTED
+#  shooter:
+#    deviceNumber: 15
+#    type: BRUSHED
+#    subsystemName: Shooter
+#    peakCurrentDuration: 0
+#      peakCurrentLimit: 0
+#      enableVoltageCompensation: true
+#      compSaturationVoltage: 12
+#      continuousCurrentLimitAmps: 30
+#      motionAcceleration: 0
+#      motionCruiseVelocity: 0
+#      closedLoopRampRate: 0
+#      openLoopRampRate: 0
+#      invertSensorPhase: true
+#      statusFrame: STATUS_2
+#      inverted: NONINVERTED
 sparks:
 victors:
 ...
