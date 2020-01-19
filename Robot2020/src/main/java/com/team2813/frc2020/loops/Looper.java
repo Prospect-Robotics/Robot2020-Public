@@ -56,7 +56,7 @@ public class Looper {
 					for (Loop loop : loops) {
 						double start = Timer.getFPGATimestamp();
 						loop.onAnyLoop(timestamp);
-						if(mode == RobotMode.ENABLED) loop.onEnabledLoop(timestamp);
+						if(mode == RobotMode.ENABLED) loop.onEnabledLoop_(timestamp);
 						else if(mode == RobotMode.DISABLED) loop.onDisabledLoop(timestamp);
 						double dt = Timer.getFPGATimestamp()-start;
 						if(dt >= worstTime) {

@@ -1,6 +1,6 @@
 package com.team2813.lib.config;
 
-import com.team2813.lib.ctre.LimitDirection;
+import com.team2813.lib.motors.interfaces.LimitDirection;
 
 public class SoftLimitConfig {
 	LimitDirection direction;
