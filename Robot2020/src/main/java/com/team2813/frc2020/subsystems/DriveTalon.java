@@ -122,7 +122,13 @@ public class DriveTalon extends Subsystem {
 
     @Override
     public void onEnabledStart(double timestamp) {
-//		setBrakeMode(false);
+        // TODO: 01/18/2020 verify true and false
+		setBrakeMode(false);
+    }
+
+    @Override
+    public void onDisabledStart(double timestamp) {
+        setBrakeMode(true);
     }
 
     @Override
@@ -139,7 +145,7 @@ public class DriveTalon extends Subsystem {
             LEFT.set(ControlMode.VELOCITY, leftVelocity);
             RIGHT.set(ControlMode.VELOCITY, rightVelocity);
         } else {
-            System.out.println(driveDemand.getLeft() + ", " + driveDemand.getRight());
+//            System.out.println(driveDemand.getLeft() + ", " + driveDemand.getRight());
 //            System.out.println(LEFT);
 //            System.out.println(driveMode);
             LEFT.set(driveMode.controlMode, driveDemand.getLeft());
@@ -148,12 +154,9 @@ public class DriveTalon extends Subsystem {
     }
 
     public synchronized void setBrakeMode(boolean brake) {
-        if (isBrakeMode != brake) {
-            isBrakeMode = brake;
-            NeutralMode mode = brake ? NeutralMode.Brake : NeutralMode.Coast;
-            RIGHT.setNeutralMode(mode);
-            LEFT.setNeutralMode(mode);
-        }
+        NeutralMode mode = brake ? NeutralMode.Brake : NeutralMode.Coast;
+        RIGHT.setNeutralMode(mode);
+        LEFT.setNeutralMode(mode);
     }
 
     public enum DriveMode {

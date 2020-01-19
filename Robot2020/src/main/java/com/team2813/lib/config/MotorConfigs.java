@@ -127,27 +127,6 @@ public class MotorConfigs {
                     break;
             }
         }
-
-//            if (followerConfig.getMotorControllerType() == MotorControllerType.TALON_SRX) {
-//                talon.set(ControlMode.Follower, followerConfig.getId());
-//
-//                TalonSRX follower = new TalonSRX(followerConfig.getId());
-//                follower.follow(talon);
-//                if (followerConfig.getInverted() == SparkMaxWrapper.InvertType.OPPOSE_LEADER) {
-//                    follower.setInverted(InvertType.OpposeMaster);
-//                } else {
-//                    follower.setInverted(InvertType.FollowMaster);
-//                }
-//            } else if (followerConfig.getMotorControllerType() == MotorControllerType.VICTOR_SPX) {
-//                VictorSPX follower = new VictorSPX(followerConfig.getId());
-//                follower.follow(talon);
-//                if (followerConfig.getInverted() == SparkMaxWrapper.InvertType.OPPOSE_LEADER) {
-//                    follower.setInverted(InvertType.OpposeMaster);
-//                } else {
-//                    follower.setInverted(InvertType.FollowMaster);
-//                }
-//            }
-
         return talon;
 }
 

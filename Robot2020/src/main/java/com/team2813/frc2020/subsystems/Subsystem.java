@@ -2,6 +2,8 @@ package com.team2813.frc2020.subsystems;
 
 import com.team2813.frc2020.loops.Loop;
 
+import static com.team2813.frc2020.subsystems.Subsystems.DRIVE;
+
 /**
  * TODO rewrite this documentation block
  * The Subsystem abstract class, which serves as a basic framework for all robot subsystems. Each subsystem outputs
@@ -65,7 +67,8 @@ public abstract class Subsystem implements Loop {
     public abstract void onEnabledStop(double timestamp);
 
     @Override
-    public void onDisabledStart(double timestamp) {};
+    public void onDisabledStart(double timestamp) {
+    };
 
     @Override
     public synchronized final void onDisabledLoop(double timestamp) {
