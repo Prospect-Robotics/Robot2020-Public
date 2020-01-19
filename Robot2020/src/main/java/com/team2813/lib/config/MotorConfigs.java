@@ -39,6 +39,7 @@ public class MotorConfigs {
 
         motorConfigs.getTalons().forEach(((s, talonConfig) -> talons.put(s, initializeTalon(talonConfig))));
 
+        // TODO: 1/18/2020 Restore When Needed 
 //        motorConfigs.getSparks().forEach(((s, sparkConfig) -> sparks.put(s, initializeSpark(sparkConfig))));
 //        motorConfigs.getVictors().forEach(((s, victorConfig) -> victors.put(s, initializeVictor(victorConfig))));
 

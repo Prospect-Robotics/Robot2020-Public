@@ -1,25 +1,18 @@
 ---
 talons:
+  default:
+    deviceNumber: 1
   driveLeft: # Talon
+
     deviceNumber: 1
     type: BRUSHLESS
     subsystemName: Drive
-    peakCurrentDuration: 0
-    peakCurrentLimit: 0
-    enableVoltageCompensation: true
-    compSaturationVoltage: 12
-    continuousCurrentLimitAmps: 40
-    motionAcceleration: 0
-    motionCruiseVelocity: 0
-    closedLoopRampRate: 0
-    openLoopRampRate: 0
-    invertSensorPhase: true
+    inverted: NONINVERTED
     statusFrame: STATUS_2
     followers:
       - id: 2
         type: BRUSHLESS
         inverted: FOLLOW_LEADER
-    inverted: NONINVERTED
     pidControllers:
       - p: 0.00013
         i: 0
@@ -34,22 +27,12 @@ talons:
     deviceNumber: 3
     type: BRUSHLESS
     subsystemName: Drive
-    peakCurrentDuration: 0
-    peakCurrentLimit: 0
-    enableVoltageCompensation: true
-    compSaturationVoltage: 12
-    continuousCurrentLimitAmps: 40
-    motionAcceleration: 0
-    motionCruiseVelocity: 0
-    closedLoopRampRate: 0
-    openLoopRampRate: 0
-    invertSensorPhase: true
+    inverted: INVERTED
     statusFrame: STATUS_2
     followers:
       - id: 4
         type: BRUSHLESS
         inverted: FOLLOW_LEADER
-    inverted: INVERTED
     pidControllers:
       - p: 0.00013
         i: 0
