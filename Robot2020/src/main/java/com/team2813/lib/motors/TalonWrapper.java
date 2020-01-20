@@ -16,13 +16,20 @@ public abstract class TalonWrapper<Controller extends BaseTalon> implements Moto
 
     @Override
     public Object set(ControlMode controlMode, double demand) {
-//        System.out.println("Setting with control mode " + controlMode.getTalonMode());
-        controller.set(controlMode.getTalonMode(), demand);
+        this.set(controlMode, demand, 0);
         return null;
     }
 
     @Override
     public Object set(ControlMode controlMode, double demand, double feedForward) {
+        switch (controlMode){
+            case VELOCITY:
+                demand *= (2048.0 / 60.0);
+                break;
+            case MOTION_MAGIC:
+                demand *= 2048;
+                break;
+        }
         controller.set(controlMode.getTalonMode(), demand, DemandType.ArbitraryFeedForward, feedForward);
         return null;
     }
