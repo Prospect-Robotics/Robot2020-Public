@@ -5,13 +5,13 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.team2813.lib.ctre.CTREException;
 import com.team2813.lib.ctre.TimeoutMode;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.motors.interfaces.LimitDirection;
 
-public class TalonWrapper extends TalonSRX implements Motor {
+public class TalonWrapper extends TalonFX implements Motor {
     private TimeoutMode timeoutMode = TimeoutMode.CONSTRUCTING;
     public String subsystemName;
 
@@ -55,7 +55,8 @@ public class TalonWrapper extends TalonSRX implements Motor {
 
     @Override
     public ErrorCode setPeakCurrentLimit(double amps) {
-        return configPeakCurrentLimit((int) amps);
+//        return configPeakCurrentLimit((int) amps);
+        return null;
     }
 
     @Override
@@ -128,7 +129,8 @@ public class TalonWrapper extends TalonSRX implements Motor {
     }
 
     public Object setContinuousCurrentLimit(int limitAmps) {
-        return super.configContinuousCurrentLimit(limitAmps);
+//        return super.configContinuousCurrentLimit(limitAmps);
+        return false;
     }
 
     public void enableLimitSwitches() {

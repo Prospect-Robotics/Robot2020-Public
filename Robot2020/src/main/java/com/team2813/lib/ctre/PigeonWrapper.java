@@ -16,7 +16,7 @@ public class PigeonWrapper {
 	}
 
 	public PigeonWrapper(TalonWrapper talon) {
-		pigeon = new PigeonIMU(talon);
+//		pigeon = new PigeonIMU(talon);
 		subsystemName = talon.subsystemName;
 	}
 

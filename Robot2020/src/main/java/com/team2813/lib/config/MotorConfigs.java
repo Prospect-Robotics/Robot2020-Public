@@ -3,6 +3,7 @@ package com.team2813.lib.config;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -92,10 +93,10 @@ public class MotorConfigs {
 //				//FIXME remake limit switch stuff differently
 //			}
 
-
         for (
                 PIDControllerConfig pidController : config.getPidControllers()) {
             int slotID = config.getPidControllers().indexOf(pidController);
+            talon.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, slotID, 10);
             talon.setPIDF(slotID, pidController.getP(), pidController.getI(),
                     pidController.getD(), pidController.getF());
             talon.setMotionMagicVelocity((int) pidController.getMaxVelocity()); // FIXME: 1/3/2020 Casting because
@@ -128,7 +129,7 @@ public class MotorConfigs {
             }
         }
         return talon;
-}
+    }
 
     private static SparkMaxWrapper initializeSpark(SparkConfig config) {
         for (Integer id : ids)
@@ -165,8 +166,8 @@ public class MotorConfigs {
 //				//FIXME remake limit switch stuff differently
 //			}
 
-
         for (PIDControllerConfig pidController : config.getPidControllers()) {
+
             int slotID = config.getPidControllers().indexOf(pidController);
             spark.setPIDF(slotID, pidController.getP(), pidController.getI(),
                     pidController.getD(), pidController.getF());
@@ -207,34 +208,34 @@ public class MotorConfigs {
         return new VictorWrapper(config.getDeviceNumber(), config.getSubsystemName());
     }
 
-@SuppressWarnings({"unused", "WeakerAccess"})
-public static class RootConfigs {
-    private Map<String, SparkConfig> sparks = new HashMap<>();
-    private Map<String, TalonConfig> talons = new HashMap<>();
-    private Map<String, VictorConfig> victors = new HashMap<>();
+    @SuppressWarnings({"unused", "WeakerAccess"})
+    public static class RootConfigs {
+        private Map<String, SparkConfig> sparks = new HashMap<>();
+        private Map<String, TalonConfig> talons = new HashMap<>();
+        private Map<String, VictorConfig> victors = new HashMap<>();
 
-    public Map<String, SparkConfig> getSparks() {
-        return sparks;
-    }
+        public Map<String, SparkConfig> getSparks() {
+            return sparks;
+        }
 
-    public void setSparks(Map<String, SparkConfig> sparks) {
-        this.sparks = sparks;
-    }
+        public void setSparks(Map<String, SparkConfig> sparks) {
+            this.sparks = sparks;
+        }
 
-    public Map<String, TalonConfig> getTalons() {
-        return talons;
-    }
+        public Map<String, TalonConfig> getTalons() {
+            return talons;
+        }
 
-    public void setTalons(Map<String, TalonConfig> talons) {
-        this.talons = talons;
-    }
+        public void setTalons(Map<String, TalonConfig> talons) {
+            this.talons = talons;
+        }
 
-    public Map<String, VictorConfig> getVictors() {
-        return victors;
-    }
+        public Map<String, VictorConfig> getVictors() {
+            return victors;
+        }
 
-    public void setVictors(Map<String, VictorConfig> victors) {
-        this.victors = victors;
+        public void setVictors(Map<String, VictorConfig> victors) {
+            this.victors = victors;
+        }
     }
-}
 }

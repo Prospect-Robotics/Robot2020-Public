@@ -118,8 +118,8 @@ public class Robot extends TimedRobot {
       caNifier.setLEDOutput(0, CANifier.LEDChannel.LEDChannelB);
       caNifier.setLEDOutput(0, CANifier.LEDChannel.LEDChannelC);
       CrashTracker.logAutoInit();
-      Compressor compressor = new Compressor(); // FIXME: 11/02/2019 this shouldn't need to be here
-      compressor.start();
+//      Compressor compressor = new Compressor(); // FIXME: 11/02/2019 this shouldn't need to be here
+//      compressor.start(); // todo renable
       for (Subsystem subsystem : allSubsystems) {
         subsystem.zeroSensors();
       }
