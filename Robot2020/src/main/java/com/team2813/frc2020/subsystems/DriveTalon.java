@@ -169,9 +169,9 @@ public class DriveTalon extends Subsystem {
         if (driveMode == DriveMode.VELOCITY) {
             double leftVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getLeft());
             double rightVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getRight());
-            SmartDashboard.putNumber("Left Feedforward", feedforward.calculate(leftVelocity / 60));
-            LEFT.set(ControlMode.VELOCITY, leftVelocity, feedforward.calculate(leftVelocity / 60));
-            RIGHT.set(ControlMode.VELOCITY, rightVelocity, feedforward.calculate(rightVelocity / 60));
+            SmartDashboard.putNumber("Left Feedforward", feedforward.calculate(leftVelocity / (2048.0 * 60)));
+            LEFT.set(ControlMode.VELOCITY, leftVelocity, feedforward.calculate(leftVelocity / (2048.0 * 60)));
+            RIGHT.set(ControlMode.VELOCITY, rightVelocity, feedforward.calculate(rightVelocity / (2048.0 * 60)));
         } else {
             LEFT.set(driveMode.controlMode, driveDemand.getLeft());
             RIGHT.set(driveMode.controlMode, driveDemand.getRight());
