@@ -2,7 +2,6 @@ package com.team2813.lib.ctre;
 
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.ParamEnum;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.*;
 import com.team2813.lib.motors.TalonWrapper;
