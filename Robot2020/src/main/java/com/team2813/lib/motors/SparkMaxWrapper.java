@@ -47,12 +47,12 @@ public class SparkMaxWrapper extends CANSparkMax implements Motor {
     }
 
     @Override
-    public CANError setPosition(double position) {
+    public CANError setEncoderPosition(double position) {
         return encoder.setPosition(position);
     }
 
     @Override
-    public double getPosition() {
+    public double getEncoderPosition() {
         return encoder.getPosition();
     }
 

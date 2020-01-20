@@ -28,12 +28,12 @@ public abstract class TalonWrapper<Controller extends BaseTalon> implements Moto
     }
 
     @Override
-    public ErrorCode setPosition(double position) {
+    public ErrorCode setEncoderPosition(double position) {
         return controller.setSelectedSensorPosition(0);
     }
 
     @Override
-    public double getPosition() {
+    public double getEncoderPosition() {
         return controller.getSelectedSensorPosition();
     }
 

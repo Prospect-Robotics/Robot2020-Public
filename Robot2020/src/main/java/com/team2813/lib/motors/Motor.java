@@ -11,8 +11,8 @@ public interface Motor {
     public Object set(ControlMode controlMode, double demand, double feedForward);
 
     // encoder position
-    public Object setPosition(double position);
-    public double getPosition();
+    public Object setEncoderPosition(double position);
+    public double getEncoderPosition();
 
     // config
     public Object setFactoryDefaults();

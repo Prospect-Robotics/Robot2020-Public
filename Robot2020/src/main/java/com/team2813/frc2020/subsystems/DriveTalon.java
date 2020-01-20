@@ -15,7 +15,10 @@ import com.team2813.lib.motors.TalonWrapper.PIDProfile;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.shuffleboard.EventImportance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+
+import java.util.function.DoubleSupplier;
 
 /**
  * The Drive subsystem is the main subsystem for
@@ -124,7 +127,10 @@ public class DriveTalon extends Subsystem {
         return false;
     }
 
-    public void outputTelemetry() {}
+    public void outputTelemetry() {
+//        Shuffleboard.getTab("Drive Encoders").addNumber("LEFT", LEFT::getEncoderPosition);
+//        Shuffleboard.getTab("Drive Encoders").addNumber("RIGHT", RIGHT::getEncoderPosition);
+    }
 
     @Override
     public void onEnabledStart(double timestamp) {
