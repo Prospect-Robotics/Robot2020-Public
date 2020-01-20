@@ -21,10 +21,10 @@ public class TalonFXWrapper extends TalonWrapper<TalonFX> {
 
 	public Object setCurrentLimit(int amps) {
 
-//		SupplyCurrentLimitConfiguration currentLimitConfiguration =
-//				  new SupplyCurrentLimitConfiguration(true, amps, amps, 0.25);
-//		return controller.configSupplyCurrentLimit(currentLimitConfiguration);
-		return null;
+		SupplyCurrentLimitConfiguration currentLimitConfiguration =
+				  new SupplyCurrentLimitConfiguration(true, amps, amps, 0.25);
+		return controller.configSupplyCurrentLimit(currentLimitConfiguration);
+//		return null;
 	}
 
 	@Override
