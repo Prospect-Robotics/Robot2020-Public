@@ -10,6 +10,8 @@ import com.team2813.lib.drive.CurvatureDrive;
 import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.drive.VelocityDriveTalon;
 import com.team2813.lib.motors.TalonFXWrapper;
+import com.team2813.lib.motors.TalonWrapper;
+import com.team2813.lib.motors.TalonWrapper.PIDProfile;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -78,8 +80,8 @@ public class DriveTalon extends Subsystem {
         LEFT = (TalonFXWrapper) MotorConfigs.talons.get("driveLeft");
         RIGHT = (TalonFXWrapper) MotorConfigs.talons.get("driveRight");
 
-        LEFT.controller.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
-        RIGHT.controller.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+        LEFT.configEncoder(TalonFXFeedbackDevice.IntegratedSensor, PIDProfile.PRIMARY, 0);
+        RIGHT.configEncoder(TalonFXFeedbackDevice.IntegratedSensor, PIDProfile.PRIMARY, 0);
 
 //        velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getTalons().get("driveLeft"));
 //        velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getTalons().get("driveRight"));

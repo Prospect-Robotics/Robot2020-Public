@@ -18,6 +18,7 @@ talons:
     statusFrame: STATUS_2
     followers:
       - id: 2
+        motorControllerType: TALON_FX
         type: BRUSHLESS
         inverted: FOLLOW_LEADER
     inverted: NONINVERTED
@@ -49,6 +50,7 @@ talons:
     statusFrame: STATUS_2
     followers:
       - id: 4
+        motorControllerType: TALON_FX
         type: BRUSHLESS
         inverted: FOLLOW_LEADER
     inverted: INVERTED
