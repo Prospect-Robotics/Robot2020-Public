@@ -10,15 +10,12 @@ import com.team2813.lib.drive.CurvatureDrive;
 import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.drive.VelocityDriveTalon;
 import com.team2813.lib.motors.TalonFXWrapper;
-import com.team2813.lib.motors.TalonWrapper;
 import com.team2813.lib.motors.TalonWrapper.PIDProfile;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.shuffleboard.EventImportance;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-
-import java.util.function.DoubleSupplier;
 
 /**
  * The Drive subsystem is the main subsystem for
@@ -70,6 +67,8 @@ public class DriveTalon extends Subsystem {
             .addPersistent("Velocity Drive", 0).getEntry();
     private boolean velocityEnabled = velocityEntry.getNumber(0).intValue() == 1;
     private boolean velocityFailed = false;
+
+    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(.338, .0462, .00522);
 
     DriveTalon() {
 
@@ -151,9 +150,10 @@ public class DriveTalon extends Subsystem {
 
     @Override
     public synchronized void writePeriodicOutputs() {
-        if (!velocityFailed && velocityEnabled) {
+        if (driveMode == DriveMode.VELOCITY) {
             double leftVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getLeft());
             double rightVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getRight());
+//            System.out.println(leftVelocity + " " + rightVelocity);
             LEFT.set(ControlMode.VELOCITY, leftVelocity);
             RIGHT.set(ControlMode.VELOCITY, rightVelocity);
         } else {

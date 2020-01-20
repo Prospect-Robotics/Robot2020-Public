@@ -23,7 +23,7 @@ talons:
         inverted: FOLLOW_LEADER
     inverted: NONINVERTED
     pidControllers:
-      - p: 0.00013
+      - p: 0.00399
         i: 0
         d: 0
         f: 0
@@ -55,7 +55,7 @@ talons:
         inverted: FOLLOW_LEADER
     inverted: INVERTED
     pidControllers:
-      - p: 0.00013
+      - p: 0.00399
         i: 0
         d: 0
         f: 0
