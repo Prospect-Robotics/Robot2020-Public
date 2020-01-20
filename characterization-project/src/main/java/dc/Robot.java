@@ -14,7 +14,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
@@ -76,7 +75,7 @@ public class Robot extends TimedRobot {
 
     rightMaster = new WPI_TalonFX(3);
     rightMaster.setInverted(false);
-    rightMaster.setSensorPhase(false);
+    rightMaster.setSensorPhase(true);
     rightMaster.setNeutralMode(NeutralMode.Brake);
 
     WPI_TalonFX leftSlave0 = new WPI_TalonFX(2);
@@ -95,7 +94,14 @@ public class Robot extends TimedRobot {
 
     // Note that the angle from the NavX and all implementors of wpilib Gyro
     // must be negated because getAngle returns a clockwise positive angle
-    gyroAngleRadians = () -> 0.0;
+    // Uncomment for Pigeon
+    PigeonIMU pigeon = new PigeonIMU(13);
+    gyroAngleRadians = () -> {
+      // Allocating a new array every loop is bad but concise
+      double[] xyz = new double[3];
+      pigeon.getAccumGyro(xyz);
+      return Math.toRadians(xyz[2]);
+    };
 
     //
     // Configure drivetrain movement
@@ -113,16 +119,20 @@ public class Robot extends TimedRobot {
     double encoderConstant =
         (1 / ENCODER_EDGES_PER_REV) * WHEEL_DIAMETER * Math.PI;
 
-    leftMaster.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor,
-                                                PIDIDX, 10);
+    leftMaster.configSelectedFeedbackSensor(
+        FeedbackDevice.IntegratedSensor,
+        PIDIDX, 10
+    );
     leftEncoderPosition = ()
         -> leftMaster.getSelectedSensorPosition(PIDIDX) * encoderConstant;
     leftEncoderRate = ()
         -> leftMaster.getSelectedSensorVelocity(PIDIDX) * encoderConstant *
                10;
 
-    rightMaster.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor,
-                                                 PIDIDX, 10);
+    rightMaster.configSelectedFeedbackSensor(
+        FeedbackDevice.IntegratedSensor,
+        PIDIDX, 10
+    );
     rightEncoderPosition = ()
         -> rightMaster.getSelectedSensorPosition(PIDIDX) * encoderConstant;
     rightEncoderRate = ()

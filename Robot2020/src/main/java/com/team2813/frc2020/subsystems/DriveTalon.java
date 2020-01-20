@@ -16,6 +16,9 @@ import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import static com.team2813.frc2020.subsystems.Subsystems.DRIVE;
 
 /**
  * The Drive subsystem is the main subsystem for
@@ -53,7 +56,7 @@ public class DriveTalon extends Subsystem {
         ARCADE, CURVATURE
     }
 
-    private static final int MAX_VELOCITY = 18000; // max velocity of velocity drive in rpm
+    private static final int MAX_VELOCITY = 6370; // max velocity of velocity drive in rpm
 
     private static final double CORRECTION_MAX_STEER_SPEED = 0.5;
     LimelightValues limelightValues = new LimelightValues();
@@ -64,11 +67,11 @@ public class DriveTalon extends Subsystem {
     DriveDemand driveDemand = new DriveDemand(0, 0);
 
     private NetworkTableEntry velocityEntry = Shuffleboard.getTab("Tuning")
-            .addPersistent("Velocity Drive", 0).getEntry();
+              .addPersistent("Velocity Drive", 0).getEntry();
     private boolean velocityEnabled = velocityEntry.getNumber(0).intValue() == 1;
     private boolean velocityFailed = false;
 
-    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(.338, .0462, .00522);
+    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(.15, .068, .00686);
 
     DriveTalon() {
 
@@ -82,8 +85,8 @@ public class DriveTalon extends Subsystem {
         LEFT = (TalonFXWrapper) MotorConfigs.talons.get("driveLeft");
         RIGHT = (TalonFXWrapper) MotorConfigs.talons.get("driveRight");
 
-        LEFT.configEncoder(TalonFXFeedbackDevice.IntegratedSensor, PIDProfile.PRIMARY, 0);
-        RIGHT.configEncoder(TalonFXFeedbackDevice.IntegratedSensor, PIDProfile.PRIMARY, 0);
+//        LEFT.configEncoder(TalonFXFeedbackDevice.IntegratedSensor, PIDProfile.PRIMARY, 0);
+//        RIGHT.configEncoder(TalonFXFeedbackDevice.IntegratedSensor, PIDProfile.PRIMARY, 0);
 
 //        velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getTalons().get("driveLeft"));
 //        velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getTalons().get("driveRight"));
@@ -92,7 +95,8 @@ public class DriveTalon extends Subsystem {
     private void teleopDrive(TeleopDriveType driveType) {
 //        System.out.println("Teleop Drive");
         if (driveType == TeleopDriveType.ARCADE) {
-            driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());;
+            driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());
+            ;
         } else {
             driveDemand = curvatureDrive.getDemand(CURVATURE_FORWARD.get(), CURVATURE_REVERSE.get(), CURVATURE_STEER.get(), PIVOT_BUTTON.get());
         }
@@ -129,12 +133,16 @@ public class DriveTalon extends Subsystem {
     public void outputTelemetry() {
 //        Shuffleboard.getTab("Drive Encoders").addNumber("LEFT", LEFT::getEncoderPosition);
 //        Shuffleboard.getTab("Drive Encoders").addNumber("RIGHT", RIGHT::getEncoderPosition);
+        SmartDashboard.putNumber("Left Encoder", LEFT.getEncoderPosition());
+        SmartDashboard.putNumber("Right Encoder", RIGHT.getEncoderPosition());
+        SmartDashboard.putString("Control Drive Mode", driveMode.toString());
+        SmartDashboard.putString("Demand", driveDemand.toString());
     }
 
     @Override
     public void onEnabledStart(double timestamp) {
         // TODO: 01/18/2020 verify true and false
-		setBrakeMode(false);
+        setBrakeMode(false);
     }
 
     @Override
@@ -143,23 +151,28 @@ public class DriveTalon extends Subsystem {
     }
 
     @Override
-    public void onEnabledLoop(double timestamp) {}
+    public void onEnabledLoop(double timestamp) {
+    }
 
     @Override
-    public void onEnabledStop(double timestamp) {}
+    public void onEnabledStop(double timestamp) {
+    }
+
+    @Override
+    public void zeroSensors() {
+        LEFT.setEncoderPosition(0.0);
+        RIGHT.setEncoderPosition(0.0);
+    }
 
     @Override
     public synchronized void writePeriodicOutputs() {
         if (driveMode == DriveMode.VELOCITY) {
             double leftVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getLeft());
             double rightVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getRight());
-//            System.out.println(leftVelocity + " " + rightVelocity);
-            LEFT.set(ControlMode.VELOCITY, leftVelocity);
-            RIGHT.set(ControlMode.VELOCITY, rightVelocity);
+            SmartDashboard.putNumber("Left Feedforward", feedforward.calculate(leftVelocity / 60));
+            LEFT.set(ControlMode.VELOCITY, leftVelocity, feedforward.calculate(leftVelocity / 60));
+            RIGHT.set(ControlMode.VELOCITY, rightVelocity, feedforward.calculate(rightVelocity / 60));
         } else {
-//            System.out.println(driveDemand.getLeft() + ", " + driveDemand.getRight());
-//            System.out.println(LEFT);
-//            System.out.println(driveMode);
             LEFT.set(driveMode.controlMode, driveDemand.getLeft());
             RIGHT.set(driveMode.controlMode, driveDemand.getRight());
         }

@@ -100,6 +100,8 @@ public class MotorConfigs {
                 ((TalonFXWrapper) talon).configEncoder(TalonFXFeedbackDevice.IntegratedSensor, TalonWrapper.PIDProfile.PRIMARY, 10);
             }
 
+            System.out.println("Configuring PID: P=" + pidController.getP() + "I=" + pidController.getI() + "D=" + pidController.getD());
+
             talon.setPIDF(slotID, pidController.getP(), pidController.getI(),
                     pidController.getD(), pidController.getF());
             talon.setMotionMagicVelocity((int) pidController.getMaxVelocity()); // FIXME: 1/3/2020 Casting because

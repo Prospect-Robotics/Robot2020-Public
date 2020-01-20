@@ -85,8 +85,8 @@ public abstract class TalonWrapper<Controller extends BaseTalon> implements Moto
     @Override
     public void setPIDF(int slot, double p, double i, double d, double f) {
         controller.config_kP(slot, p);
-        controller.config_kP(slot, i);
-        controller.config_kP(slot, d);
+        controller.config_kI(slot, i);
+        controller.config_kD(slot, d);
         controller.config_kF(slot, f);
     }
 
