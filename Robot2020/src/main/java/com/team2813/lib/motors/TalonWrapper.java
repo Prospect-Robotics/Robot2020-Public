@@ -3,12 +3,10 @@ package com.team2813.lib.motors;
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.team2813.lib.ctre.CTREException;
 import com.team2813.lib.ctre.TimeoutMode;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.motors.interfaces.LimitDirection;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 public abstract class TalonWrapper<Controller extends BaseTalon> implements Motor {
     private TimeoutMode timeoutMode = TimeoutMode.CONSTRUCTING;
