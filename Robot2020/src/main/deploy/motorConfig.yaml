@@ -2,6 +2,7 @@
 talons:
   driveLeft: # Talon
     deviceNumber: 1
+    motorControllerType: TALON_FX
     type: BRUSHLESS
     subsystemName: Drive
     peakCurrentDuration: 0
@@ -17,13 +18,14 @@ talons:
     statusFrame: STATUS_2
     followers:
       - id: 2
+        motorControllerType: TALON_FX
         type: BRUSHLESS
         inverted: FOLLOW_LEADER
     inverted: NONINVERTED
     pidControllers:
-      - p: 0.00013
+      - p: .0062
         i: 0
-        d: 0
+        d: 1
         f: 0
         maxVelocity: 18000
         maxAcceleration: 45000
@@ -32,6 +34,7 @@ talons:
         allowableClosedLoopError: 0
   driveRight: #Talon
     deviceNumber: 3
+    motorControllerType: TALON_FX
     type: BRUSHLESS
     subsystemName: Drive
     peakCurrentDuration: 0
@@ -47,13 +50,14 @@ talons:
     statusFrame: STATUS_2
     followers:
       - id: 4
+        motorControllerType: TALON_FX
         type: BRUSHLESS
         inverted: FOLLOW_LEADER
     inverted: INVERTED
     pidControllers:
-      - p: 0.00013
+      - p: 0.0062
         i: 0
-        d: 0
+        d: 1
         f: 0
         maxVelocity: 18000
         maxAcceleration: 45000

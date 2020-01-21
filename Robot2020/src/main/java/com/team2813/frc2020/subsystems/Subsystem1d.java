@@ -7,7 +7,6 @@ import com.team2813.lib.motors.Motor;
 import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.motors.TalonWrapper;
 import com.team2813.lib.motors.interfaces.ControlMode;
-import com.team2813.lib.sparkMax.SparkMaxException;
 import edu.wpi.first.wpilibj.Timer;
 
 import static com.team2813.lib.logging.LogLevel.DEBUG;
@@ -60,7 +59,7 @@ abstract class Subsystem1d<P extends Subsystem1d.Position> extends Subsystem {
     @Override
     public synchronized void readPeriodicInputs() {
         final double t = Timer.getFPGATimestamp();
-        periodicIO.positionTicks = motor.getPosition();
+        periodicIO.positionTicks = motor.getEncoderPosition();
 //		if (periodicIO.positionTicks + 0.5
     }
 
@@ -72,8 +71,8 @@ abstract class Subsystem1d<P extends Subsystem1d.Position> extends Subsystem {
 
     @Override
     public synchronized void zeroSensors() {
-        motor.setPosition(0);
-        DEBUG.log(motor.getSubsystemName(), "zeroed 1", motor.getPosition());
+        motor.setEncoderPosition(0);
+        DEBUG.log(motor.getSubsystemName(), "zeroed 1", motor.getEncoderPosition());
         zeroed = true;
     }
 

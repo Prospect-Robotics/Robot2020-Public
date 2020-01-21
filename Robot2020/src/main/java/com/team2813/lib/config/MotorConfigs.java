@@ -1,16 +1,10 @@
 package com.team2813.lib.config;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.revrobotics.SparkMax;
-import com.team2813.lib.motors.VictorWrapper;
-import com.team2813.lib.motors.SparkMaxWrapper;
-import com.team2813.lib.motors.TalonWrapper;
+import com.team2813.lib.motors.*;
 import edu.wpi.first.wpilibj.Filesystem;
 
 import java.io.File;
@@ -54,7 +48,13 @@ public class MotorConfigs {
 
         System.out.println("Configuring" + config.getSubsystemName());
 
-        TalonWrapper talon = new TalonWrapper(config.getDeviceNumber(), config.getSubsystemName());
+        TalonWrapper talon;
+
+        if (config.getMotorControllerType() == MotorControllerType.TALON_FX) {
+            talon = new TalonFXWrapper(config.getDeviceNumber(), config.getSubsystemName());
+        } else {
+            talon = new TalonSRXWrapper(config.getDeviceNumber(), config.getSubsystemName());
+        }
 
         talon.setFactoryDefaults();
 
@@ -67,7 +67,7 @@ public class MotorConfigs {
 //					talon.setSmartMotionMaxVelocity(config.motionCruiseVelocity()); // FIXME: 09/20/2019 need to change parameters/types
 //					talon.setSmartMotionMaxAccel(config.motionAcceleration()); // FIXME: 09/20/2019 need to change parameters/types
 
-        talon.setContinuousCurrentLimit(config.getContinuousCurrentLimitAmps());// TODO check this is actually continuous limit
+        talon.setCurrentLimit(config.getContinuousCurrentLimitAmps());// TODO check this is actually continuous limit
 
 //			for (com.team2813.lib.talon.options.HardLimitSwitch hardLimitSwitch : field.getAnnotationsByType(com.team2813.lib.talon.options.HardLimitSwitch.class)) {
 //				System.out.println("\tconfiguring hard limit switch " + hardLimitSwitch.direction());
@@ -92,10 +92,16 @@ public class MotorConfigs {
 //				//FIXME remake limit switch stuff differently
 //			}
 
-
         for (
                 PIDControllerConfig pidController : config.getPidControllers()) {
             int slotID = config.getPidControllers().indexOf(pidController);
+
+            if (talon instanceof TalonFXWrapper) {
+                ((TalonFXWrapper) talon).configEncoder(TalonFXFeedbackDevice.IntegratedSensor, TalonWrapper.PIDProfile.PRIMARY, 10);
+            }
+
+            System.out.println("Configuring PID: P=" + pidController.getP() + "I=" + pidController.getI() + "D=" + pidController.getD());
+
             talon.setPIDF(slotID, pidController.getP(), pidController.getI(),
                     pidController.getD(), pidController.getF());
             talon.setMotionMagicVelocity((int) pidController.getMaxVelocity()); // FIXME: 1/3/2020 Casting because
@@ -115,7 +121,14 @@ public class MotorConfigs {
                     "\tCreating follower w/ id of " + followerConfig.getId() + " on " + config.getSubsystemName()
             );
 
-            TalonWrapper follower = new TalonWrapper(followerConfig.getId(), config.getSubsystemName());
+            TalonWrapper follower;
+
+            if (followerConfig.getMotorControllerType() == MotorControllerType.TALON_FX) {
+                follower = new TalonFXWrapper(followerConfig.getId(), config.getSubsystemName());
+            } else {
+                follower = new TalonSRXWrapper(followerConfig.getId(), config.getSubsystemName());
+            }
+
             follower.follow(talon);
 
             switch (followerConfig.getInverted()) {
@@ -128,7 +141,7 @@ public class MotorConfigs {
             }
         }
         return talon;
-}
+    }
 
     private static SparkMaxWrapper initializeSpark(SparkConfig config) {
         for (Integer id : ids)
@@ -165,8 +178,8 @@ public class MotorConfigs {
 //				//FIXME remake limit switch stuff differently
 //			}
 
-
         for (PIDControllerConfig pidController : config.getPidControllers()) {
+
             int slotID = config.getPidControllers().indexOf(pidController);
             spark.setPIDF(slotID, pidController.getP(), pidController.getI(),
                     pidController.getD(), pidController.getF());
@@ -207,34 +220,34 @@ public class MotorConfigs {
         return new VictorWrapper(config.getDeviceNumber(), config.getSubsystemName());
     }
 
-@SuppressWarnings({"unused", "WeakerAccess"})
-public static class RootConfigs {
-    private Map<String, SparkConfig> sparks = new HashMap<>();
-    private Map<String, TalonConfig> talons = new HashMap<>();
-    private Map<String, VictorConfig> victors = new HashMap<>();
+    @SuppressWarnings({"unused", "WeakerAccess"})
+    public static class RootConfigs {
+        private Map<String, SparkConfig> sparks = new HashMap<>();
+        private Map<String, TalonConfig> talons = new HashMap<>();
+        private Map<String, VictorConfig> victors = new HashMap<>();
 
-    public Map<String, SparkConfig> getSparks() {
-        return sparks;
-    }
+        public Map<String, SparkConfig> getSparks() {
+            return sparks;
+        }
 
-    public void setSparks(Map<String, SparkConfig> sparks) {
-        this.sparks = sparks;
-    }
+        public void setSparks(Map<String, SparkConfig> sparks) {
+            this.sparks = sparks;
+        }
 
-    public Map<String, TalonConfig> getTalons() {
-        return talons;
-    }
+        public Map<String, TalonConfig> getTalons() {
+            return talons;
+        }
 
-    public void setTalons(Map<String, TalonConfig> talons) {
-        this.talons = talons;
-    }
+        public void setTalons(Map<String, TalonConfig> talons) {
+            this.talons = talons;
+        }
 
-    public Map<String, VictorConfig> getVictors() {
-        return victors;
-    }
+        public Map<String, VictorConfig> getVictors() {
+            return victors;
+        }
 
-    public void setVictors(Map<String, VictorConfig> victors) {
-        this.victors = victors;
+        public void setVictors(Map<String, VictorConfig> victors) {
+            this.victors = victors;
+        }
     }
-}
 }

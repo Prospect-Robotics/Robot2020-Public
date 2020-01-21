@@ -2,6 +2,7 @@ package com.team2813.lib.ctre;
 
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.ParamEnum;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.*;
 import com.team2813.lib.motors.TalonWrapper;
 
@@ -16,7 +17,7 @@ public class PigeonWrapper {
 	}
 
 	public PigeonWrapper(TalonWrapper talon) {
-		pigeon = new PigeonIMU(talon);
+		pigeon = new PigeonIMU((TalonSRX) talon.controller);// This could throw a ClassCastException if used with a Talon FX
 		subsystemName = talon.subsystemName;
 	}
 
