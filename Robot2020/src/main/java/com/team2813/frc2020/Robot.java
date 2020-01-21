@@ -8,6 +8,7 @@
 package com.team2813.frc2020;
 
 import com.ctre.phoenix.CANifier;
+import com.team2813.frc2020.auto.Autonomous;
 import com.team2813.frc2020.subsystems.Subsystem;
 import com.team2813.frc2020.subsystems.Subsystems;
 import com.team2813.frc2020.util.AutonomousPath;
@@ -41,10 +42,11 @@ public class Robot extends TimedRobot {
     private static boolean BATTERY_TOO_LOW = false;
     private final double WHEEL_DIAMETER = 6.0;
 
-    private Autonomous autonomous;
+    public static Autonomous autonomous;
 
     private CANifier caNifier = new CANifier(0);
     public static AutonomousPath chosenPath;
+    public static boolean isAuto = false;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -107,10 +109,31 @@ public class Robot extends TimedRobot {
         }
     }
 
+    /**
+     * Put autonomous initialization code here
+     */
+    @Override
+    public void autonomousInit() {
+        isAuto = true;
+        try {
+            CrashTracker.logAutoInit();
+            Compressor compressor = new Compressor(); // FIXME: 11/02/2019 this shouldn't need to be here
+            compressor.start();
+            for (Subsystem subsystem : allSubsystems) {
+                subsystem.zeroSensors();
+            }
+            autonomous.run(); //TODO 1/7/20 work on decision logic for auto routine
+        } catch (Throwable t) {
+            CrashTracker.logThrowableCrash(t);
+            throw t;
+        }
+    }
+
     @Override
     public void teleopInit() {
         try {
             System.out.println("teleopInit");
+            isAuto = false;
 
             CrashTracker.logTeleopInit();
             LOOPER.setMode(RobotMode.ENABLED);
@@ -124,13 +147,6 @@ public class Robot extends TimedRobot {
                 e.printStackTrace();
             }
         }
-    }
-
-    /**
-     * This function is called periodically during autonomous.
-     */
-    @Override
-    public void autonomousPeriodic() {
     }
 
     /**
@@ -149,29 +165,11 @@ public class Robot extends TimedRobot {
     }
 
     /**
-     * Put autonomous initialization code here
+     * This function is called periodically during autonomous.
      */
     @Override
-    public void autonomousInit() {
-        chosenPath = ShuffleboardData.pathChooser.getSelected();
-        try {
-            // A: Green
-            // B: Red
-            // C: Blue
-            caNifier.setLEDOutput(255, CANifier.LEDChannel.LEDChannelA);
-            caNifier.setLEDOutput(0, CANifier.LEDChannel.LEDChannelB);
-            caNifier.setLEDOutput(0, CANifier.LEDChannel.LEDChannelC);
-            CrashTracker.logAutoInit();
-            Compressor compressor = new Compressor(); // FIXME: 11/02/2019 this shouldn't need to be here
-            compressor.start();
-            for (Subsystem subsystem : allSubsystems) {
-                subsystem.zeroSensors();
-            }
-            autonomous.run(Autonomous.RoutineNum.ROUTINE_1); //TODO 1/7/20 work on decision logic for auto routine
-        } catch (Throwable t) {
-            CrashTracker.logThrowableCrash(t);
-            throw t;
-        }
+    public void autonomousPeriodic() {
+        autonomous.periodic();
     }
 
     @Override

@@ -8,6 +8,6 @@ public enum AutonomousPath {
     String name;
 
     AutonomousPath(String name) {
-        ShuffleboardData.pathChooser.addOption(name, this);
+        ShuffleboardData.routineChooser.addOption(name, this);
     }
 }

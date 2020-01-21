@@ -18,14 +18,17 @@ public class RamseteAuto {
     //    private Trajectory trajectory;
     private RamseteController controller;
     private RamseteTrajectory trajectory;
-    private RamseteTrajectory genTrajectory;
 
     private double timeStart = -1;
 
-    public RamseteAuto(DifferentialDriveKinematics kinematics, List<GeneratedTrajectory> trajectories) {
+    public RamseteAuto(DifferentialDriveKinematics kinematics, RamseteTrajectory trajectory) {
         this.kinematics = kinematics;
-        trajectory = new RamseteTrajectory(trajectories);
+        this.trajectory = trajectory;
         controller = new RamseteController(); // use default gains
+    }
+
+    public RamseteAuto(DifferentialDriveKinematics kinematics, List<GeneratedTrajectory> trajectories) {
+        this(kinematics, new RamseteTrajectory(trajectories));
     }
 
     public RamseteAuto(DifferentialDriveKinematics kinematics, Pose2d startVector, List<Translation2d> translations, Pose2d endVector, boolean reversed) {
@@ -46,17 +49,17 @@ public class RamseteAuto {
             timeStart = System.currentTimeMillis();
         }
 
-
         double tDelta = (System.currentTimeMillis() - timeStart) / 1000;
         TrajectorySample goal = trajectory.sample(tDelta); // sample the trajectory
+
+        if (goal.isPause()) // if there is a pause
+            return new DriveDemand(0, 0);
+
         Pose2d robotPose = goal.isReversed() ? new Pose2d(currentRobotPose.getTranslation(), currentRobotPose.getRotation().rotateBy(Rotation2d.fromDegrees(180))) : currentRobotPose;
-//        System.out.print(goal);
-        ChassisSpeeds adjustedSpeeds = controller.calculate(robotPose
-                , goal.getState());
+        ChassisSpeeds adjustedSpeeds = controller.calculate(robotPose, goal.getState());
         DriveDemand demand = new DriveDemand(kinematics.toWheelSpeeds(adjustedSpeeds));
 
         return goal.isReversed() ? demand.reverse() : demand;
-//        return demand
     }
 
     public double getTimeDelta() {

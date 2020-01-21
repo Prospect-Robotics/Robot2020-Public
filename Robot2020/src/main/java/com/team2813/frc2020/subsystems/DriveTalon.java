@@ -1,8 +1,9 @@
 package com.team2813.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.team2813.frc2020.Robot;
 import com.team2813.frc2020.util.ShuffleboardData;
+import com.team2813.lib.auto.RamseteTrajectory;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.*;
 import com.team2813.lib.ctre.PigeonWrapper;
@@ -11,19 +12,16 @@ import com.team2813.lib.drive.CurvatureDrive;
 import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.drive.VelocityDriveTalon;
 import com.team2813.lib.motors.TalonFXWrapper;
-import com.team2813.lib.motors.TalonWrapper;
-import com.team2813.lib.motors.TalonWrapper.PIDProfile;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.util.LimelightValues;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import static com.team2813.frc2020.subsystems.Subsystems.DRIVE;
+import edu.wpi.first.wpilibj.util.Units;
 
 /**
  * The Drive subsystem is the main subsystem for
@@ -68,19 +66,20 @@ public class DriveTalon extends Subsystem {
     private static TeleopDriveType teleopDriveType = TeleopDriveType.CURVATURE;
 
     // Gyro
-    private final int pigeonID = 0;
-    private PigeonWrapper pigeonWrapper = new PigeonWrapper(pigeonID, "Drive");
+    private final int pigeonID = 13;
+    private PigeonWrapper pigeon = new PigeonWrapper(pigeonID, "Drive");
+
+    // Autonomous
+    private double TRACK_WIDTH = 26;
+    private double gearRatio = (10.0 / 60.0) * (20.0 / 28.0);
+    public DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(TRACK_WIDTH));
 
     // Odometry
     private static DifferentialDriveOdometry odometry;
-    private Pose2d robotPosition;
+    public Pose2d robotPosition;
 
     public static DifferentialDriveOdometry getOdometry() {
         return odometry;
-    }
-
-    public void initializeOdometry() {
-        odometry = new DifferentialDriveOdometry(new Rotation2d(pigeonWrapper.getPigeon().getCompassHeading()));
     }
 
     public enum TeleopDriveType {
@@ -96,11 +95,6 @@ public class DriveTalon extends Subsystem {
     CurvatureDrive curvatureDrive = new CurvatureDrive(TELEOP_DEAD_ZONE);
     ArcadeDrive arcadeDrive = curvatureDrive.getArcadeDrive();
     DriveDemand driveDemand = new DriveDemand(0, 0);
-
-    private NetworkTableEntry velocityEntry = Shuffleboard.getTab("Tuning")
-              .addPersistent("Velocity Drive", 0).getEntry();
-    private boolean velocityEnabled = velocityEntry.getNumber(0).intValue() == 1;
-    private boolean velocityFailed = false;
 
     private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(.343, .0462, .00316);
 
@@ -118,6 +112,10 @@ public class DriveTalon extends Subsystem {
 
 //        LEFT.configEncoder(TalonFXFeedbackDevice.IntegratedSensor, PIDProfile.PRIMARY, 0);
 //        RIGHT.configEncoder(TalonFXFeedbackDevice.IntegratedSensor, PIDProfile.PRIMARY, 0);
+
+        DriveDemand.circumference = WHEEL_CIRCUMFERENCE_INCHES;
+
+        odometry = new DifferentialDriveOdometry(new Rotation2d(pigeon.getPigeon().getCompassHeading()));
 
 //        velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getTalons().get("driveLeft"));
 //        velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getTalons().get("driveRight"));
@@ -153,7 +151,6 @@ public class DriveTalon extends Subsystem {
     public void teleopControls() {
         driveMode = ShuffleboardData.driveModeChooser.getSelected();
         if (driveMode == null) driveMode = DriveMode.OPEN_LOOP;
-//        System.out.println("Teleop Controls");
         teleopDrive(teleopDriveType);
     }
 
@@ -167,6 +164,8 @@ public class DriveTalon extends Subsystem {
         SmartDashboard.putNumber("Left Velocity", LEFT.getVelocity() * (600.0 / 2048));
         SmartDashboard.putNumber("Right Velocity", RIGHT.getVelocity() * (600.0 / 2048));
         SmartDashboard.putString("Control Drive Mode", driveMode.toString());
+        SmartDashboard.putNumber("Gyro", pigeon.getPigeon().getCompassHeading());
+        SmartDashboard.putString("Odometry", odometry.getPoseMeters().toString());
 
         double left = driveDemand.getLeft();
         double right = driveDemand.getRight();
@@ -205,7 +204,10 @@ public class DriveTalon extends Subsystem {
 
     @Override
     public synchronized void writePeriodicOutputs() {
-        if (driveMode == DriveMode.VELOCITY) {
+        if (Robot.isAuto) {
+            LEFT.set(ControlMode.VELOCITY, driveDemand.getLeft() * gearRatio);
+            RIGHT.set(ControlMode.VELOCITY, driveDemand.getRight() * gearRatio);
+        } else if (driveMode == DriveMode.VELOCITY) {
             double leftVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getLeft());
             double rightVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getRight());
             SmartDashboard.putNumber("Left Feedforward", feedforward.calculate(leftVelocity / 600) / 1000);
@@ -221,13 +223,23 @@ public class DriveTalon extends Subsystem {
 
     @Override
     protected void readPeriodicInputs() {
-        robotPosition = odometry.update(Rotation2d.fromDegrees(-pigeonWrapper.getPigeon().getCompassHeading()), LEFT.getEncoderPosition(), RIGHT.getEncoderPosition());
+        double leftDistance = Units.inchesToMeters(LEFT.getEncoderPosition() / 2048 * WHEEL_CIRCUMFERENCE_INCHES);
+        double rightDistance = Units.inchesToMeters(RIGHT.getEncoderPosition() / 2048 * WHEEL_CIRCUMFERENCE_INCHES);
+        robotPosition = odometry.update(Rotation2d.fromDegrees(-pigeon.getPigeon().getCompassHeading()), leftDistance, rightDistance);
     }
 
     public synchronized void setBrakeMode(boolean brake) {
         NeutralMode mode = brake ? NeutralMode.Brake : NeutralMode.Coast;
         RIGHT.setNeutralMode(mode);
         LEFT.setNeutralMode(mode);
+    }
+
+    public void initAutonomous(RamseteTrajectory trajectory) {
+
+    }
+
+    public void setDemand(DriveDemand demand) {
+        this.driveDemand = demand;
     }
 
     public enum DriveMode {

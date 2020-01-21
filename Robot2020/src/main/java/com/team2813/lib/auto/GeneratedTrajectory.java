@@ -17,7 +17,7 @@ public class GeneratedTrajectory {
         this.reversed = reversed;
 
         try {
-            trajectory = TrajectoryUtil.fromPathweaverJson(Paths.get(Filesystem.getDeployDirectory().getAbsolutePath(), "deploy", pathName + ".wpilib.json"));
+            trajectory = TrajectoryUtil.fromPathweaverJson(Paths.get(Filesystem.getDeployDirectory().getAbsolutePath(), "paths", pathName + ".wpilib.json"));
         } catch (IOException e) {
             e.printStackTrace(); // todo samuel li
         }
