@@ -17,6 +17,8 @@ public class MotorConfigsTest {
 
             ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
             MotorConfigs.RootConfigs motorConfigs = mapper.readValue(configFile, MotorConfigs.RootConfigs.class);
+
+            System.out.println("Successful!");
         } catch (IOException e) {
             System.out.println("Something went wrong while reading config files!");
             CrashTracker.logThrowableCrash(e);
@@ -24,10 +26,5 @@ public class MotorConfigsTest {
             System.out.println("ERROR WHEN READING CONFIG");
             e.printStackTrace();
         }
-    }
-
-    @Test
-    public void testMotorConfigs() {
-        System.out.println("ree");
     }
 }
