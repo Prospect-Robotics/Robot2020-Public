@@ -32,4 +32,9 @@ public class DriveDemand {
     public double getRight() {
         return right;
     }
+
+    @Override
+    public String toString() {
+        return "("+ left + ", " + right + ")";
+    }
 }
