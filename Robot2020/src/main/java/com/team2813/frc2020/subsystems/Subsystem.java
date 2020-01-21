@@ -1,8 +1,8 @@
 package com.team2813.frc2020.subsystems;
 
 import com.team2813.frc2020.loops.Loop;
-import com.team2813.lib.ctre.CTREException;
-import com.team2813.lib.sparkMax.SparkMaxException;
+
+import static com.team2813.frc2020.subsystems.Subsystems.DRIVE;
 
 /**
  * TODO rewrite this documentation block
@@ -53,12 +53,13 @@ public abstract class Subsystem implements Loop {
         onEnabledStart(timestamp);
     }
 
-    @Override
+
     public abstract void onEnabledLoop(double timestamp);
 
+    @Override
     public synchronized final void onEnabledLoop_(double timestamp) {
         readPeriodicInputs();
-        onEnabledLoop(timestamp);
+        this.onEnabledLoop(timestamp);
         writePeriodicOutputs();
     }
 
@@ -66,12 +67,13 @@ public abstract class Subsystem implements Loop {
     public abstract void onEnabledStop(double timestamp);
 
     @Override
-    public void onDisabledStart(double timestamp) {};
+    public void onDisabledStart(double timestamp) {
+    };
 
     @Override
     public synchronized final void onDisabledLoop(double timestamp) {
         readPeriodicInputs();
-        onDisabledLoop(timestamp);
+//        onDisabledLoop(timestamp);
         writePeriodicOutputs();
     }
 

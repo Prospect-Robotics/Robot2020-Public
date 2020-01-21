@@ -1,16 +1,10 @@
 package com.team2813.lib.config;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.team2813.lib.motors.VictorWrapper;
-import com.team2813.lib.motors.SparkMaxWrapper;
-import com.team2813.lib.motors.TalonWrapper;
-import com.team2813.lib.sparkMax.SparkMaxException;
+import com.team2813.lib.motors.*;
 import edu.wpi.first.wpilibj.Filesystem;
 
 import java.io.File;
@@ -37,8 +31,10 @@ public class MotorConfigs {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         motorConfigs = mapper.readValue(configFile, RootConfigs.class);
 
-        motorConfigs.getSparks().forEach(((s, sparkConfig) -> sparks.put(s, initializeSpark(sparkConfig))));
-        motorConfigs.getVictors().forEach(((s, victorConfig) -> victors.put(s, initializeVictor(victorConfig))));
+        motorConfigs.getTalons().forEach(((s, talonConfig) -> talons.put(s, initializeTalon(talonConfig))));
+
+//        motorConfigs.getSparks().forEach(((s, sparkConfig) -> sparks.put(s, initializeSpark(sparkConfig))));
+//        motorConfigs.getVictors().forEach(((s, victorConfig) -> victors.put(s, initializeVictor(victorConfig))));
 
         System.out.println("Successful!");
     }
@@ -52,7 +48,13 @@ public class MotorConfigs {
 
         System.out.println("Configuring" + config.getSubsystemName());
 
-        TalonWrapper talon = new TalonWrapper(config.getDeviceNumber(), config.getSubsystemName());
+        TalonWrapper talon;
+
+        if (config.getMotorControllerType() == MotorControllerType.TALON_FX) {
+            talon = new TalonFXWrapper(config.getDeviceNumber(), config.getSubsystemName());
+        } else {
+            talon = new TalonSRXWrapper(config.getDeviceNumber(), config.getSubsystemName());
+        }
 
         talon.setFactoryDefaults();
 
@@ -61,27 +63,27 @@ public class MotorConfigs {
 
         talon.setClosedLoopRamp(config.getClosedLoopRampRate());
 
-        talon.setStatusFramePeriod(config.getStatusFrame(), config.getStatusFramePeriod());
+//        talon.setStatusFramePeriod(config.getStatusFrame(), config.getStatusFramePeriod());
 //					talon.setSmartMotionMaxVelocity(config.motionCruiseVelocity()); // FIXME: 09/20/2019 need to change parameters/types
 //					talon.setSmartMotionMaxAccel(config.motionAcceleration()); // FIXME: 09/20/2019 need to change parameters/types
 
-        talon.setContinuousCurrentLimit(config.getContinuousCurrentLimitAmps());// TODO check this is actually continuous limit
+        talon.setCurrentLimit(config.getContinuousCurrentLimitAmps());// TODO check this is actually continuous limit
 
 //			for (com.team2813.lib.talon.options.HardLimitSwitch hardLimitSwitch : field.getAnnotationsByType(com.team2813.lib.talon.options.HardLimitSwitch.class)) {
 //				System.out.println("\tconfiguring hard limit switch " + hardLimitSwitch.direction());
 //				// FIXME remake limit switch stuff differently since it is called differently -- Grady 10/30 I'm not sure this is how it works for Spark Maxs
 //			}
 
-        for (LimitSwitchConfig limitSwitch : config.getLimitSwitches()) {
-            talon.setLimitSwitchSource(limitSwitch.direction, LimitSwitchSource.FeedbackConnector, limitSwitch.polarity.ctre);
-            talon.setClearPositionOnLimit(limitSwitch.direction, limitSwitch.clearOnLimit);
-            talon.enableLimitSwitches();
-        }
-
-        for (SoftLimitConfig softLimit : config.getSoftLimits()) {
-            talon.setSoftLimit(softLimit.direction, softLimit.threshold, softLimit.enable);
-            talon.setClearPositionOnLimit(softLimit.direction, softLimit.clearOnLimit);
-        }
+//        for (LimitSwitchConfig limitSwitch : config.getLimitSwitches()) {
+//            talon.setLimitSwitchSource(limitSwitch.direction, LimitSwitchSource.FeedbackConnector, limitSwitch.polarity.ctre);
+//            talon.setClearPositionOnLimit(limitSwitch.direction, limitSwitch.clearOnLimit);
+//            talon.enableLimitSwitches();
+//        }
+//
+//        for (SoftLimitConfig softLimit : config.getSoftLimits()) {
+//            talon.setSoftLimit(softLimit.direction, softLimit.threshold, softLimit.enable);
+//            talon.setClearPositionOnLimit(softLimit.direction, softLimit.clearOnLimit);
+//        }
 
 //
 //			for (com.team2813.lib.talon.options.SoftLimit softLimit : field.getAnnotationsByType(com.team2813co.lib.talon.options.SoftLimit.class)) {
@@ -90,10 +92,16 @@ public class MotorConfigs {
 //				//FIXME remake limit switch stuff differently
 //			}
 
-
         for (
                 PIDControllerConfig pidController : config.getPidControllers()) {
             int slotID = config.getPidControllers().indexOf(pidController);
+
+            if (talon instanceof TalonFXWrapper) {
+                ((TalonFXWrapper) talon).configEncoder(TalonFXFeedbackDevice.IntegratedSensor, TalonWrapper.PIDProfile.PRIMARY, 10);
+            }
+
+            System.out.println("Configuring PID: P=" + pidController.getP() + "I=" + pidController.getI() + "D=" + pidController.getD());
+
             talon.setPIDF(slotID, pidController.getP(), pidController.getI(),
                     pidController.getD(), pidController.getF());
             talon.setMotionMagicVelocity((int) pidController.getMaxVelocity()); // FIXME: 1/3/2020 Casting because
@@ -113,27 +121,25 @@ public class MotorConfigs {
                     "\tCreating follower w/ id of " + followerConfig.getId() + " on " + config.getSubsystemName()
             );
 
-            if (followerConfig.getMotorControllerType() == MotorControllerType.TALON_SRX) {
-                talon.set(ControlMode.Follower, followerConfig.getId());
+            TalonWrapper follower;
 
-                TalonSRX follower = new TalonSRX(followerConfig.getId());
-                follower.follow(talon);
-                if (followerConfig.getInverted() == SparkMaxWrapper.InvertType.OPPOSE_LEADER) {
-                    follower.setInverted(InvertType.OpposeMaster);
-                } else {
+            if (followerConfig.getMotorControllerType() == MotorControllerType.TALON_FX) {
+                follower = new TalonFXWrapper(followerConfig.getId(), config.getSubsystemName());
+            } else {
+                follower = new TalonSRXWrapper(followerConfig.getId(), config.getSubsystemName());
+            }
+
+            follower.follow(talon);
+
+            switch (followerConfig.getInverted()) {
+                case FOLLOW_LEADER:
                     follower.setInverted(InvertType.FollowMaster);
-                }
-            } else if (followerConfig.getMotorControllerType() == MotorControllerType.VICTOR_SPX) {
-                VictorSPX follower = new VictorSPX(followerConfig.getId());
-                follower.follow(talon);
-                if (followerConfig.getInverted() == SparkMaxWrapper.InvertType.OPPOSE_LEADER) {
+                    break;
+                case OPPOSE_LEADER:
                     follower.setInverted(InvertType.OpposeMaster);
-                } else {
-                    follower.setInverted(InvertType.FollowMaster);
-                }
+                    break;
             }
         }
-
         return talon;
     }
 
@@ -172,8 +178,8 @@ public class MotorConfigs {
 //				//FIXME remake limit switch stuff differently
 //			}
 
-
         for (PIDControllerConfig pidController : config.getPidControllers()) {
+
             int slotID = config.getPidControllers().indexOf(pidController);
             spark.setPIDF(slotID, pidController.getP(), pidController.getI(),
                     pidController.getD(), pidController.getF());
@@ -194,7 +200,7 @@ public class MotorConfigs {
             System.out.println(
                     "\tCreating follower w/ id of " + followerConfig.getId() + " on " + config.getSubsystemName()
             );
-            new SparkMaxWrapper(followerConfig.getId(), followerConfig.getMotorType().getValue(), spark);
+            new SparkMaxWrapper(followerConfig.getId(), followerConfig.getType().getValue(), spark);
         }
 
         return spark;
@@ -216,9 +222,9 @@ public class MotorConfigs {
 
     @SuppressWarnings({"unused", "WeakerAccess"})
     public static class RootConfigs {
-        private Map<String, SparkConfig> sparks;
-        private Map<String, TalonConfig> talons;
-        private Map<String, VictorConfig> victors;
+        private Map<String, SparkConfig> sparks = new HashMap<>();
+        private Map<String, TalonConfig> talons = new HashMap<>();
+        private Map<String, VictorConfig> victors = new HashMap<>();
 
         public Map<String, SparkConfig> getSparks() {
             return sparks;

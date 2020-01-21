@@ -1,6 +1,5 @@
 package com.team2813.lib.config;
 
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 
 import java.util.ArrayList;
@@ -9,6 +8,7 @@ import java.util.List;
 public class TalonConfig extends MotorConfig {
 
     private int deviceNumber;
+    private MotorControllerType motorControllerType;
     private int peakCurrentDuration;
     private int peakCurrentLimit;
     private boolean enableVoltageCompensation;
@@ -24,7 +24,7 @@ public class TalonConfig extends MotorConfig {
     private List<PIDControllerConfig> pidControllers;
     private List<SoftLimitConfig> softLimits;
     private List<LimitSwitchConfig> limitSwitches;
-    private StatusFrameEnhanced statusFrame; // cannot serialize into PeriodicFrame (see getStatusFrame)
+//    private StatusFrameEnhanced statusFrame; // cannot serialize into PeriodicFrame (see getStatusFrame)
     private int statusFramePeriod = 5;
     private VelocityMeasPeriod velocityMeasurementPeriod;
 
@@ -36,6 +36,14 @@ public class TalonConfig extends MotorConfig {
     @Override
     public void setDeviceNumber(int deviceNumber) {
         this.deviceNumber = deviceNumber;
+    }
+
+    public MotorControllerType getMotorControllerType() {
+        return motorControllerType;
+    }
+
+    public void setMotorControllerType(MotorControllerType motorControllerType) {
+        this.motorControllerType = motorControllerType;
     }
 
     public int getPeakCurrentDuration() {
@@ -118,13 +126,13 @@ public class TalonConfig extends MotorConfig {
         this.invertSensorPhase = invertSensorPhase;
     }
 
-    public StatusFrameEnhanced getStatusFrame() {
-        return statusFrame;
-    }
-
-    public void setStatusFrame(StatusFrameEnhanced statusFrame) {
-        this.statusFrame = statusFrame;
-    }
+//    public StatusFrameEnhanced getStatusFrame() {
+//        return statusFrame;
+//    }
+//
+//    public void setStatusFrame(StatusFrameEnhanced statusFrame) {
+//        this.statusFrame = statusFrame;
+//    }
 
     public int getStatusFramePeriod() {
         return statusFramePeriod;

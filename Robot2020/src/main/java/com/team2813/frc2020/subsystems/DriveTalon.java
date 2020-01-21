@@ -1,19 +1,25 @@
 package com.team2813.frc2020.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.*;
-import com.team2813.lib.ctre.CTREException;
 import com.team2813.lib.drive.ArcadeDrive;
 import com.team2813.lib.drive.CurvatureDrive;
 import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.drive.VelocityDriveTalon;
+import com.team2813.lib.motors.TalonFXWrapper;
 import com.team2813.lib.motors.TalonWrapper;
+import com.team2813.lib.motors.TalonWrapper.PIDProfile;
+import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import static com.team2813.frc2020.subsystems.Subsystems.DRIVE;
 
 /**
  * The Drive subsystem is the main subsystem for
@@ -25,8 +31,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
  */
 public class DriveTalon extends Subsystem {
     // Motor Controllers
-    private static final TalonWrapper LEFT = MotorConfigs.talons.get("driveLeft");
-    private static final TalonWrapper RIGHT = MotorConfigs.talons.get("driveRight");
+    private final TalonFXWrapper LEFT;
+    private final TalonFXWrapper RIGHT;
     private double right_demand;
     private double left_demand;
     private boolean isBrakeMode;
@@ -52,7 +58,7 @@ public class DriveTalon extends Subsystem {
         ARCADE, CURVATURE
     }
 
-    private static final int MAX_VELOCITY = 18000; // max velocity of velocity drive in rpm
+    private static final int MAX_VELOCITY = 6370; // max velocity of velocity drive in rpm
 
     private static final double CORRECTION_MAX_STEER_SPEED = 0.5;
     LimelightValues limelightValues = new LimelightValues();
@@ -63,9 +69,11 @@ public class DriveTalon extends Subsystem {
     DriveDemand driveDemand = new DriveDemand(0, 0);
 
     private NetworkTableEntry velocityEntry = Shuffleboard.getTab("Tuning")
-            .addPersistent("Velocity Drive", 0).getEntry();
+              .addPersistent("Velocity Drive", 0).getEntry();
     private boolean velocityEnabled = velocityEntry.getNumber(0).intValue() == 1;
     private boolean velocityFailed = false;
+
+    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(.343, .0462, .00316);
 
     DriveTalon() {
 
@@ -76,13 +84,21 @@ public class DriveTalon extends Subsystem {
         arcade_x = new ArcsinFilter(new DeadzoneFilter(ARCADE_X_AXIS, TELEOP_DEAD_ZONE));
         arcade_y = new ArcsinFilter(new DeadzoneFilter(ARCADE_Y_AXIS, TELEOP_DEAD_ZONE));
 
-        velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getTalons().get("driveLeft"));
-        velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getTalons().get("driveRight"));
+        LEFT = (TalonFXWrapper) MotorConfigs.talons.get("driveLeft");
+        RIGHT = (TalonFXWrapper) MotorConfigs.talons.get("driveRight");
+
+//        LEFT.configEncoder(TalonFXFeedbackDevice.IntegratedSensor, PIDProfile.PRIMARY, 0);
+//        RIGHT.configEncoder(TalonFXFeedbackDevice.IntegratedSensor, PIDProfile.PRIMARY, 0);
+
+//        velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getTalons().get("driveLeft"));
+//        velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getTalons().get("driveRight"));
     }
 
     private void teleopDrive(TeleopDriveType driveType) {
+//        System.out.println("Teleop Drive");
         if (driveType == TeleopDriveType.ARCADE) {
-            driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());;
+            driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());
+            ;
         } else {
             driveDemand = curvatureDrive.getDemand(CURVATURE_FORWARD.get(), CURVATURE_REVERSE.get(), CURVATURE_STEER.get(), PIVOT_BUTTON.get());
         }
@@ -107,6 +123,8 @@ public class DriveTalon extends Subsystem {
     @Override
     public void teleopControls() {
         driveMode = ShuffleboardData.driveModeChooser.getSelected();
+        if (driveMode == null) driveMode = DriveMode.OPEN_LOOP;
+//        System.out.println("Teleop Controls");
         teleopDrive(teleopDriveType);
     }
 
@@ -114,26 +132,58 @@ public class DriveTalon extends Subsystem {
         return false;
     }
 
-    public void outputTelemetry() {}
+    public void outputTelemetry() {
+        SmartDashboard.putNumber("Left Encoder", LEFT.getEncoderPosition());
+        SmartDashboard.putNumber("Right Encoder", RIGHT.getEncoderPosition());
+        SmartDashboard.putNumber("Left Velocity", LEFT.getVelocity() * (600.0 / 2048));
+        SmartDashboard.putNumber("Right Velocity", RIGHT.getVelocity() * (600.0 / 2048));
+        SmartDashboard.putString("Control Drive Mode", driveMode.toString());
 
-    @Override
-    public void onEnabledStart(double timestamp) {
-//		setBrakeMode(false);
+        double left = driveDemand.getLeft();
+        double right = driveDemand.getRight();
+        if (driveMode == DriveMode.VELOCITY) {
+            left = velocityDrive.getVelocityFromDemand(left);
+            right = velocityDrive.getVelocityFromDemand(right);
+        }
+        SmartDashboard.putNumber("Left Demand", left);
+        SmartDashboard.putNumber("Right Demand", right);
     }
 
     @Override
-    public void onEnabledLoop(double timestamp) {}
+    public void onEnabledStart(double timestamp) {
+        // TODO: 01/18/2020 verify true and false
+        setBrakeMode(false);
+    }
 
     @Override
-    public void onEnabledStop(double timestamp) {}
+    public void onDisabledStart(double timestamp) {
+        setBrakeMode(true);
+    }
+
+    @Override
+    public void onEnabledLoop(double timestamp) {
+    }
+
+    @Override
+    public void onEnabledStop(double timestamp) {
+    }
+
+    @Override
+    public void zeroSensors() {
+        LEFT.setEncoderPosition(0.0);
+        RIGHT.setEncoderPosition(0.0);
+    }
 
     @Override
     public synchronized void writePeriodicOutputs() {
-        if (!velocityFailed && velocityEnabled) {
+        if (driveMode == DriveMode.VELOCITY) {
             double leftVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getLeft());
             double rightVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getRight());
-            LEFT.set(ControlMode.Velocity, leftVelocity);
-            RIGHT.set(ControlMode.Velocity, rightVelocity);
+            SmartDashboard.putNumber("Left Feedforward", feedforward.calculate(leftVelocity / 600) / 1000);
+//            LEFT.set(ControlMode.VELOCITY, leftVelocity, feedforward.calculate(leftVelocity / 600) / 1000);
+//            RIGHT.set(ControlMode.VELOCITY, rightVelocity, feedforward.calculate(rightVelocity / 600) / 1000);
+            LEFT.set(ControlMode.VELOCITY, leftVelocity);
+            RIGHT.set(ControlMode.VELOCITY, rightVelocity);
         } else {
             LEFT.set(driveMode.controlMode, driveDemand.getLeft());
             RIGHT.set(driveMode.controlMode, driveDemand.getRight());
@@ -141,18 +191,15 @@ public class DriveTalon extends Subsystem {
     }
 
     public synchronized void setBrakeMode(boolean brake) {
-        if (isBrakeMode != brake) {
-            isBrakeMode = brake;
-            NeutralMode mode = brake ? NeutralMode.Brake : NeutralMode.Coast;
-            RIGHT.setNeutralMode(mode);
-            LEFT.setNeutralMode(mode);
-        }
+        NeutralMode mode = brake ? NeutralMode.Brake : NeutralMode.Coast;
+        RIGHT.setNeutralMode(mode);
+        LEFT.setNeutralMode(mode);
     }
 
     public enum DriveMode {
-        OPEN_LOOP(ControlMode.PercentOutput),
-        MOTION_MAGIC(ControlMode.MotionMagic),
-        VELOCITY(ControlMode.Velocity);
+        OPEN_LOOP(ControlMode.DUTY_CYCLE),
+        MOTION_MAGIC(ControlMode.MOTION_MAGIC),
+        VELOCITY(ControlMode.VELOCITY);
 
         ControlMode controlMode;
 
