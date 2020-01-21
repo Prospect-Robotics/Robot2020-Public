@@ -23,9 +23,9 @@ talons:
         inverted: FOLLOW_LEADER
     inverted: NONINVERTED
     pidControllers:
-      - p: 0.00399
+      - p: .0062
         i: 0
-        d: 0
+        d: 1
         f: 0
         maxVelocity: 18000
         maxAcceleration: 45000
@@ -55,9 +55,9 @@ talons:
         inverted: FOLLOW_LEADER
     inverted: INVERTED
     pidControllers:
-      - p: 0.00399
+      - p: 0.0062
         i: 0
-        d: 0
+        d: 1
         f: 0
         maxVelocity: 18000
         maxAcceleration: 45000

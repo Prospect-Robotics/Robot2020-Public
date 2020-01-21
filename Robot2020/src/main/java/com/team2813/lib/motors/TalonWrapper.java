@@ -24,7 +24,7 @@ public abstract class TalonWrapper<Controller extends BaseTalon> implements Moto
     public Object set(ControlMode controlMode, double demand, double feedForward) {
         switch (controlMode){
             case VELOCITY:
-                demand *= (2048.0 / 60.0);
+                demand = convertRPM(demand);
                 break;
             case MOTION_MAGIC:
                 demand *= 2048;
@@ -171,6 +171,14 @@ public abstract class TalonWrapper<Controller extends BaseTalon> implements Moto
 
     public void follow(TalonWrapper master) {
         controller.follow(master.controller);
+    }
+
+    public double getVelocity() {
+        return controller.getSelectedSensorVelocity();
+    }
+
+    public static double convertRPM(double rpm) {
+        return rpm * (2048.0 / 60);
     }
 
     public enum PIDProfile {
