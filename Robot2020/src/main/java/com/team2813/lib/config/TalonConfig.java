@@ -1,6 +1,5 @@
 package com.team2813.lib.config;
 
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 
 import java.util.ArrayList;
@@ -10,6 +9,7 @@ public class TalonConfig extends MotorConfig {
 
     //Required
     private int deviceNumber;
+    private MotorControllerType motorControllerType;
     private Inverted inverted;
 
     private int peakCurrentDuration = 0;
@@ -38,6 +38,14 @@ public class TalonConfig extends MotorConfig {
     @Override
     public void setDeviceNumber(int deviceNumber) {
         this.deviceNumber = deviceNumber;
+    }
+
+    public MotorControllerType getMotorControllerType() {
+        return motorControllerType;
+    }
+
+    public void setMotorControllerType(MotorControllerType motorControllerType) {
+        this.motorControllerType = motorControllerType;
     }
 
     public int getPeakCurrentDuration() {
