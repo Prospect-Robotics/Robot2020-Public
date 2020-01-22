@@ -4,6 +4,7 @@ import com.team2813.lib.config.MotorConfig;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.motors.SparkMaxWrapper;
+import com.team2813.lib.motors.TalonFXWrapper;
 import com.team2813.lib.motors.TalonWrapper;
 
 /**
@@ -15,12 +16,17 @@ import com.team2813.lib.motors.TalonWrapper;
 
 public class Shooter extends Subsystem1d<Shooter.Position>{
 
-    private static final SparkMaxWrapper MOTOR = MotorConfigs.sparks.get("shooter");
     private static final Button SHOOTER_BUTTON = SubsystemControlsConfig.getShooterButton();
+    private final SparkMaxWrapper HOOD;
+    private final TalonFXWrapper FLYWHEEL;
+    private static final int MIN_ANGLE = 35;
+    private static final int MAX_ANGLE = 70;
     private static Position currentPosition = Position.ONE;
 
     Shooter() {
-        super(MOTOR);
+        super(MotorConfigs.sparks.get("hood"));
+        HOOD = MotorConfigs.sparks.get("hood");
+        FLYWHEEL = (TalonFXWrapper) MotorConfigs.talons.get("flywheel");
     }
 
 
@@ -32,7 +38,8 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
 
     @Override
     void setNextPosition(Position position) {
-
+        currentPosition = position;
+        setPosition(currentPosition);
     }
 
     @Override
@@ -46,7 +53,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
     }
 
     public enum Position implements Subsystem1d.Position<Shooter.Position> {
-        ONE(0.0){
+        ONE(revsToDegrees(35.0)){
             @Override
             public Position getNextClockwise() {
                 return TWO;
@@ -56,7 +63,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
             public Position getNextCounter() {
                 return EIGHT;
             }
-        }, TWO(6.857){
+        }, TWO(revsToDegrees(39.375)){
             @Override
             public Position getNextClockwise() {
                 return THREE;
@@ -66,7 +73,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
             public Position getNextCounter() {
                 return ONE;
             }
-        }, THREE(13.714){
+        }, THREE(revsToDegrees(43.75)){
             @Override
             public Position getNextClockwise() {
                 return FOUR;
@@ -76,7 +83,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
             public Position getNextCounter() {
                 return TWO;
             }
-        }, FOUR(20.571){
+        }, FOUR(revsToDegrees(52.5)){
             @Override
             public Position getNextClockwise() {
                 return FIVE;
@@ -86,7 +93,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
             public Position getNextCounter() {
                 return THREE;
             }
-        }, FIVE(27.428){
+        }, FIVE(revsToDegrees(56.875)){
             @Override
             public Position getNextClockwise() {
                 return SIX;
@@ -96,7 +103,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
             public Position getNextCounter() {
                 return FOUR;
             }
-        }, SIX(34.285){
+        }, SIX(revsToDegrees(61.25)){
             @Override
             public Position getNextClockwise() {
                 return SEVEN;
@@ -107,7 +114,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
                 return FIVE;
             }
 
-        }, SEVEN(41.142){
+        }, SEVEN(revsToDegrees(65.625)){
             @Override
             public Position getNextClockwise() {
                 return SIX;
@@ -118,7 +125,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
                 return EIGHT;
             }
 
-        }, EIGHT(48.0){
+        }, EIGHT(revsToDegrees(70)){
             @Override
             public Position getNextClockwise() {
                 return ONE;
@@ -166,5 +173,9 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
         public Position getClock(boolean clockwise) {
             return clockwise ? getNextClockwise() : getNextCounter();
         }
+    }
+
+    private static double revsToDegrees(double revs){
+        return revs*(MAX_ANGLE-MIN_ANGLE)/48;
     }
 }
