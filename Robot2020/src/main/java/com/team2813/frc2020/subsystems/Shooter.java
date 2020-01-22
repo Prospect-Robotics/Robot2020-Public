@@ -6,6 +6,7 @@ import com.team2813.lib.controls.Button;
 import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.motors.TalonFXWrapper;
 import com.team2813.lib.motors.TalonWrapper;
+import com.team2813.lib.motors.interfaces.ControlMode;
 
 /**
  * Class for the shooter on the robot.
@@ -16,6 +17,7 @@ import com.team2813.lib.motors.TalonWrapper;
 
 public class Shooter extends Subsystem1d<Shooter.Position>{
 
+    private static final Button HOOD_BUTTON = SubsystemControlsConfig.getHoodButton();
     private static final Button SHOOTER_BUTTON = SubsystemControlsConfig.getShooterButton();
     private final SparkMaxWrapper HOOD;
     private final TalonFXWrapper FLYWHEEL;
@@ -49,7 +51,9 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
 
     @Override
     public void teleopControls() {
-        SHOOTER_BUTTON.whenPressed(() -> setNextPosition(true));
+        HOOD_BUTTON.whenPressed(() -> setNextPosition(true));
+        SHOOTER_BUTTON.whileHeld(() -> FLYWHEEL.set(ControlMode.DUTY_CYCLE, 1));
+        SHOOTER_BUTTON.whenReleased(() -> FLYWHEEL.set(ControlMode.DUTY_CYCLE, 0));
     }
 
     public enum Position implements Subsystem1d.Position<Shooter.Position> {
@@ -177,5 +181,10 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
 
     private static double revsToDegrees(double revs){
         return revs*(MAX_ANGLE-MIN_ANGLE)/48;
+    }
+
+    private static double distanceToAngle(double meters){
+        //TODO Get equation from Sid S.
+        return meters;
     }
 }
