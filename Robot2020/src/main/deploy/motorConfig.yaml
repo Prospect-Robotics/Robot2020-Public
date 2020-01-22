@@ -5,23 +5,13 @@ talons:
     motorControllerType: TALON_FX
     type: BRUSHLESS
     subsystemName: Drive
-    peakCurrentDuration: 0
-    peakCurrentLimit: 0
-    enableVoltageCompensation: true
-    compSaturationVoltage: 12
-    continuousCurrentLimitAmps: 40
-    motionAcceleration: 0
-    motionCruiseVelocity: 0
-    closedLoopRampRate: 0
-    openLoopRampRate: 0
-    invertSensorPhase: true
+    inverted: NONINVERTED
     statusFrame: STATUS_2
     followers:
       - id: 2
         motorControllerType: TALON_FX
         type: BRUSHLESS
         inverted: FOLLOW_LEADER
-    inverted: NONINVERTED
     pidControllers:
       - p: .0062
         i: 0
@@ -37,23 +27,13 @@ talons:
     motorControllerType: TALON_FX
     type: BRUSHLESS
     subsystemName: Drive
-    peakCurrentDuration: 0
-    peakCurrentLimit: 0
-    enableVoltageCompensation: true
-    compSaturationVoltage: 12
-    continuousCurrentLimitAmps: 40
-    motionAcceleration: 0
-    motionCruiseVelocity: 0
-    closedLoopRampRate: 0
-    openLoopRampRate: 0
-    invertSensorPhase: true
+    inverted: INVERTED
     statusFrame: STATUS_2
     followers:
       - id: 4
         motorControllerType: TALON_FX
         type: BRUSHLESS
         inverted: FOLLOW_LEADER
-    inverted: INVERTED
     pidControllers:
       - p: 0.0062
         i: 0

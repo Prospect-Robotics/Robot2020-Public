@@ -7,19 +7,21 @@ import java.util.List;
 
 public class TalonConfig extends MotorConfig {
 
+    //Required
     private int deviceNumber;
     private MotorControllerType motorControllerType;
-    private int peakCurrentDuration;
-    private int peakCurrentLimit;
-    private boolean enableVoltageCompensation;
-    private int compSaturationVoltage;
-    private int continuousCurrentLimitAmps;
-    private int motionAcceleration;
-    private int motionCruiseVelocity;
-    private double closedLoopRampRate;
-    private double openLoopRampRate;
-    private boolean invertSensorPhase;
     private Inverted inverted;
+
+    private int peakCurrentDuration = 0;
+    private int peakCurrentLimit = 0;
+    private boolean enableVoltageCompensation = true;
+    private int compSaturationVoltage = 12;
+    private int continuousCurrentLimitAmps = 40;
+    private int motionAcceleration = 0;
+    private int motionCruiseVelocity = 0;
+    private double closedLoopRampRate = 0;
+    private double openLoopRampRate = 0;
+    private boolean invertSensorPhase = true;
     private List<FollowerConfig> followers = new ArrayList<>();
     private List<PIDControllerConfig> pidControllers;
     private List<SoftLimitConfig> softLimits;
@@ -126,6 +128,7 @@ public class TalonConfig extends MotorConfig {
         this.invertSensorPhase = invertSensorPhase;
     }
 
+    // TODO: 1/18/2020 Status Frame Commented out
 //    public StatusFrameEnhanced getStatusFrame() {
 //        return statusFrame;
 //    }
