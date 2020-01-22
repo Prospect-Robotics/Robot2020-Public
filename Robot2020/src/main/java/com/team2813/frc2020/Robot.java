@@ -8,10 +8,10 @@
 package com.team2813.frc2020;
 
 import com.ctre.phoenix.CANifier;
+import com.team2813.frc2020.auto.AutoRoutine;
 import com.team2813.frc2020.auto.Autonomous;
 import com.team2813.frc2020.subsystems.Subsystem;
 import com.team2813.frc2020.subsystems.Subsystems;
-import com.team2813.frc2020.util.AutonomousPath;
 import com.team2813.frc2020.util.RobotTest;
 import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.lib.config.MotorConfigs;
@@ -45,7 +45,6 @@ public class Robot extends TimedRobot {
     public static Autonomous autonomous;
 
     private CANifier caNifier = new CANifier(0);
-    public static AutonomousPath chosenPath;
     public static boolean isAuto = false;
 
     /**
@@ -59,6 +58,7 @@ public class Robot extends TimedRobot {
             MotorConfigs.read();
             Subsystems.initializeSubsystems();
             autonomous = new Autonomous();
+            AutoRoutine.addRoutines();
             ShuffleboardData.init();
 
             DriveDemand.circumference = Math.PI * WHEEL_DIAMETER;
@@ -117,8 +117,8 @@ public class Robot extends TimedRobot {
         isAuto = true;
         try {
             CrashTracker.logAutoInit();
-            Compressor compressor = new Compressor(); // FIXME: 11/02/2019 this shouldn't need to be here
-            compressor.start();
+//            Compressor compressor = new Compressor(); // FIXME: 11/02/2019 this shouldn't need to be here
+//            compressor.start();
             for (Subsystem subsystem : allSubsystems) {
                 subsystem.zeroSensors();
             }

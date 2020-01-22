@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 
 import java.util.List;
 
-public class PauseTrajectory extends Trajectory {
+public class PauseTrajectory extends Trajectory implements AutoTrajectory {
     private double time;
 
     private PauseTrajectory(List<State> states) { // should never be used
@@ -12,7 +12,7 @@ public class PauseTrajectory extends Trajectory {
     }
 
     public PauseTrajectory(double time) {
-        super(List.of());
+        super(List.of(new Trajectory.State()));
         this.time = time;
     }
 
@@ -21,7 +21,17 @@ public class PauseTrajectory extends Trajectory {
         return time;
     }
 
-    public boolean isPause(double time) {
-        return time > this.time;
+    @Override
+    public Trajectory getTrajectory() {
+        return this;
+    }
+
+    @Override
+    public boolean isReversed() {
+        return false;
+    }
+
+    public boolean isPause() {
+        return true;
     }
 }

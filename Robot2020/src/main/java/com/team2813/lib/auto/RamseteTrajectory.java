@@ -18,8 +18,8 @@ public class RamseteTrajectory {
         this.reversed.add(reversed);
     }
 
-    public RamseteTrajectory(List<GeneratedTrajectory> generatedTrajectories) {
-        for (GeneratedTrajectory generatedTrajectory : generatedTrajectories) {
+    public RamseteTrajectory(List<AutoTrajectory> generatedTrajectories) {
+        for (AutoTrajectory generatedTrajectory : generatedTrajectories) {
             trajectories.add(generatedTrajectory.getTrajectory());
             reversed.add(generatedTrajectory.isReversed());
         }
@@ -30,12 +30,12 @@ public class RamseteTrajectory {
         for (int i = 0; i < trajectories.size(); i++) {
             Trajectory trajectory = trajectories.get(i);
 
-            if (trajectory instanceof PauseTrajectory) // if it is a pause
-                return new TrajectorySample(((PauseTrajectory) trajectory).isPause(time));
+            if (dt < time + trajectory.getTotalTimeSeconds()) {
+                if (trajectory instanceof PauseTrajectory) // if it is a pause
+                    return new TrajectorySample(true);
 
-            if (dt < time + trajectory.getTotalTimeSeconds())
                 return new TrajectorySample(trajectory.sample(dt - time), reversed.get(i));
-            else
+            } else
                 time += trajectory.getTotalTimeSeconds();
         }
         return new TrajectorySample(trajectories.get(0).sample(dt), reversed.get(0));

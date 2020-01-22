@@ -15,6 +15,5 @@ public class ShuffleboardData {
         SmartDashboard.putData("Auto Routine", routineChooser);
         SmartDashboard.putData("Drive Mode", driveModeChooser);
         SmartDashboard.putData("Teleop Drive Type", teleopDriveTypeChooser);
-
     }
 }

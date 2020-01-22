@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 
-public class GeneratedTrajectory {
+public class GeneratedTrajectory implements AutoTrajectory{
     private boolean reversed;
 
     private Trajectory trajectory;
@@ -29,5 +29,10 @@ public class GeneratedTrajectory {
 
     public Trajectory getTrajectory() {
         return trajectory;
+    }
+
+    @Override
+    public double getTotalTimeSeconds() {
+        return trajectory.getTotalTimeSeconds();
     }
 }
