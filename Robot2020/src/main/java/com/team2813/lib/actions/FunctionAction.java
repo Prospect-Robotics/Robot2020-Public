@@ -19,7 +19,7 @@ public class FunctionAction extends Action {
 		this.removeOnDisabled = removeOnDisabled;
 	}
 
-	@Override
+    @Override
 	public void start(double timestamp) {
 		function.run();
 	}

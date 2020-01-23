@@ -4,8 +4,13 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 
 @SuppressWarnings("unused")
 public enum Inverted {
-    NONINVERTED(InvertType.None), INVERTED(InvertType.InvertMotorOutput),
-    FOLLOW_LEADER(InvertType.FollowMaster), OPPOSE_LEADER(InvertType.OpposeMaster);
-    InvertType value;
-    Inverted(InvertType value){this.value = value;}
+	NONINVERTED(InvertType.None),
+    INVERTED(InvertType.InvertMotorOutput),
+	FOLLOW_LEADER(InvertType.FollowMaster),
+    OPPOSE_LEADER(InvertType.OpposeMaster);
+	InvertType value;
+
+	Inverted(InvertType value) {
+		this.value = value;
+	}
 }

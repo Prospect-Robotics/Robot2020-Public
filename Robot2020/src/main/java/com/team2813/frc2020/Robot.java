@@ -8,22 +8,26 @@
 package com.team2813.frc2020;
 
 import com.ctre.phoenix.CANifier;
+import com.team2813.frc2020.auto.AutoRoutine;
+import com.team2813.frc2020.auto.Autonomous;
 import com.team2813.frc2020.subsystems.Subsystem;
 import com.team2813.frc2020.subsystems.Subsystems;
-import com.team2813.frc2020.util.AutonomousPath;
 import com.team2813.frc2020.util.RobotTest;
 import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.util.CrashTracker;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.io.IOException;
 
 import static com.team2813.frc2020.subsystems.Subsystems.*;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -39,8 +43,10 @@ public class Robot extends TimedRobot {
     private static boolean BATTERY_TOO_LOW = false;
     private final double WHEEL_DIAMETER = 6.0;
 
+    public static Autonomous autonomous;
+
     private CANifier caNifier = new CANifier(0);
-    public static AutonomousPath chosenPath;
+    public static boolean isAuto = false;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -52,6 +58,8 @@ public class Robot extends TimedRobot {
             CrashTracker.logRobotInit();
             MotorConfigs.read();
             Subsystems.initializeSubsystems();
+            autonomous = new Autonomous();
+            AutoRoutine.addRoutines();
             ShuffleboardData.init();
 
             DriveDemand.circumference = Math.PI * WHEEL_DIAMETER;
@@ -107,23 +115,15 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        chosenPath = ShuffleboardData.pathChooser.getSelected();
-
-        for (Subsystem subsystem : allSubsystems) {
-            subsystem.zeroSensors();
-        }
+        isAuto = true;
         try {
-            // A: Green
-            // B: Red
-            // C: Blue
-            caNifier.setLEDOutput(255, CANifier.LEDChannel.LEDChannelA);
-            caNifier.setLEDOutput(0, CANifier.LEDChannel.LEDChannelB);
-            caNifier.setLEDOutput(0, CANifier.LEDChannel.LEDChannelC);
             CrashTracker.logAutoInit();
+//            Compressor compressor = new Compressor(); // FIXME: 11/02/2019 this shouldn't need to be here
+//            compressor.start();
             for (Subsystem subsystem : allSubsystems) {
                 subsystem.zeroSensors();
             }
-
+            autonomous.run(); //TODO 1/7/20 work on decision logic for auto routine
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
@@ -134,6 +134,7 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         try {
             System.out.println("teleopInit");
+            isAuto = false;
 
             CrashTracker.logTeleopInit();
             LOOPER.setMode(RobotMode.ENABLED);
@@ -150,13 +151,6 @@ public class Robot extends TimedRobot {
     }
 
     /**
-     * This function is called periodically during autonomous.
-     */
-    @Override
-    public void autonomousPeriodic() {
-    }
-
-    /**
      * This function is called periodically during operator control.
      */
     @Override
@@ -170,11 +164,21 @@ public class Robot extends TimedRobot {
     @Override
     public void testPeriodic() {
     }
+
+    /**
+     * This function is called periodically during autonomous.
+     */
     @Override
-    public void testInit(){
+    public void autonomousPeriodic() {
+        autonomous.periodic();
+    }
+
+    @Override
+    public void testInit() {
         RobotTest robotTest = new RobotTest();
         robotTest.run();
     }
+
     public enum RobotMode {
         DISABLED, ENABLED
     }
