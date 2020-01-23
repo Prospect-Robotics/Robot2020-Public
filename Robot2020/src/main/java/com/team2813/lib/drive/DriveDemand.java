@@ -14,14 +14,21 @@ public class DriveDemand {
     }
 
     public DriveDemand(DifferentialDriveWheelSpeeds wheelSpeeds) { // to rpm
-        left = Units.metersToInches(wheelSpeeds.leftMetersPerSecond) * 60 / circumference / (9.0 / 60);
-        right = Units.metersToInches(wheelSpeeds.rightMetersPerSecond) * 60 / circumference / (9.0 / 60);
+        left = wheelSpeeds.leftMetersPerSecond;
+        right = wheelSpeeds.rightMetersPerSecond;
     }
 
     public DriveDemand reverse() {
         double temp = left;
         left = -right;
         right = -temp;
+        return this;
+    }
+
+    public DriveDemand flip() {
+        double temp = left;
+        left = right;
+        right = temp;
         return this;
     }
 

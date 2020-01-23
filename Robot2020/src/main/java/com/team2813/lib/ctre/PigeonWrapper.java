@@ -8,6 +8,7 @@ import com.team2813.lib.motors.TalonWrapper;
 
 public class PigeonWrapper extends PigeonIMU {
 	String subsystemName;
+	double[] ypr = new double[3];
 
 	public PigeonWrapper(int deviceNumber, String subsystemName) {
 		super(deviceNumber);
@@ -20,7 +21,13 @@ public class PigeonWrapper extends PigeonIMU {
 	}
 
 	public double getHeading() {
-		return getFusedHeading();
+		getYawPitchRoll(ypr);
+		return ypr[0];
+	}
+
+	public void setHeading(double angle) {
+		setYaw(angle);
+		setAccumZAngle(0);
 	}
 
 }

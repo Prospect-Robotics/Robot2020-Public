@@ -16,6 +16,8 @@ import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Transform2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -116,7 +118,8 @@ public class DriveTalon extends Subsystem {
 
         DriveDemand.circumference = WHEEL_CIRCUMFERENCE;
 
-        pigeon.setFusedHeading(0);
+        pigeon.setYawToCompass();
+        pigeon.setHeading(0);
         odometry = new DifferentialDriveOdometry(new Rotation2d(pigeon.getHeading()));
 
 //        velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getTalons().get("driveLeft"));
@@ -199,12 +202,12 @@ public class DriveTalon extends Subsystem {
     public void zeroSensors() {
         LEFT.setEncoderPosition(0.0);
         RIGHT.setEncoderPosition(0.0);
-        pigeon.setFusedHeading(0);
+        pigeon.setHeading(0);
     }
 
     @Override
     public synchronized void writePeriodicOutputs() {
-        if (driveMode == DriveMode.VELOCITY) {
+        if (driveMode == DriveMode.VELOCITY || Robot.isAuto) {
             DriveDemand demand = Units2813.dtDemandToMotorDemand(driveDemand); // local variable for telemetry reasons
 
             LEFT.set(ControlMode.VELOCITY, demand.getLeft(), feedforward.calculate(demand.getLeft()) / 12);
@@ -219,7 +222,9 @@ public class DriveTalon extends Subsystem {
     protected void readPeriodicInputs() {
         double leftDistance = Units2813.motorRevsToWheelRevs(LEFT.getEncoderPosition()) * WHEEL_CIRCUMFERENCE;
         double rightDistance = Units2813.motorRevsToWheelRevs(RIGHT.getEncoderPosition()) * WHEEL_CIRCUMFERENCE;
-        robotPosition = odometry.update(Rotation2d.fromDegrees(-pigeon.getHeading()), leftDistance, rightDistance);
+        robotPosition = odometry.update(Rotation2d.fromDegrees(pigeon.getHeading()), leftDistance, rightDistance);
+//        robotPosition = new Pose2d(new Translation2d(-robotPosition.getTranslation().getX(), robotPosition.getTranslation().getY()), robotPosition.getRotation());
+//        robotPosition.transformBy(new Transform2d(0, ));
     }
 
     public synchronized void setBrakeMode(boolean brake) {
@@ -229,8 +234,8 @@ public class DriveTalon extends Subsystem {
     }
 
     public void initAutonomous(Pose2d initialPose) {
+        pigeon.setHeading(initialPose.getRotation().getDegrees());
         odometry.resetPosition(initialPose, initialPose.getRotation());
-        pigeon.setFusedHeading(initialPose.getRotation().getDegrees());
     }
 
     public void setDemand(DriveDemand demand) {

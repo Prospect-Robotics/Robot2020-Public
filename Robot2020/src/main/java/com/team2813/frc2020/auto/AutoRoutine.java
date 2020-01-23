@@ -35,7 +35,7 @@ public enum AutoRoutine {
     }
 
     public static void addRoutines() {
-        for (AutoRoutine routine : Arrays.asList(AutoRoutine.values())) {
+        for (AutoRoutine routine : AutoRoutine.values()) {
             ShuffleboardData.routineChooser.addOption(routine.name, routine);
         }
     }

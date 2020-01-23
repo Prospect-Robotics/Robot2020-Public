@@ -116,7 +116,6 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         isAuto = true;
-        DRIVE.robotPosition = new Pose2d();
         try {
             CrashTracker.logAutoInit();
 //            Compressor compressor = new Compressor(); // FIXME: 11/02/2019 this shouldn't need to be here
