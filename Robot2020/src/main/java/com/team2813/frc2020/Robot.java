@@ -16,6 +16,7 @@ import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.util.CrashTracker;
+import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -39,6 +40,7 @@ public class Robot extends TimedRobot {
     private static boolean BATTERY_TOO_LOW = false;
     private final double WHEEL_DIAMETER = 6.0;
 
+    public final LimelightValues limelightValues = new LimelightValues();
     private CANifier caNifier = new CANifier(0);
     public static AutonomousPath chosenPath;
 
@@ -88,6 +90,8 @@ public class Robot extends TimedRobot {
         Subsystems.outputTelemetry();
         BATTERY_TOO_LOW = disabled && voltage > MIN_DISABLED_VOLTAGE;
         SmartDashboard.putBoolean("Replace Battery if Red", disabled ? voltage > MIN_DISABLED_VOLTAGE : voltage > MIN_IDLE_VOLTAGE);
+
+        limelightValues.update();
     }
 
     @Override

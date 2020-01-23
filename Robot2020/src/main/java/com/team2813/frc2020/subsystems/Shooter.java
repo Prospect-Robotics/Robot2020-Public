@@ -1,5 +1,6 @@
 package com.team2813.frc2020.subsystems;
 
+import com.team2813.frc2020.Robot;
 import com.team2813.lib.config.MotorConfig;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
@@ -7,11 +8,13 @@ import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.motors.TalonFXWrapper;
 import com.team2813.lib.motors.TalonWrapper;
 import com.team2813.lib.motors.interfaces.ControlMode;
+import com.team2813.lib.util.LimelightValues;
 
 /**
  * Class for the shooter on the robot.
  *
  * @author Sid Banerjee
+ * @author Daniel Tsai
  *
  */
 
@@ -24,6 +27,9 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
     private static final int MIN_ANGLE = 35;
     private static final int MAX_ANGLE = 70;
     private static Position currentPosition = Position.ONE;
+
+    //TODO May be removed
+    private boolean manualMode = false;
 
     Shooter() {
         super(MotorConfigs.sparks.get("hood"));
@@ -51,9 +57,19 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
 
     @Override
     public void teleopControls() {
-        HOOD_BUTTON.whenPressed(() -> setNextPosition(true));
-        SHOOTER_BUTTON.whileHeld(() -> FLYWHEEL.set(ControlMode.DUTY_CYCLE, 1));
+        if(manualMode) {
+            HOOD_BUTTON.whenPressed(() -> setNextPosition(true));
+        }
+        SHOOTER_BUTTON.whenPressed(() -> FLYWHEEL.set(ControlMode.DUTY_CYCLE, 1));
         SHOOTER_BUTTON.whenReleased(() -> FLYWHEEL.set(ControlMode.DUTY_CYCLE, 0));
+    }
+
+    @Override
+    public void onEnabledLoop(double timestamp){
+        double distance = 2.49/Math.atan(new LimelightValues().getTy().getDouble(0));
+        if(!manualMode){
+            setPosition(degreesToRevs(distanceToAngle(distance)));
+        }
     }
 
     public enum Position implements Subsystem1d.Position<Shooter.Position> {
@@ -181,6 +197,10 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
 
     private static double revsToDegrees(double revs){
         return revs*(MAX_ANGLE-MIN_ANGLE)/48;
+    }
+
+    private static double degreesToRevs(double degrees){
+        return degrees*48/(MAX_ANGLE-MIN_ANGLE);
     }
 
     private static double distanceToAngle(double meters){
