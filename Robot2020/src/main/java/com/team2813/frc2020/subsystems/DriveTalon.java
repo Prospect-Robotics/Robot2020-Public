@@ -2,6 +2,7 @@ package com.team2813.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.team2813.frc2020.Robot;
+import com.team2813.frc2020.util.Limelight;
 import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.frc2020.util.Units2813;
 import com.team2813.lib.config.MotorConfigs;
@@ -13,7 +14,6 @@ import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.drive.VelocityDriveTalon;
 import com.team2813.lib.motors.TalonFXWrapper;
 import com.team2813.lib.motors.interfaces.ControlMode;
-import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Transform2d;
@@ -75,6 +75,7 @@ public class DriveTalon extends Subsystem {
     private double TRACK_WIDTH = 26;
     public static final double GEAR_RATIO = (60.0 / 10.0) * (28.0 / 20.0);
     public DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(TRACK_WIDTH));
+    private Limelight limelight = new Limelight();
 
     // Odometry
     private static DifferentialDriveOdometry odometry;
@@ -89,9 +90,6 @@ public class DriveTalon extends Subsystem {
     }
 
     private static final double MAX_VELOCITY = 4.3677; // max velocity of velocity drive in meters per second
-
-    private static final double CORRECTION_MAX_STEER_SPEED = 0.5;
-    LimelightValues limelightValues = new LimelightValues();
 
     VelocityDriveTalon velocityDrive = new VelocityDriveTalon(MAX_VELOCITY);
     CurvatureDrive curvatureDrive = new CurvatureDrive(TELEOP_DEAD_ZONE);
@@ -127,11 +125,14 @@ public class DriveTalon extends Subsystem {
     }
 
     private void teleopDrive(TeleopDriveType driveType) {
-//        System.out.println("Teleop Drive");
-        if (driveType == TeleopDriveType.ARCADE) {
+        if (AUTO_BUTTON.get()) {
+            driveDemand = curvatureDrive.getDemand(0, 0, limelight.getSteer(), true);
+        } else if (driveType == TeleopDriveType.ARCADE) {
             driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());;
         } else {
-            driveDemand = curvatureDrive.getDemand(CURVATURE_FORWARD.get(), CURVATURE_REVERSE.get(), CURVATURE_STEER.get(), PIVOT_BUTTON.get());
+            double steer = CURVATURE_STEER.get();
+            if (PIVOT_BUTTON.get()) steer *= .4; // cap it so it's not too sensitive
+            driveDemand = curvatureDrive.getDemand(CURVATURE_FORWARD.get(), CURVATURE_REVERSE.get(), steer, PIVOT_BUTTON.get());
         }
 
         if (driveMode == DriveMode.VELOCITY) {
@@ -174,6 +175,7 @@ public class DriveTalon extends Subsystem {
         SmartDashboard.putString("Control Drive Mode", driveMode.toString());
         SmartDashboard.putNumber("Gyro", pigeon.getHeading());
         SmartDashboard.putString("Odometry", odometry.getPoseMeters().toString());
+        SmartDashboard.putNumber("Limelight Angle", limelight.getValues().getTx());
 
         SmartDashboard.putNumber("Left Demand", driveDemand.getLeft());
         SmartDashboard.putNumber("Right Demand", driveDemand.getRight());
