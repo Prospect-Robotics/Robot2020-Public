@@ -26,12 +26,7 @@ public class Mag extends Subsystem {
         START_STOP_BUTTON.whenPressed(() -> {
             demand = demand == Demand.ON ? Demand.OFF : Demand.ON;
         });
-        REVERSE_BUTTON.whenPressed(() -> {
-            demand = Demand.REV;
-        });
-        REVERSE_BUTTON.whenReleased(() -> {
-            demand = Demand.OFF;
-        });
+        REVERSE_BUTTON.whenPressedReleased(() -> demand = Demand.REV, () -> demand = Demand.OFF);
     }
 
     @Override
