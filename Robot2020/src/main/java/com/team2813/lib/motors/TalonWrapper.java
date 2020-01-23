@@ -3,10 +3,12 @@ package com.team2813.lib.motors;
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
+import com.team2813.frc2020.util.Units2813;
 import com.team2813.lib.ctre.CTREException;
 import com.team2813.lib.ctre.TimeoutMode;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.motors.interfaces.LimitDirection;
+import edu.wpi.first.wpilibj.util.Units;
 
 public abstract class TalonWrapper<Controller extends BaseTalon> implements Motor {
     private TimeoutMode timeoutMode = TimeoutMode.CONSTRUCTING;
@@ -24,10 +26,10 @@ public abstract class TalonWrapper<Controller extends BaseTalon> implements Moto
     public Object set(ControlMode controlMode, double demand, double feedForward) {
         switch (controlMode){
             case VELOCITY:
-                demand = convertRPM(demand);
+                demand = Units2813.motorRevsToTicks(demand / 60 / 10);
                 break;
             case MOTION_MAGIC:
-                demand *= 2048;
+                demand = Units2813.motorRevsToTicks(demand);
                 break;
         }
         controller.set(controlMode.getTalonMode(), demand, DemandType.ArbitraryFeedForward, feedForward);
@@ -40,8 +42,8 @@ public abstract class TalonWrapper<Controller extends BaseTalon> implements Moto
     }
 
     @Override
-    public double getEncoderPosition() {
-        return controller.getSelectedSensorPosition();
+    public double getEncoderPosition() { // returns revolutions
+        return Units2813.ticksToMotorRevs(controller.getSelectedSensorPosition());
     }
 
     @Override
@@ -173,8 +175,8 @@ public abstract class TalonWrapper<Controller extends BaseTalon> implements Moto
         controller.follow(master.controller);
     }
 
-    public double getVelocity() {
-        return controller.getSelectedSensorVelocity();
+    public double getVelocity() { // returns in rpm
+        return Units2813.ticksToMotorRevs(controller.getSelectedSensorVelocity()) * 10 * 60; // from ticks/100ms to rpm
     }
 
     public static double convertRPM(double rpm) {
