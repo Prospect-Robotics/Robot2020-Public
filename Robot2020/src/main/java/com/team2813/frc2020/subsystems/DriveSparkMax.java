@@ -2,6 +2,7 @@ package com.team2813.frc2020.subsystems;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.ControlType;
+import com.team2813.lib.config.Inverted;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Axis;
 import com.team2813.lib.controls.Button;
@@ -10,8 +11,8 @@ import com.team2813.lib.drive.ArcadeDrive;
 import com.team2813.lib.drive.CurvatureDrive;
 import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.drive.VelocityDriveSpark;
-import com.team2813.lib.sparkMax.CANSparkMaxWrapper;
-import com.team2813.lib.sparkMax.SparkMaxException;
+import com.team2813.lib.motors.SparkMaxWrapper;
+import com.team2813.lib.motors.interfaces.ControlMode;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -29,8 +30,8 @@ public class DriveSparkMax extends Subsystem {
 
 
     // Motor Controllers
-    private static final CANSparkMaxWrapper LEFT = MotorConfigs.sparks.get("driveLeft");
-    private static final CANSparkMaxWrapper RIGHT = MotorConfigs.sparks.get("driveRight");
+    private static final SparkMaxWrapper LEFT = MotorConfigs.sparks.get("driveLeft");
+    private static final SparkMaxWrapper RIGHT = MotorConfigs.sparks.get("driveRight");
     private double right_demand;
     private double left_demand;
     private boolean isBrakeMode;
@@ -74,17 +75,12 @@ public class DriveSparkMax extends Subsystem {
     private boolean velocityFailed = false;
 
     DriveSparkMax() {
-        try {
-            velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getSparks().get("driveLeft"));
-            velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getSparks().get("driveRight"));
+        velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getSparks().get("driveLeft"));
+        velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getSparks().get("driveRight"));
 
-            // be sure they're inverted correctly
-            LEFT.setInverted(LEFT.getConfig().getInverted());
-            RIGHT.setInverted(RIGHT.getConfig().getInverted());
-        } catch (SparkMaxException e) {
-            velocityFailed = true;
-            e.printStackTrace();
-        }
+        // be sure they're inverted correctly
+        LEFT.setInverted(LEFT.getConfig().getInverted() == Inverted.INVERTED);
+        RIGHT.setInverted(RIGHT.getConfig().getInverted() == Inverted.INVERTED);
     }
 
     private void teleopDrive(TeleopDriveType driveType) {
@@ -96,43 +92,38 @@ public class DriveSparkMax extends Subsystem {
     }
 
     @Override
-    protected boolean checkSystem_() throws CTREException {
-        return false;
-    }
-
-    @Override
-    protected void outputTelemetry_() throws CTREException {
+    public void outputTelemetry() {
 
     }
 
     @Override
-    protected void teleopControls_() throws CTREException, SparkMaxException {
+    public void teleopControls() {
         driveMode = DriveMode.OPEN_LOOP;
         teleopDrive(TELEOP_DRIVE_TYPE);
     }
 
     @Override
-    protected void onEnabledStart_(double timestamp) throws CTREException {
+    public void onEnabledStart(double timestamp) {
 //		setBrakeMode(false);
     }
 
     @Override
-    protected void onEnabledLoop_(double timestamp) throws CTREException {
+    public void onEnabledLoop(double timestamp) {
     }
 
     @Override
-    protected void onEnabledStop_(double timestamp) throws CTREException {
+    public void onEnabledStop(double timestamp) {
     }
 
-    protected synchronized void writePeriodicOutputs_() throws SparkMaxException, CTREException {
+    protected synchronized void writePeriodicOutputs_() {
         if (!velocityFailed && velocityEnabled) {
             double leftVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getLeft());
             double rightVelocity = velocityDrive.getVelocityFromDemand(driveDemand.getRight());
-            LEFT.set(leftVelocity, ControlType.kSmartVelocity);
-            RIGHT.set(rightVelocity, ControlType.kSmartVelocity);
+            LEFT.set(ControlMode.VELOCITY, leftVelocity);
+            RIGHT.set(ControlMode.VELOCITY, rightVelocity);
         } else {
-            LEFT.set(driveDemand.getLeft(), driveMode.controlType);
-            RIGHT.set(driveDemand.getRight(), driveMode.controlType);
+            LEFT.set(ControlMode.DUTY_CYCLE, driveDemand.getLeft());
+            RIGHT.set(ControlMode.DUTY_CYCLE, driveDemand.getRight());
         }
     }
 
@@ -140,12 +131,8 @@ public class DriveSparkMax extends Subsystem {
         if (isBrakeMode != brake) {
             isBrakeMode = brake;
             IdleMode mode = brake ? IdleMode.kBrake : IdleMode.kCoast;
-            try {
                 RIGHT.setNeutralMode(mode);
                 LEFT.setNeutralMode(mode);
-            } catch (SparkMaxException e) {
-                e.printStackTrace();
-            }
         }
     }
 

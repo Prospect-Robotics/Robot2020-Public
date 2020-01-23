@@ -15,7 +15,6 @@ import java.util.List;
 public class Subsystems {
 
 	public static List<Subsystem> allSubsystems;
-
 	public static DriveTalon DRIVE;
 	public static final Looper LOOPER = new Looper(RobotMode.DISABLED); //FIXME put looper somewhere else
 

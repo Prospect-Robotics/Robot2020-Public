@@ -1,34 +1,34 @@
 package com.team2813.lib.config;
 
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
-import com.team2813.lib.ctre.BaseMotorControllerWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TalonConfig extends MotorConfig {
 
+    //Required
     private int deviceNumber;
-    private int peakCurrentDuration;
-    private int peakCurrentLimit;
-    private boolean enableVoltageCompensation;
-    private int compSaturationVoltage;
-    private int continuousCurrentLimitAmps;
-    private int motionAcceleration;
-    private int motionCruiseVelocity;
-    private double closedLoopRampRate;
-    private double openLoopRampRate;
-    private boolean invertSensorPhase;
+    private MotorControllerType motorControllerType;
     private Inverted inverted;
+
+    private int peakCurrentDuration = 0;
+    private int peakCurrentLimit = 0;
+    private boolean enableVoltageCompensation = true;
+    private int compSaturationVoltage = 12;
+    private int continuousCurrentLimitAmps = 40;
+    private int motionAcceleration = 0;
+    private int motionCruiseVelocity = 0;
+    private double closedLoopRampRate = 0;
+    private double openLoopRampRate = 0;
+    private boolean invertSensorPhase = true;
     private List<FollowerConfig> followers = new ArrayList<>();
     private List<PIDControllerConfig> pidControllers;
     private List<SoftLimitConfig> softLimits;
     private List<LimitSwitchConfig> limitSwitches;
-    private StatusFrameEnhanced statusFrame; // cannot serialize into PeriodicFrame (see getStatusFrame)
+//    private StatusFrameEnhanced statusFrame; // cannot serialize into PeriodicFrame (see getStatusFrame)
     private int statusFramePeriod = 5;
     private VelocityMeasPeriod velocityMeasurementPeriod;
-    private BaseMotorControllerWrapper.VelocityMeasurementWindow velocityMeasurementWindow;
 
     @Override
     public int getDeviceNumber() {
@@ -38,6 +38,14 @@ public class TalonConfig extends MotorConfig {
     @Override
     public void setDeviceNumber(int deviceNumber) {
         this.deviceNumber = deviceNumber;
+    }
+
+    public MotorControllerType getMotorControllerType() {
+        return motorControllerType;
+    }
+
+    public void setMotorControllerType(MotorControllerType motorControllerType) {
+        this.motorControllerType = motorControllerType;
     }
 
     public int getPeakCurrentDuration() {
@@ -120,13 +128,14 @@ public class TalonConfig extends MotorConfig {
         this.invertSensorPhase = invertSensorPhase;
     }
 
-    public StatusFrameEnhanced getStatusFrame() {
-        return statusFrame;
-    }
-
-    public void setStatusFrame(StatusFrameEnhanced statusFrame) {
-        this.statusFrame = statusFrame;
-    }
+    // TODO: 1/18/2020 Status Frame Commented out
+//    public StatusFrameEnhanced getStatusFrame() {
+//        return statusFrame;
+//    }
+//
+//    public void setStatusFrame(StatusFrameEnhanced statusFrame) {
+//        this.statusFrame = statusFrame;
+//    }
 
     public int getStatusFramePeriod() {
         return statusFramePeriod;
@@ -142,10 +151,6 @@ public class TalonConfig extends MotorConfig {
 
     public void setVelocityMeasurementPeriod(VelocityMeasPeriod velocityMeasurementPeriod) {
         this.velocityMeasurementPeriod = velocityMeasurementPeriod;
-    }
-
-    public BaseMotorControllerWrapper.VelocityMeasurementWindow getVelocityMeasurementWindow() {
-        return velocityMeasurementWindow;
     }
 
 

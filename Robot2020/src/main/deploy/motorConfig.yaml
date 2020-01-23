@@ -2,26 +2,18 @@
 talons:
   driveLeft: # Talon
     deviceNumber: 1
+    motorControllerType: TALON_FX
     type: BRUSHLESS
     subsystemName: Drive
-    peakCurrentDuration: 0
-    peakCurrentLimit: 0
-    enableVoltageCompensation: true
-    compSaturationVoltage: 12
-    continuousCurrentLimitAmps: 30
-    motionAcceleration: 0
-    motionCruiseVelocity: 0
-    closedLoopRampRate: 0
-    openLoopRampRate: 0
-    invertSensorPhase: true
+    inverted: NONINVERTED
     statusFrame: STATUS_2
     followers:
       - id: 2
+        motorControllerType: TALON_FX
         type: BRUSHLESS
         inverted: FOLLOW_LEADER
-    inverted: NONINVERTED
     pidControllers:
-      - p: 0.00013
+      - p: .1
         i: 0
         d: 0
         f: 0
@@ -32,26 +24,18 @@ talons:
         allowableClosedLoopError: 0
   driveRight: #Talon
     deviceNumber: 3
+    motorControllerType: TALON_FX
     type: BRUSHLESS
     subsystemName: Drive
-    peakCurrentDuration: 0
-    peakCurrentLimit: 0
-    enableVoltageCompensation: true
-    compSaturationVoltage: 12
-    continuousCurrentLimitAmps: 30
-    motionAcceleration: 0
-    motionCruiseVelocity: 0
-    closedLoopRampRate: 0
-    openLoopRampRate: 0
-    invertSensorPhase: true
+    inverted: INVERTED
     statusFrame: STATUS_2
     followers:
       - id: 4
+        motorControllerType: TALON_FX
         type: BRUSHLESS
         inverted: FOLLOW_LEADER
-    inverted: INVERTED
     pidControllers:
-      - p: 0.00013
+      - p: .1
         i: 0
         d: 0
         f: 0
@@ -60,22 +44,22 @@ talons:
         maxIntegralAccumulator: 0
         integralZone: 0
         allowableClosedLoopError: 0
-  shooter:
-    deviceNumber: 15
-    type: BRUSHED
-    subsystemName: Shooter
-    peakCurrentDuration: 0
-      peakCurrentLimit: 0
-      enableVoltageCompensation: true
-      compSaturationVoltage: 12
-      continuousCurrentLimitAmps: 30
-      motionAcceleration: 0
-      motionCruiseVelocity: 0
-      closedLoopRampRate: 0
-      openLoopRampRate: 0
-      invertSensorPhase: true
-      statusFrame: STATUS_2
-      inverted: NONINVERTED
+#  shooter:
+#    deviceNumber: 15
+#    type: BRUSHED
+#    subsystemName: Shooter
+#    peakCurrentDuration: 0
+#      peakCurrentLimit: 0
+#      enableVoltageCompensation: true
+#      compSaturationVoltage: 12
+#      continuousCurrentLimitAmps: 30
+#      motionAcceleration: 0
+#      motionCruiseVelocity: 0
+#      closedLoopRampRate: 0
+#      openLoopRampRate: 0
+#      invertSensorPhase: true
+#      statusFrame: STATUS_2
+#      inverted: NONINVERTED
 sparks:
 victors:
 ...
