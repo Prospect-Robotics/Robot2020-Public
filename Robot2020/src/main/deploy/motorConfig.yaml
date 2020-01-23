@@ -65,6 +65,27 @@ sparks:
     deviceNumber: 11
     type: BRUSHLESS
     subsystemName: Climber
-
+  mag:
+    deviceNumber: 9
+    motorControllerType: SPARK_MAX
+    type: BRUSHLESS
+    subsystemName: Mag
+    inverted: NONINVERTED
+    statusFrame: STATUS_2
+    followers:
+      - id: 10
+        motorControllerType: SPARK_MAX
+        type: BRUSHLESS
+        inverted: OPPOSE_LEADER
+    pidControllers:
+      - p: 0
+        i: 0
+        d: 0
+        f: 0
+        maxVelocity: 0
+        maxAcceleration: 0
+        maxIntegralAccumulator: 0
+        integralZone: 0
+        allowableClosedLoopError: 0
 victors:
 ...
