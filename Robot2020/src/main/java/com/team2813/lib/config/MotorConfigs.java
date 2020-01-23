@@ -68,6 +68,7 @@ public class MotorConfigs {
 //					talon.setSmartMotionMaxAccel(config.motionAcceleration()); // FIXME: 09/20/2019 need to change parameters/types
 
         talon.setCurrentLimit(config.getContinuousCurrentLimitAmps());// TODO check this is actually continuous limit
+        talon.controller.configVoltageCompSaturation(12);
 
 //			for (com.team2813.lib.talon.options.HardLimitSwitch hardLimitSwitch : field.getAnnotationsByType(com.team2813.lib.talon.options.HardLimitSwitch.class)) {
 //				System.out.println("\tconfiguring hard limit switch " + hardLimitSwitch.direction());
