@@ -61,5 +61,10 @@ talons:
 #      statusFrame: STATUS_2
 #      inverted: NONINVERTED
 sparks:
+  climb:
+    deviceNumber: 11
+    type: BRUSHLESS
+    subsystemName: Climber
+
 victors:
 ...

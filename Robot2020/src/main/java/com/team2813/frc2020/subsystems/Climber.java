@@ -1,12 +1,11 @@
 package com.team2813.frc2020.subsystems;
 
-import com.team2813.lib.ctre.CTREException;
-import com.team2813.lib.sparkMax.CANSparkMaxWrapper;
-import com.team2813.lib.sparkMax.SparkMaxException;
-import com.team2813.lib.config.MotorConfig; 
+import com.team2813.lib.motors.SparkMaxWrapper;
 public class Climber extends Subsystem1d{
 
-    Climber(CANSparkMaxWrapper motor) {
+    SparkMaxWrapper climb =
+
+    Climber() {
         super(motor);
     }
 
@@ -21,32 +20,27 @@ public class Climber extends Subsystem1d{
     }
 
     @Override
-    protected boolean checkSystem_() throws CTREException, SparkMaxException {
-        return false;
-    }
-
-    @Override
-    protected void outputTelemetry_() throws CTREException, SparkMaxException {
+    public void outputTelemetry() {
 
     }
 
     @Override
-    protected void teleopControls_() throws CTREException, SparkMaxException {
+    public void teleopControls() {
 
     }
 
     @Override
-    protected void onEnabledStart_(double timestamp) throws CTREException, SparkMaxException {
+    public void onEnabledStart(double timestamp) {
 
     }
 
     @Override
-    protected void onEnabledLoop_(double timestamp) throws CTREException, SparkMaxException {
+    public void onEnabledLoop(double timestamp) {
 
     }
 
     @Override
-    protected void onEnabledStop_(double timestamp) throws CTREException, SparkMaxException {
+    public void onEnabledStop(double timestamp) {
 
     }
 }
