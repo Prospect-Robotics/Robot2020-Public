@@ -31,6 +31,38 @@ public class Button {
 	}
 
 	/**
+	 * Run one function when initially pressed, and another when released. Requires repeated call.
+	 * @param functionWhenPressed
+	 * @param functionWhenReleased
+	 */
+	public void whenPressedReleased(Runnable functionWhenPressed, Runnable functionWhenReleased) {
+		boolean running = false;
+		if (getPressed()) {
+			functionWhenPressed.run();
+			running = true;
+		}
+		if (getReleased() && running) {
+			functionWhenReleased.run();
+		}
+	}
+
+	/**
+	 * Run one function while held, and another when released. Requires repeated call.
+	 * @param functionWhileHeld
+	 * @param functionWhenReleased
+	 */
+	public void whileHeldWhenReleased(Runnable functionWhileHeld, Runnable functionWhenReleased) {
+		boolean running = false;
+		if (get()) {
+			functionWhileHeld.run();
+			running = true;
+		}
+		if (getReleased() && running) {
+			functionWhenReleased.run();
+		}
+	}
+
+	/**
 	 * Run if button has been released and pressed again since last whenPressed call
 	 * @param function
 	 */
