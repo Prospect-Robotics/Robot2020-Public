@@ -41,7 +41,7 @@ public enum AutoRoutine {
             new PauseTrajectory(1) // shoot 3 balls
     ), new SeriesAction(new WaitAction(1))),
     EIGHT_BALL("8-ball", List.of(
-            new GeneratedTrajectory("back trench", false),
+            new GeneratedTrajectory("back trench", true),
             new PauseTrajectory(1), // turn intake on
             new GeneratedTrajectory("2-ball sheild generator", false), // intake 2 balls
             new GeneratedTrajectory("3-ball 2", false), // intake 3 balls
