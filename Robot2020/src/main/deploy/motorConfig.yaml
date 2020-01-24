@@ -61,10 +61,22 @@ talons:
 #      statusFrame: STATUS_2
 #      inverted: NONINVERTED
 sparks:
-  climb:
+  climber:
     deviceNumber: 11
     type: BRUSHLESS
     subsystemName: Climber
+    inverted: INVERTED
+    statusFrame: STATUS_2
+    pidControllers:
+      - p: 0
+        i: 0
+        d: 0
+        f: 0
+        maxVelocity: 0
+        maxAcceleration: 0
+        maxIntegralAccumulator: 0
+        integralZone: 0
+        allowableClosedLoopError: 0
   mag:
     deviceNumber: 9
     motorControllerType: SPARK_MAX
@@ -72,6 +84,7 @@ sparks:
     subsystemName: Mag
     inverted: NONINVERTED
     statusFrame: STATUS_2
+    continuousCurrentLimitAmps: 50
     followers:
       - id: 10
         motorControllerType: SPARK_MAX
