@@ -83,5 +83,13 @@ sparks:
         maxIntegralAccumulator: 0
         integralZone: 0
         allowableClosedLoopError: 0
+  intake:
+    deviceNumber: 8
+    motorControllerType: SPARK_MAX
+    type: BRUSHLESS
+    subsystemName: Intake
+    inverted: NONINVERTED
+    statusFrame: STATUS_2
+
 victors:
 ...

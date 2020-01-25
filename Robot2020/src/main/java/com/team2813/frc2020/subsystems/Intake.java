@@ -7,10 +7,13 @@ import com.team2813.lib.motors.VictorWrapper;
 
 public class Intake extends Subsystem {
 
-    private static final SparkMaxWrapper MOTOR = MotorConfigs.sparks.get("intake");
-    private static final double ROLLER_SPEED = .8; // # from OffSeasonBot2019 -- is this the right value?
+    private static SparkMaxWrapper MOTOR;
     private static final Button INTAKE_BUTTON = SubsystemControlsConfig.getIntakeButton();
-    private static double demand;
+    private static Demand demand;
+
+    Intake(SparkMaxWrapper MOTOR) {
+         Intake.MOTOR = MOTOR;
+    }
 
 
     @Override
@@ -20,7 +23,7 @@ public class Intake extends Subsystem {
 
     @Override
     public void teleopControls() {
-        INTAKE_BUTTON.whenPressedReleased(() -> demand = ROLLER_SPEED, () -> demand = 0.0);
+        INTAKE_BUTTON.whenPressedReleased(() -> demand = Demand.ON, () -> demand = Demand.OFF);
     }
 
     @Override
@@ -41,5 +44,20 @@ public class Intake extends Subsystem {
     @Override
     public void onDisabledStop(double timestamp) {
 
+    }
+
+    @Override
+    public void writePeriodicOutputs(){
+        MOTOR.set(demand.percent);
+    }
+
+    enum Demand {
+        ON(0.7), OFF(0.0);
+
+        double percent;
+
+        Demand(double percent) {
+            this.percent = percent;
+        }
     }
 }

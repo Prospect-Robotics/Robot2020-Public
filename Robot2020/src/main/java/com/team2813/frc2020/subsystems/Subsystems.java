@@ -35,11 +35,9 @@ public class Subsystems {
 	public static void initializeSubsystems() {
 		DRIVE = new DriveTalon();
 		INTAKE = new Intake();
-		allSubsystems = Collections.unmodifiableList(Arrays.asList(
-				DRIVE, INTAKE
 		MAG = new Mag();
 		allSubsystems = Collections.unmodifiableList(Arrays.asList(
-				DRIVE, MAG
+				DRIVE, INTAKE, MAG
 		));
 		LOOPER.addLoop(new SmartDashboardLoop());
 	}

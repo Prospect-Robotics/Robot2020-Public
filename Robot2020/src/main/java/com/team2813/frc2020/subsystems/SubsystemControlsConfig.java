@@ -29,7 +29,9 @@ class SubsystemControlsConfig {
 	private static Axis driveReverse = driveJoystick.axis(2);
 
 	static Button getIntakeButton() {
-		return intakeButton;
+        return intakeButton;
+    }
+
 	static Button getMagReverse() {
 		return magReverse;
 	}
