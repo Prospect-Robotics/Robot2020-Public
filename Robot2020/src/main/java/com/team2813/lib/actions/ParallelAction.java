@@ -38,7 +38,7 @@ public class ParallelAction extends Action {
 	}
 
 	@Override
-	void execute(double timestamp) {
+    public void execute(double timestamp) {
 		actions.removeIf(action -> {
 			action.execute(timestamp);
 			if(action.isFinished(timestamp) || (LOOPER.mode == RobotMode.DISABLED && action.getRemoveOnDisabled())){

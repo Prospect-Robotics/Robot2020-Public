@@ -38,7 +38,7 @@ public class SeriesAction extends Action {
 	}
 
 	@Override
-	void execute(double timestamp) {
+    public void execute(double timestamp) {
 		currentAction.execute(timestamp);
 		if (currentAction.isFinished(timestamp)) {
 			currentAction.end(timestamp);

@@ -14,7 +14,7 @@ public class WaitAction extends Action {
 	}
 
 	@Override
-	void execute(double timestamp) {
+    public void execute(double timestamp) {
 
 	}
 

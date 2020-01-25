@@ -28,14 +28,14 @@ public abstract class Action {
 	 * runs the Action
 	 * @param timestamp
 	 */
-	abstract void execute(double timestamp);
+	public abstract void execute(double timestamp);
 
 	/**
 	 * Returns whether or not the code has finished execution.
 	 *
 	 * @return true if finished, false otherwise
 	 */
-	abstract boolean isFinished(double timestamp);
+	public abstract boolean isFinished(double timestamp);
 
 	/**
 	 * Run code once when the action is started, for set up

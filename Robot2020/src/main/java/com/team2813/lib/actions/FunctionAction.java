@@ -25,7 +25,7 @@ public class FunctionAction extends Action {
 	}
 
 	@Override
-	void execute(double timestamp) {
+    public void execute(double timestamp) {
 
 	}
 

@@ -8,6 +8,7 @@ import com.team2813.lib.auto.AutoTrajectory;
 import com.team2813.lib.auto.GeneratedTrajectory;
 import com.team2813.lib.auto.PauseTrajectory;
 import com.team2813.lib.auto.RamseteTrajectory;
+import com.team2813.frc2020.subsystems.DriveTalon;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,9 +16,9 @@ import java.util.List;
 public enum AutoRoutine {
     FIVE_BALL_ENEMY("5 Ball Enemy", List.of(
             new PauseTrajectory(1), // shoot 3 balls
-            new GeneratedTrajectory("2-ball", false),
+            new GeneratedTrajectory("2-ball", true),
             new PauseTrajectory(1), // intake 2 balls, turn intake off
-            new GeneratedTrajectory("go back", true),
+            new GeneratedTrajectory("go back", false),
             new GeneratedTrajectory("return", false),
             new PauseTrajectory(1) // shoot 2 balls
     ), new SeriesAction(new WaitAction(1)/* shoot ball, intake, shoot ball*/)),
@@ -29,13 +30,13 @@ public enum AutoRoutine {
             new PauseTrajectory(1), //shoot 3-balls
             new GeneratedTrajectory("3-ball prepare", false),
             new PauseTrajectory(1), //turn intake on
-            new GeneratedTrajectory("3-ball", false), //intake 3 balls
-            new GeneratedTrajectory("2-ball 2", false), //intake 2 balls
+            new GeneratedTrajectory("3-ball", true), //intake 3 balls
+            new GeneratedTrajectory("2-ball 2", true), //intake 2 balls
             new PauseTrajectory(1) //turn intake off
     ), new SeriesAction(new WaitAction(1))),
     SIX_BALL("6-ball", List.of(
             new PauseTrajectory(1), // shoot 3 ball turn intake on
-            new GeneratedTrajectory("3-ball trench", false), // intake 3 balls
+            new GeneratedTrajectory("3-ball trench", true), // intake 3 balls
             new PauseTrajectory(1), //turn intake off
             new GeneratedTrajectory("back 3-ball", false),
             new PauseTrajectory(1) // shoot 3 balls
@@ -43,16 +44,16 @@ public enum AutoRoutine {
     EIGHT_BALL("8-ball", List.of(
             new GeneratedTrajectory("back trench", true),
             new PauseTrajectory(1), // turn intake on
-            new GeneratedTrajectory("2-ball sheild generator", false), // intake 2 balls
-            new GeneratedTrajectory("3-ball 2", false), // intake 3 balls
+            new GeneratedTrajectory("2-ball shield generator", true), // intake 2 balls
+            new GeneratedTrajectory("3-ball 2", true), // intake 3 balls
             new PauseTrajectory(1), // turn intake off
             new GeneratedTrajectory("return 8-ball", false),
-            new PauseTrajectory(1) // shoot 5 balls
+            new PauseTrajectory(1) // turn around, shoot 5 balls
     ), new SeriesAction(new WaitAction(1))),
     FIVE_BALL_TWO("5-ball 2", List.of(
             new PauseTrajectory(1), //turn intake on
-            new GeneratedTrajectory("2-ball initiation line", false), //intake 2 balls
-            new PauseTrajectory(1), //turn intake off, shoot 5 balls
+            new GeneratedTrajectory("2-ball initiation line", true), //intake 2 balls
+            new PauseTrajectory(1), //turn intake off, turn around, shoot 5 balls
             new GeneratedTrajectory("general zone", false)
     ), new SeriesAction(new WaitAction(1)));
 
