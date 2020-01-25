@@ -1,5 +1,6 @@
 package com.team2813.frc2020.subsystems;
 
+import com.team2813.lib.config.MotorConfig;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.motors.SparkMaxWrapper;
@@ -7,12 +8,12 @@ import com.team2813.lib.motors.VictorWrapper;
 
 public class Intake extends Subsystem {
 
-    private static SparkMaxWrapper MOTOR;
-    private static final Button INTAKE_BUTTON = SubsystemControlsConfig.getIntakeButton();
-    private static Demand demand;
+    private SparkMaxWrapper MOTOR;
+    private final Button INTAKE_BUTTON = SubsystemControlsConfig.getIntakeButton();
+    private Demand demand;
 
-    Intake(SparkMaxWrapper MOTOR) {
-         Intake.MOTOR = MOTOR;
+    Intake() {
+         MOTOR = MotorConfigs.sparks.get("intake");
     }
 
 
