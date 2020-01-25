@@ -83,5 +83,12 @@ sparks:
         maxIntegralAccumulator: 0
         integralZone: 0
         allowableClosedLoopError: 0
+  spinner:
+    deviceNumber: 12
+    motorControllerType: SPARK_MAX
+    type: BRUSHLESS
+    subsystemName: Spinner
+    inverted: NONINVERTED
+    statusFrame: STATUS_2
 victors:
 ...

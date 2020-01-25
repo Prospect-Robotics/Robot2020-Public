@@ -5,29 +5,29 @@ import com.team2813.lib.controls.Button;
 import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.motors.interfaces.ControlMode;
 
-public class Mag extends Subsystem {
+public class Spinner extends Subsystem {
+
 
     private final SparkMaxWrapper MOTOR;
-    private final Button START_STOP_BUTTON = SubsystemControlsConfig.getMagButton();
-    private final Button REVERSE_BUTTON = SubsystemControlsConfig.getMagReverse();
+    private final Button FORWARD_BUTTON = SubsystemControlsConfig.getSpinnerButton();
+    private final Button REVERSE_BUTTON = SubsystemControlsConfig.getSpinnerReverse();
     private Demand demand;
 
-    Mag() {
-        MOTOR = MotorConfigs.sparks.get("mag");
-        demand = Demand.OFF;
+    public Spinner() {
+        MOTOR = MotorConfigs.sparks.get("spinner");
     }
 
     @Override
     public void outputTelemetry() {
+
     }
 
     @Override
     public void teleopControls() {
-        START_STOP_BUTTON.whenPressed(() -> {
-            demand = demand == Demand.ON ? Demand.OFF : Demand.ON;
-        });
+        FORWARD_BUTTON.whenPressedReleased(() -> demand = Demand.FWD, () -> demand = Demand.OFF);
         REVERSE_BUTTON.whenPressedReleased(() -> demand = Demand.REV, () -> demand = Demand.OFF);
     }
+
 
     @Override
     public void onEnabledStart(double timestamp) {
@@ -45,11 +45,12 @@ public class Mag extends Subsystem {
     }
 
     @Override
-    protected void writePeriodicOutputs() { MOTOR.set(ControlMode.DUTY_CYCLE, demand.percent);
+    public void writePeriodicOutputs() {
+        MOTOR.set(ControlMode.DUTY_CYCLE, demand.percent);
     }
 
     enum Demand {
-        ON(0.5), OFF(0.0), REV(-0.3);
+        FWD(0.5), OFF(0.0), REV(-0.5);
 
         double percent;
 
@@ -57,4 +58,5 @@ public class Mag extends Subsystem {
             this.percent = percent;
         }
     }
+
 }
