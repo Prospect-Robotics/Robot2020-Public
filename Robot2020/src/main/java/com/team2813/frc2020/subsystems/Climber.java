@@ -1,8 +1,14 @@
 package com.team2813.frc2020.subsystems;
 
+import com.team2813.lib.actions.Action;
+import com.team2813.lib.actions.FunctionAction;
+import com.team2813.lib.actions.LockAction;
+import com.team2813.lib.actions.SeriesAction;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.motors.SparkMaxWrapper;
+import com.team2813.lib.solenoid.PistonSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 
 /**
  * Class for the climber
@@ -13,13 +19,21 @@ import com.team2813.lib.motors.SparkMaxWrapper;
 
 public class Climber extends Subsystem1d<Climber.Position>{
 
+
     private static final Button CLIMBER_BUTTON = SubsystemControlsConfig.getClimberButton();
-    public final SparkMaxWrapper CLIMBER;
+    private final SparkMaxWrapper CLIMBER;
+    private final PistonSolenoid BRAKE;
     private static Position currentPosition = Position.RETRACTED;
+
+    private Action startAction;
+    private Action abortAction;
+    private Action retractAction;
 
     Climber() {
         super((SparkMaxWrapper) MotorConfigs.sparks.get("climb"));
         CLIMBER = (SparkMaxWrapper) MotorConfigs.sparks.get("climb");
+        //TODO Insert PCM port ID
+        BRAKE = new PistonSolenoid(5);
     }
 
     @Override
@@ -32,6 +46,30 @@ public class Climber extends Subsystem1d<Climber.Position>{
     void setNextPosition(Position position) {
         currentPosition = position;
         setPosition(currentPosition);
+    }
+
+    public void engageBrake(){
+        BRAKE.extend();
+    }
+
+    public void extendClimb(){
+        setPosition(Position.EXTENDED);
+    }
+
+    public void retractClimb(){
+        setPosition(Position.RETRACTED);
+    }
+
+    public boolean postionReached(){
+        return CLIMBER.getEncoderPosition() == currentPosition.getPos();
+    }
+
+    public void startClimb(){
+        startAction = new SeriesAction(
+                new FunctionAction(() -> retractClimb() , true),
+                new LockAction(() -> postionReached(), true),
+                new FunctionAction(() -> engageBrake() , true)
+        );
     }
 
     @Override
