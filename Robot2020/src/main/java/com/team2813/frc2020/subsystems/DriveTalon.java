@@ -70,6 +70,7 @@ public class DriveTalon extends Subsystem {
     // Gyro
     private final int pigeonID = 13;
     private PigeonWrapper pigeon = new PigeonWrapper(pigeonID, "Drive");
+    public PigeonWrapper getPigeon(){return pigeon;}
 
     // Autonomous
     private double TRACK_WIDTH = 26;
@@ -90,11 +91,13 @@ public class DriveTalon extends Subsystem {
     }
 
     private static final double MAX_VELOCITY = 4.3677; // max velocity of velocity drive in meters per second
+    public double getMaxVelocity(){return MAX_VELOCITY;}
 
     VelocityDriveTalon velocityDrive = new VelocityDriveTalon(MAX_VELOCITY);
     CurvatureDrive curvatureDrive = new CurvatureDrive(TELEOP_DEAD_ZONE);
     ArcadeDrive arcadeDrive = curvatureDrive.getArcadeDrive();
     DriveDemand driveDemand = new DriveDemand(0, 0);
+    public DriveDemand getDriveDemand(){return driveDemand;}
 
 //    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(.343, .0462, .00316); // gains in inches
     private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.017468, 0.002352, 0.000161); // gains in revolutions
