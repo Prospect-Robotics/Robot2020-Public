@@ -2,6 +2,10 @@ package com.team2813.lib.actions;
 
 import java.util.concurrent.Callable;
 
+/**
+ * Action that repeatedly calls a function until it returns true
+ * @author Daniel Tsai
+ */
 public class LockAction extends Action{
 
     private final Callable<Boolean> lockFunction;
