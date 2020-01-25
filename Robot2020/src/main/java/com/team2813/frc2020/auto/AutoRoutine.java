@@ -8,9 +8,8 @@ import com.team2813.lib.auto.AutoTrajectory;
 import com.team2813.lib.auto.GeneratedTrajectory;
 import com.team2813.lib.auto.PauseTrajectory;
 import com.team2813.lib.auto.RamseteTrajectory;
-import com.team2813.frc2020.subsystems.DriveTalon;
 
-import java.util.Arrays;
+
 import java.util.List;
 
 public enum AutoRoutine {
