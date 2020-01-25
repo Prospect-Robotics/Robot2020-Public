@@ -1,12 +1,11 @@
 package com.team2813.lib.auto;
 
-import com.team2813.frc2020.subsystems.DriveTalon;
 import com.team2813.frc2020.subsystems.Subsystems;
 import com.team2813.lib.ctre.PigeonWrapper;
 import com.team2813.lib.drive.DriveDemand;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
 
-public class RotateTrajectory {
-    private double degrees;
+public class RotateTrajectory implements AutoTrajectory {
     private boolean reversed;
     private double maxVelocity;
     private double originalHeading;
@@ -15,7 +14,6 @@ public class RotateTrajectory {
     private PigeonWrapper pigeon = Subsystems.DRIVE.getPigeon();
 
     public RotateTrajectory(double degrees, boolean reversed){
-        this.degrees = degrees;
         this.reversed = reversed;
         maxVelocity = Subsystems.DRIVE.getMaxVelocity();
         driveDemand = Subsystems.DRIVE.getDriveDemand();
@@ -32,5 +30,20 @@ public class RotateTrajectory {
                 currentHeading = pigeon.getHeading();
             }
         }
+    }
+
+    @Override
+    public double getTotalTimeSeconds() {
+        return 0;
+    }
+
+    @Override
+    public Trajectory getTrajectory() {
+        return null;
+    }
+
+    @Override
+    public boolean isReversed() {
+        return reversed;
     }
 }

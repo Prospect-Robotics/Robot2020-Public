@@ -7,6 +7,7 @@ import com.team2813.lib.actions.WaitAction;
 import com.team2813.lib.auto.AutoTrajectory;
 import com.team2813.lib.auto.GeneratedTrajectory;
 import com.team2813.lib.auto.PauseTrajectory;
+import com.team2813.lib.auto.RotateTrajectory;
 import com.team2813.lib.auto.RamseteTrajectory;
 
 
@@ -47,12 +48,13 @@ public enum AutoRoutine {
             new GeneratedTrajectory("3-ball 2", true), // intake 3 balls
             new PauseTrajectory(1), // turn intake off
             new GeneratedTrajectory("return 8-ball", false),
-            new PauseTrajectory(1) // turn around, shoot 5 balls
+            new PauseTrajectory(1) // shoot 5 balls
     ), new SeriesAction(new WaitAction(1))),
     FIVE_BALL_TWO("5-ball 2", List.of(
             new PauseTrajectory(1), //turn intake on
             new GeneratedTrajectory("2-ball initiation line", true), //intake 2 balls
-            new PauseTrajectory(1), //turn intake off, turn around, shoot 5 balls
+            new RotateTrajectory(180, false),
+            new PauseTrajectory(1), //turn intake off, shoot 5 balls
             new GeneratedTrajectory("general zone", false)
     ), new SeriesAction(new WaitAction(1)));
 
