@@ -2,13 +2,14 @@ package com.team2813.frc2020.subsystems;
 
 import com.team2813.lib.actions.Action;
 import com.team2813.lib.actions.FunctionAction;
-import com.team2813.lib.actions.LockAction;
+import com.team2813.lib.actions.LockFunctionAction;
 import com.team2813.lib.actions.SeriesAction;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.solenoid.PistonSolenoid;
-import edu.wpi.first.wpilibj.Solenoid;
+
+
 
 /**
  * Class for the climber
@@ -18,7 +19,6 @@ import edu.wpi.first.wpilibj.Solenoid;
  */
 
 public class Climber extends Subsystem1d<Climber.Position>{
-
 
     private static final Button CLIMBER_BUTTON = SubsystemControlsConfig.getClimberButton();
     private final SparkMaxWrapper CLIMBER;
@@ -66,16 +66,13 @@ public class Climber extends Subsystem1d<Climber.Position>{
 
     public void startClimb(){
         startAction = new SeriesAction(
-                new FunctionAction(() -> retractClimb() , true),
-                new LockAction(() -> postionReached(), true),
-                new FunctionAction(() -> engageBrake() , true)
+                new LockFunctionAction(this::retractClimb, this::postionReached, true),
+                new FunctionAction(this::engageBrake, true)
         );
     }
 
     @Override
-    public void outputTelemetry() {
-
-    }
+    public void outputTelemetry() { }
 
     @Override
     public void teleopControls() {
@@ -83,19 +80,13 @@ public class Climber extends Subsystem1d<Climber.Position>{
     }
 
     @Override
-    public void onEnabledStart(double timestamp) {
-
-    }
+    public void onEnabledStart(double timestamp) { }
 
     @Override
-    public void onEnabledLoop(double timestamp) {
-
-    }
+    public void onEnabledLoop(double timestamp) { }
 
     @Override
-    public void onEnabledStop(double timestamp) {
-
-    }
+    public void onEnabledStop(double timestamp) { }
 
     public enum Position implements Subsystem1d.Position<Climber.Position> {
         RETRACTED(0){
@@ -126,8 +117,7 @@ public class Climber extends Subsystem1d<Climber.Position>{
         Position(double position){
             this.position = position;
         }
-
-
+        
         @Override
         public double getPos() {
             return position;
