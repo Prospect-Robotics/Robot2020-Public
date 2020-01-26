@@ -95,8 +95,10 @@ public class Magazine extends Subsystem {
             if (!triggered) { // block only runs once
                 ammo++;
             }
+            demand = Demand.ON;
             triggered = true;
         } else triggered = false;
+        demand = Demand.OFF;
     }
 
     @Override
@@ -110,7 +112,7 @@ public class Magazine extends Subsystem {
     }
 
     enum Demand {
-        ON(0.5), OFF(0.0), REV(-0.3);
+        ON(0.5), OFF(0.0), REV(-0.3), FEED(.8);
 
         double percent;
 
