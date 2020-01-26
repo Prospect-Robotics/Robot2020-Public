@@ -7,12 +7,10 @@ import com.team2813.lib.motors.TalonFXWrapper;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
-import edu.wpi.first.wpilibj.util.ColorShim;
 
 public class Magazine extends Subsystem {
 
@@ -20,33 +18,37 @@ public class Magazine extends Subsystem {
     private final TalonFXWrapper WHEEL;
     private final Button START_STOP_BUTTON = SubsystemControlsConfig.getMagButton();
     private final Button REVERSE_BUTTON = SubsystemControlsConfig.getMagReverse();
-    private final ColorSensorV3 colorSensorV3;
+
+    private final ColorSensorV3 colorSensor;
     private final ColorMatch colorMatcher = new ColorMatch();
     private final Color yellow = ColorMatch.makeColor(.333, .57, .09);
     private final Color blue = ColorMatch.makeColor(0.17, 0.4, 0.4);
     private final Color red = ColorMatch.makeColor(0.65, 0.31,.08);
     private final Color green = ColorMatch.makeColor(0.13, 0.69, 0.17);
+
+    public int ammo = 0;
+    public boolean triggered = false;
+
     private Demand demand;
 
     Magazine() {
         MOTOR = MotorConfigs.sparks.get("magazine");
         demand = Demand.OFF;
         WHEEL = (TalonFXWrapper) MotorConfigs.talons.get("magazineWheel");
-        colorSensorV3 = new ColorSensorV3(I2C.Port.kOnboard);
+        colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
         colorMatcher.addColorMatch(yellow);
         colorMatcher.addColorMatch(blue);
         colorMatcher.addColorMatch(red);
         colorMatcher.addColorMatch(green);
-//        colorMatcher.setConfidenceThreshold(.9);
     }
 
     @Override
     public void outputTelemetry() {
-        SmartDashboard.putNumber("Color Sensor Proximity", colorSensorV3.getProximity());
-        SmartDashboard.putNumber("Color Sensor B", colorSensorV3.getBlue());
-        SmartDashboard.putNumber("Color Sensor R", colorSensorV3.getRed());
-        SmartDashboard.putNumber("Color Sensor G", colorSensorV3.getGreen());
-        Color detectedColor = colorSensorV3.getColor();
+        SmartDashboard.putNumber("Color Sensor Proximity", colorSensor.getProximity());
+        SmartDashboard.putNumber("Color Sensor B", colorSensor.getBlue());
+        SmartDashboard.putNumber("Color Sensor R", colorSensor.getRed());
+        SmartDashboard.putNumber("Color Sensor G", colorSensor.getGreen());
+        Color detectedColor = colorSensor.getColor();
         ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
         if (match.color == yellow) {
             SmartDashboard.putString("Color Match", "yellow");
@@ -61,6 +63,8 @@ public class Magazine extends Subsystem {
         }
         SmartDashboard.putNumber("Color Confidence", match.confidence);
         SmartDashboard.putString("Detected Color", "R: " + detectedColor.red + " G: " + detectedColor.green + " B: " + detectedColor.blue);
+
+        SmartDashboard.putNumber("Ammo", ammo);
     }
 
     @Override
@@ -78,12 +82,21 @@ public class Magazine extends Subsystem {
 
     @Override
     public void onEnabledLoop(double timestamp) {
-
     }
 
     @Override
     public void onEnabledStop(double timestamp) {
 
+    }
+
+    @Override
+    public void readPeriodicInputs() {
+        if (colorSensor.getProximity() > 256) {
+            if (!triggered) { // block only runs once
+                ammo++;
+            }
+            triggered = true;
+        } else triggered = false;
     }
 
     @Override
