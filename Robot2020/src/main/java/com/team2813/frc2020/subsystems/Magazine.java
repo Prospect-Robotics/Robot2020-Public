@@ -14,7 +14,7 @@ import com.revrobotics.ColorMatchResult;
 
 public class Magazine extends Subsystem {
 
-    private final SparkMaxWrapper MOTOR;
+    private final SparkMaxWrapper MAGAZINE;
     private final TalonFXWrapper WHEEL;
     private final Button START_STOP_BUTTON = SubsystemControlsConfig.getMagButton();
     private final Button REVERSE_BUTTON = SubsystemControlsConfig.getMagReverse();
@@ -32,7 +32,7 @@ public class Magazine extends Subsystem {
     private Demand demand;
 
     Magazine() {
-        MOTOR = MotorConfigs.sparks.get("magazine");
+        MAGAZINE = MotorConfigs.sparks.get("magazine");
         demand = Demand.OFF;
         WHEEL = (TalonFXWrapper) MotorConfigs.talons.get("magazineWheel");
         colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
@@ -69,10 +69,8 @@ public class Magazine extends Subsystem {
 
     @Override
     public void teleopControls() {
-        START_STOP_BUTTON.whenPressed(() -> {
-            demand = demand == Demand.ON ? Demand.OFF : Demand.ON;
-        });
-        REVERSE_BUTTON.whenPressedReleased(() -> demand = Demand.REV, () -> demand = Demand.OFF);
+        START_STOP_BUTTON.whenPressed(() -> demand = demand == Demand.SHOOT ? Demand.OFF : Demand.SHOOT);
+        REVERSE_BUTTON.whenPressedReleased(() -> demand = Demand.OUTTAKE, () -> demand = Demand.OFF);
     }
 
     @Override
@@ -92,32 +90,34 @@ public class Magazine extends Subsystem {
     @Override
     public void readPeriodicInputs() {
         if (colorSensor.getProximity() > 256) {
-            if (!triggered) { // block only runs once
+            if (ammo < 5 && !triggered) { // block only runs once
                 ammo++;
             }
-            demand = Demand.ON;
+            if (ammo == 5) { // if there is more than 5 balls
+                demand = Demand.OUTTAKE; // spit it out
+            } else {
+                demand = Demand.INTAKE; // take it in
+            }
             triggered = true;
         } else triggered = false;
-        demand = Demand.OFF;
+        demand = Demand.OFF; // default to not move anything
     }
 
     @Override
     protected void writePeriodicOutputs() {
-        MOTOR.set(ControlMode.DUTY_CYCLE, demand.percent);
-        if(demand == Demand.ON) {
-            WHEEL.set(ControlMode.DUTY_CYCLE, demand.percent);
-        } else {
-            WHEEL.set(ControlMode.DUTY_CYCLE, Demand.OFF.percent);
-        }
+        MAGAZINE.set(ControlMode.DUTY_CYCLE, demand.magPercent);
+        WHEEL.set(ControlMode.DUTY_CYCLE, demand.wheelPercent);
     }
 
     enum Demand {
-        ON(0.5), OFF(0.0), REV(-0.3), FEED(.8);
+        OFF(0, 0), INTAKE(0.3,0 ), OUTTAKE(-0.3, 0), SHOOT(.7, .8);
 
-        double percent;
+        double magPercent;
+        double wheelPercent;
 
-        Demand(double percent) {
-            this.percent = percent;
+        Demand(double magPercent, double wheelPercent) {
+            this.magPercent = magPercent;
+            this.wheelPercent = wheelPercent;
         }
     }
 }
