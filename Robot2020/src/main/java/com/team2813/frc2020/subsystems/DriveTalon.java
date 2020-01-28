@@ -96,8 +96,9 @@ public class DriveTalon extends Subsystem {
     ArcadeDrive arcadeDrive = curvatureDrive.getArcadeDrive();
     DriveDemand driveDemand = new DriveDemand(0, 0);
 
-//    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.316, 0.0596, 0.0038); // gains in inches
-    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.016094, 0.003035, 0.000193); // gains in revolutions
+    //    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.316, 0.0596, 0.0038); // gains in inches
+//    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.016094, 0.003035, 0.000193); // gains in revolutions
+    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.345, 2.32, 0.196); // gains in meters
 
     DriveTalon() {
 
@@ -128,7 +129,8 @@ public class DriveTalon extends Subsystem {
         if (AUTO_BUTTON.get()) {
             driveDemand = curvatureDrive.getDemand(0, 0, limelight.getSteer(), true);
         } else if (driveType == TeleopDriveType.ARCADE) {
-            driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());;
+            driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());
+            ;
         } else {
             double steer = CURVATURE_STEER.get();
             if (PIVOT_BUTTON.get()) steer *= .4; // cap it so it's not too sensitive
@@ -218,8 +220,8 @@ public class DriveTalon extends Subsystem {
         if (driveMode == DriveMode.VELOCITY || Robot.isAuto) {
             DriveDemand demand = Units2813.dtDemandToMotorDemand(driveDemand); // local variable for telemetry reasons
 
-            LEFT.set(ControlMode.VELOCITY, demand.getLeft(), feedforward.calculate(demand.getLeft()) / 12);
-            RIGHT.set(ControlMode.VELOCITY, demand.getRight(), feedforward.calculate(demand.getRight()) / 12);
+            LEFT.set(ControlMode.VELOCITY, demand.getLeft(), feedforward.calculate(driveDemand.getLeft()) / 12);
+            RIGHT.set(ControlMode.VELOCITY, demand.getRight(), feedforward.calculate(driveDemand.getRight()) / 12);
         } else {
             LEFT.set(driveMode.controlMode, driveDemand.getLeft());
             RIGHT.set(driveMode.controlMode, driveDemand.getRight());

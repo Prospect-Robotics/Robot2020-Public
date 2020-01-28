@@ -36,7 +36,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
 
-  static private double WHEEL_DIAMETER = 6.25;
+  static private double WHEEL_DIAMETER = 0.15875;
   static private double ENCODER_EDGES_PER_REV = 22220.8;
   static private int PIDIDX = 0;
 
