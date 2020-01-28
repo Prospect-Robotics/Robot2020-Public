@@ -74,7 +74,7 @@ public class DriveTalon extends Subsystem {
 
     // Autonomous
     private double TRACK_WIDTH = 26;
-    public static final double GEAR_RATIO = (60.0 / 10.0) * (28.0 / 20.0);
+    public static final double GEAR_RATIO = (62.0 / 8.0) * (28.0 / 20.0);
     public DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(TRACK_WIDTH));
     private Limelight limelight = new Limelight();
 
@@ -99,8 +99,9 @@ public class DriveTalon extends Subsystem {
     DriveDemand driveDemand = new DriveDemand(0, 0);
     public DriveDemand getDriveDemand(){return driveDemand;}
 
-//    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(.343, .0462, .00316); // gains in inches
-    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.017468, 0.002352, 0.000161); // gains in revolutions
+    //    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.316, 0.0596, 0.0038); // gains in inches
+//    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.016094, 0.003035, 0.000193); // gains in revolutions
+    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.345, 2.32, 0.196); // gains in meters
 
     DriveTalon() {
 
@@ -131,7 +132,8 @@ public class DriveTalon extends Subsystem {
         if (AUTO_BUTTON.get()) {
             driveDemand = curvatureDrive.getDemand(0, 0, limelight.getSteer(), true);
         } else if (driveType == TeleopDriveType.ARCADE) {
-            driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());;
+            driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());
+            ;
         } else {
             double steer = CURVATURE_STEER.get();
             if (PIVOT_BUTTON.get()) steer *= .4; // cap it so it's not too sensitive
@@ -171,17 +173,23 @@ public class DriveTalon extends Subsystem {
     }
 
     public void outputTelemetry() {
-        SmartDashboard.putNumber("Left Encoder", LEFT.getEncoderPosition());
-        SmartDashboard.putNumber("Right Encoder", RIGHT.getEncoderPosition());
-        SmartDashboard.putNumber("Left Velocity", Units2813.motorRpmToDtVelocity(LEFT.getVelocity())); // rpm to m/s
-        SmartDashboard.putNumber("Right Velocity", Units2813.motorRpmToDtVelocity(RIGHT.getVelocity()));
+        double leftEncoder = LEFT.getEncoderPosition();
+        double rightEncoder = RIGHT.getEncoderPosition();
+        double leftVelocity = Units2813.motorRpmToDtVelocity(LEFT.getVelocity()); // rpm to m/s
+        double rightVelocity = Units2813.motorRpmToDtVelocity(RIGHT.getVelocity());
+        SmartDashboard.putNumber("Left Encoder", leftEncoder);
+        SmartDashboard.putNumber("Right Encoder", rightEncoder);
+        SmartDashboard.putNumber("Left Velocity", leftVelocity);
+        SmartDashboard.putNumber("Right Velocity", rightVelocity);
         SmartDashboard.putString("Control Drive Mode", driveMode.toString());
         SmartDashboard.putNumber("Gyro", pigeon.getHeading());
         SmartDashboard.putString("Odometry", odometry.getPoseMeters().toString());
         SmartDashboard.putNumber("Limelight Angle", limelight.getValues().getTx());
 
         SmartDashboard.putNumber("Left Demand", driveDemand.getLeft());
+        SmartDashboard.putNumber("Left Error", driveDemand.getLeft() - leftVelocity);
         SmartDashboard.putNumber("Right Demand", driveDemand.getRight());
+        SmartDashboard.putNumber("Right Error", driveDemand.getRight() - rightVelocity);
     }
 
     @Override
@@ -215,8 +223,8 @@ public class DriveTalon extends Subsystem {
         if (driveMode == DriveMode.VELOCITY || Robot.isAuto) {
             DriveDemand demand = Units2813.dtDemandToMotorDemand(driveDemand); // local variable for telemetry reasons
 
-            LEFT.set(ControlMode.VELOCITY, demand.getLeft(), feedforward.calculate(demand.getLeft()) / 12);
-            RIGHT.set(ControlMode.VELOCITY, demand.getRight(), feedforward.calculate(demand.getRight()) / 12);
+            LEFT.set(ControlMode.VELOCITY, demand.getLeft(), feedforward.calculate(driveDemand.getLeft()) / 12);
+            RIGHT.set(ControlMode.VELOCITY, demand.getRight(), feedforward.calculate(driveDemand.getRight()) / 12);
         } else {
             LEFT.set(driveMode.controlMode, driveDemand.getLeft());
             RIGHT.set(driveMode.controlMode, driveDemand.getRight());

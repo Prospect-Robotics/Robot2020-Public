@@ -33,7 +33,8 @@ public class MotorConfigs {
 
         motorConfigs.getTalons().forEach(((s, talonConfig) -> talons.put(s, initializeTalon(talonConfig))));
 
-//        motorConfigs.getSparks().forEach(((s, sparkConfig) -> sparks.put(s, initializeSpark(sparkConfig))));
+        // TODO: 1/18/2020 Restore When Needed 
+        motorConfigs.getSparks().forEach(((s, sparkConfig) -> sparks.put(s, initializeSpark(sparkConfig))));
 //        motorConfigs.getVictors().forEach(((s, victorConfig) -> victors.put(s, initializeVictor(victorConfig))));
 
         System.out.println("Successful!");
@@ -109,6 +110,7 @@ public class MotorConfigs {
             // talon uses encoder ticks
             // TODO deal with units issue
             talon.setMotionMagicAcceleration((int) pidController.getMaxAcceleration()); // FIXME see above
+            talon.controller.configAllowableClosedloopError(slotID, (int) pidController.getAllowableClosedLoopError());
             // TODO: 1/3/2020 figure out min velocity with Talons / remove from PID controller so as not to have that attribute
         }
 

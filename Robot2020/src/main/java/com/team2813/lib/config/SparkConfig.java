@@ -7,20 +7,21 @@ import java.util.List;
 public class SparkConfig extends MotorConfig {
     private int deviceNumber;
     private MotorType type;
-    private int peakCurrentDuration;
-    private int peakCurrentLimit;
-    private boolean enableVoltageCompensation;
-    private int compSaturationVoltage;
-    private int continuousCurrentLimitAmps;
-    private int motionAcceleration;
-    private int motionCruiseVelocity;
-    private int closedLoopRampRate;
-    private int openLoopRampRate;
-    private boolean invertSensorPhase;
+    private Inverted inverted;
+
+    private int peakCurrentDuration = 0;
+    private int peakCurrentLimit = 0;
+    private boolean enableVoltageCompensation = true;
+    private int compSaturationVoltage = 12;
+    private int continuousCurrentLimitAmps = 40;
+    private int motionAcceleration = 0;
+    private int motionCruiseVelocity = 0;
+    private int closedLoopRampRate = 0;
+    private int openLoopRampRate = 0;
+    private boolean invertSensorPhase = true;
     private PeriodicFrame statusFrame; // cannot serialize into PeriodicFrame (see getStatusFrame)
     private int statusFramePeriod = 5;
     private List<FollowerConfig> followers = new ArrayList<>();
-    private Inverted inverted;
     private List<PIDControllerConfig> pidControllers;
 
     public int getDeviceNumber() {
