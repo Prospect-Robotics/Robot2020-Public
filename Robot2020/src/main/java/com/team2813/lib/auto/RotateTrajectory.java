@@ -13,6 +13,11 @@ public class RotateTrajectory implements AutoTrajectory {
     private DriveDemand driveDemand;
     private PigeonWrapper pigeon = Subsystems.DRIVE.getPigeon();
 
+
+	// TODO method for determining how far robot has turned cannot be in constructor
+	// because this constructor is run before robot initialization is complete,
+	// not while the routine is being executed.
+
     public RotateTrajectory(double degrees, boolean reversed){
         this.reversed = reversed;
         maxVelocity = Subsystems.DRIVE.getMaxVelocity();

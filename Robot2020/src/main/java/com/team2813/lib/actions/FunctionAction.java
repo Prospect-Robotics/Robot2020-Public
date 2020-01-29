@@ -25,12 +25,12 @@ public class FunctionAction extends Action {
 	}
 
 	@Override
-    public void execute(double timestamp) {
+    protected void execute(double timestamp) {
 
 	}
 
 	@Override
-	public boolean isFinished(double timestamp) {
+	protected boolean isFinished(double timestamp) {
 		return true;
 	}
 
@@ -40,7 +40,7 @@ public class FunctionAction extends Action {
 	}
 
 	@Override
-	public boolean getRemoveOnDisabled() {
+	protected boolean getRemoveOnDisabled() {
 		return removeOnDisabled;
 	}
 }

@@ -22,7 +22,7 @@ public class LockFunctionAction extends Action{
     }
 
     @Override
-    public void execute(double timestamp) {
+    protected void execute(double timestamp) {
         try {
             unlocked = lockFunction.call();
         } catch (Exception e) {
@@ -31,7 +31,7 @@ public class LockFunctionAction extends Action{
     }
 
     @Override
-    public boolean isFinished(double timestamp) {
+    protected boolean isFinished(double timestamp) {
         return unlocked;
     }
 
@@ -46,7 +46,7 @@ public class LockFunctionAction extends Action{
     }
 
     @Override
-    public boolean getRemoveOnDisabled() {
+    protected boolean getRemoveOnDisabled() {
         return removeOnDisabled;
     }
 }

@@ -53,7 +53,7 @@ public enum AutoRoutine {
     FIVE_BALL_TWO("5-ball 2", List.of(
             new PauseTrajectory(1), //turn intake on
             new GeneratedTrajectory("2-ball initiation line", true), //intake 2 balls
-            new RotateTrajectory(180, false),
+            // new RotateTrajectory(180, false),
             new PauseTrajectory(1), //turn intake off, shoot 5 balls
             new GeneratedTrajectory("general zone", false)
     ), new SeriesAction(new WaitAction(1)));
@@ -68,9 +68,5 @@ public enum AutoRoutine {
         this.action = action;
     }
 
-    public static void addRoutines() {
-        for (AutoRoutine routine : AutoRoutine.values()) {
-            ShuffleboardData.routineChooser.addOption(routine.name, routine);
-        }
-    }
+
 }

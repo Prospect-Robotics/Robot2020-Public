@@ -33,4 +33,11 @@ public class Autonomous {
         Subsystems.DRIVE.initAutonomous(ramseteAuto.initialPose());
 //        Subsystems.LOOPER.addAction(routine.action);
     }
+
+    public static void addRoutines() {
+        int x = 1;
+        for (AutoRoutine routine : AutoRoutine.values()) {
+            ShuffleboardData.routineChooser.addOption(routine.name, routine);
+        }
+    }
 }

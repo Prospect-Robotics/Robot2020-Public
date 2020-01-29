@@ -57,9 +57,13 @@ public class Robot extends TimedRobot {
         try {
             CrashTracker.logRobotInit();
             MotorConfigs.read();
+            System.out.println("Motor Config Successful");
             Subsystems.initializeSubsystems();
-            autonomous = new Autonomous();
-            AutoRoutine.addRoutines();
+            System.out.println("Subsystem Initialization Successful");
+			autonomous = new Autonomous();
+			System.out.println("Auto Constructed");
+            Autonomous.addRoutines();
+            System.out.println("AutoRoutine Initialization Successful");
             ShuffleboardData.init();
 
             DriveDemand.circumference = Math.PI * WHEEL_DIAMETER;
