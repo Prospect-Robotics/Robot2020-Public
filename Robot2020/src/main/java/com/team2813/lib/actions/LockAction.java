@@ -28,7 +28,7 @@ public class LockAction extends Action{
     }
 
     @Override
-    void execute(double timestamp) {
+    public void execute(double timestamp) {
         try {
             unlocked = lockFunction.call();
         } catch (Exception e) {
