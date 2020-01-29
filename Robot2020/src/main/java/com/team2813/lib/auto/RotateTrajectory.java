@@ -1,64 +1,37 @@
 package com.team2813.lib.auto;
 
-import com.team2813.frc2020.subsystems.Subsystems;
-import com.team2813.lib.ctre.PigeonWrapper;
-import com.team2813.lib.drive.DriveDemand;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.util.Units;
 
 import java.util.*;
 
 public class RotateTrajectory implements AutoTrajectory {
-    private boolean reversed;
-    private double maxVelocity;
-    private double originalHeading;
-    private double currentHeading;
-    private DriveDemand driveDemand;
-    private PigeonWrapper pigeon = Subsystems.DRIVE.getPigeon();
-
     private Trajectory trajectory;
 
 
-	// TODO method for determining how far robot has turned cannot be in constructor
-	// because this constructor is run before robot initialization is complete,
-	// not while the routine is being executed.
-
-    public RotateTrajectory(double degrees, boolean reversed){
-        Trajectory.State state = new Trajectory.State();
+    public RotateTrajectory(double degrees){
         ArrayList<Trajectory.State> states = new ArrayList<>();
-        Pose2d pose = new Pose2d();
+        Pose2d pose = new Pose2d(new Translation2d(0, 0), new Rotation2d(Units.degreesToRadians(degrees)));
+        states.add(new Trajectory.State());
+        states.get(0).poseMeters = pose;
         trajectory = new Trajectory(states);
-
-//        this.reversed = reversed;
-//        maxVelocity = Subsystems.DRIVE.getMaxVelocity();
-//        driveDemand = Subsystems.DRIVE.getDriveDemand();
-//        originalHeading = pigeon.getHeading();
-//        if(!reversed){
-//            while(currentHeading != (originalHeading + degrees)){
-//                driveDemand = new DriveDemand(maxVelocity / 2, -maxVelocity / 2);
-//                currentHeading = pigeon.getHeading();
-//            }
-//        }
-//        else{
-//            while(currentHeading != (originalHeading - degrees)){
-//                driveDemand = new DriveDemand(-maxVelocity / 2, maxVelocity / 2);
-//                currentHeading = pigeon.getHeading();
-//            }
-//        }
     }
 
     @Override
     public double getTotalTimeSeconds() {
-        return 0;
+        return trajectory.getTotalTimeSeconds();
     }
 
     @Override
     public Trajectory getTrajectory() {
-        return null;
+        return trajectory;
     }
 
     @Override
     public boolean isReversed() {
-        return reversed;
+        return false;
     }
 }
