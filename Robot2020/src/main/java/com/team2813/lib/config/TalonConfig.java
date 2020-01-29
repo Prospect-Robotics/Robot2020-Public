@@ -23,9 +23,9 @@ public class TalonConfig extends MotorConfig {
     private double openLoopRampRate = 0;
     private boolean invertSensorPhase = true;
     private List<FollowerConfig> followers = new ArrayList<>();
-    private List<PIDControllerConfig> pidControllers;
-    private List<SoftLimitConfig> softLimits;
-    private List<LimitSwitchConfig> limitSwitches;
+    private List<PIDControllerConfig> pidControllers = new ArrayList<>();
+    private List<SoftLimitConfig> softLimits = new ArrayList<>();
+    private List<LimitSwitchConfig> limitSwitches = new ArrayList<>();
 //    private StatusFrameEnhanced statusFrame; // cannot serialize into PeriodicFrame (see getStatusFrame)
     private int statusFramePeriod = 5;
     private VelocityMeasPeriod velocityMeasurementPeriod;

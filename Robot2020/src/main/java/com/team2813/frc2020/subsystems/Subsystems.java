@@ -16,7 +16,7 @@ public class Subsystems {
 
 	public static List<Subsystem> allSubsystems;
 	public static DriveTalon DRIVE;
-	public static Magazine MAGAZINE;
+//	public static Magazine MAGAZINE;
 	public static final Looper LOOPER = new Looper(RobotMode.DISABLED); //FIXME put looper somewhere else
 
 	private static class SmartDashboardLoop implements Loop{
@@ -33,9 +33,9 @@ public class Subsystems {
 
 	public static void initializeSubsystems() {
 		DRIVE = new DriveTalon();
-		MAGAZINE = new Magazine();
+//		MAGAZINE = new Magazine();
 		allSubsystems = Collections.unmodifiableList(Arrays.asList(
-				DRIVE, MAGAZINE
+				DRIVE//, MAGAZINE
 		));
 		LOOPER.addLoop(new SmartDashboardLoop());
 	}
