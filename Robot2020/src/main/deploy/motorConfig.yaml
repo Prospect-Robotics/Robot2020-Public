@@ -50,28 +50,20 @@ talons:
         maxIntegralAccumulator: 0
         integralZone: 0
         allowableClosedLoopError: 100
-#  shooter:
-#    deviceNumber: 15
-#    type: BRUSHED
-#    subsystemName: Shooter
-#    peakCurrentDuration: 0
-#      peakCurrentLimit: 0
-#      enableVoltageCompensation: true
-#      compSaturationVoltage: 12
-#      continuousCurrentLimitAmps: 30
-#      motionAcceleration: 0
-#      motionCruiseVelocity: 0
-#      closedLoopRampRate: 0
-#      openLoopRampRate: 0
-#      invertSensorPhase: true
-#      statusFrame: STATUS_2
-#      inverted: NONINVERTED
+  magazineWheel: # Talon
+    deviceNumber: 16
+    motorControllerType: TALON_FX
+    type: BRUSHLESS
+    subsystemName: Magazine
+    inverted: NONINVERTED
+    statusFrame: STATUS_2
+
 sparks:
-  mag:
+  magazine:
     deviceNumber: 9
     motorControllerType: SPARK_MAX
     type: BRUSHLESS
-    subsystemName: Mag
+    subsystemName: Magazine
     inverted: NONINVERTED
     statusFrame: STATUS_2
     followers:
