@@ -37,7 +37,6 @@ public class RotateTrajectory extends Trajectory implements AutoTrajectory {
 
     @Override
     public double getTotalTimeSeconds() {
-        System.out.println(seconds);
         return finished ? seconds : (seconds + 1);// +1 is unreachable so that it will never stop if unfinished
     }
 

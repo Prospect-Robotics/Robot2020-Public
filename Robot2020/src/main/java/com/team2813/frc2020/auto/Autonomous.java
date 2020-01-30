@@ -24,7 +24,6 @@ public class Autonomous {
     // this will be run periodically (usually to follow the path)
     public void periodic() {
         Subsystems.DRIVE.setDemand(ramseteAuto.getDemand(Subsystems.DRIVE.robotPosition));
-//        ramseteAuto.getDemand(Subsystems.DRIVE.robotPosition);
     }
 
     public void run() {

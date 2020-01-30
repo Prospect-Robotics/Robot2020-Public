@@ -221,6 +221,7 @@ public class DriveTalon extends Subsystem {
     @Override
     public synchronized void writePeriodicOutputs() {
         if (driveMode == DriveMode.VELOCITY || Robot.isAuto) {
+            System.out.println(driveDemand);
             DriveDemand demand = Units2813.dtDemandToMotorDemand(driveDemand); // local variable for telemetry reasons
 
             LEFT.set(ControlMode.VELOCITY, demand.getLeft(), feedforward.calculate(driveDemand.getLeft()) / 12);
