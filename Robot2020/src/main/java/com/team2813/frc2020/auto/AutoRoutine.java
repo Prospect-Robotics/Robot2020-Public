@@ -24,7 +24,9 @@ public enum AutoRoutine {
     ), new SeriesAction(new WaitAction(1)/* shoot ball, intake, shoot ball*/)),
     TEST_ROUTINE("Test", List.of(
             new PauseTrajectory(0.5),
-            new GeneratedTrajectory("test", false)
+            new GeneratedTrajectory("test", false),
+            new RotateTrajectory(180),
+            new GeneratedTrajectory("another test path", false)
     ), new SeriesAction(new WaitAction(1))),
     THREE_BALL("3-ball", List.of(
             new PauseTrajectory(1), //shoot 3-balls

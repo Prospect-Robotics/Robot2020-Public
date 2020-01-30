@@ -127,7 +127,7 @@ public class Robot extends TimedRobot {
             for (Subsystem subsystem : allSubsystems) {
                 subsystem.zeroSensors();
             }
-            autonomous.run(); //TODO 1/7/20 work on decision logic for auto routine
+            autonomous.run();
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
