@@ -31,6 +31,10 @@ public class RotateTrajectory extends Trajectory implements AutoTrajectory {
         finished = true;
     }
 
+    public void resetTimer(){
+        seconds = 0.05;
+    }
+
     @Override
     public double getTotalTimeSeconds() {
         System.out.println(seconds);

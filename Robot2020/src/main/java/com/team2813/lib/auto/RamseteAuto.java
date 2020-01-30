@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 
@@ -28,6 +29,13 @@ public class RamseteAuto {
     public RamseteAuto(DifferentialDriveKinematics kinematics, RamseteTrajectory trajectory) {
         this.kinematics = kinematics;
         this.trajectory = trajectory;
+        for(Trajectory individualTrajectory : this.trajectory.getTrajectories()){
+            if(individualTrajectory instanceof RotateTrajectory){
+                ((RotateTrajectory) individualTrajectory).resetTimer();
+            }
+        }
+
+
         controller = new RamseteController(); // use default gains
     }
 

@@ -30,6 +30,7 @@ public class Autonomous {
     public void run() {
         AutoRoutine routine = ShuffleboardData.routineChooser.getSelected();
         ramseteAuto = new RamseteAuto(Subsystems.DRIVE.kinematics, routine.trajectory);
+
         Subsystems.DRIVE.initAutonomous(ramseteAuto.initialPose());
 //        Subsystems.LOOPER.addAction(routine.action);
     }
