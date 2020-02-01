@@ -60,13 +60,13 @@ public class Climber extends Subsystem1d<Climber.Position>{
         setPosition(Position.RETRACTED);
     }
 
-    public boolean postionReached(){
+    public boolean positionReached(){
         return CLIMBER.getEncoderPosition() == currentPosition.getPos();
     }
 
     public void startClimb(){
         startAction = new SeriesAction(
-                new LockFunctionAction(this::retractClimb, this::postionReached, true),
+                new LockFunctionAction(this::retractClimb, this::positionReached, true),
                 new FunctionAction(this::engageBrake, true)
         );
     }
