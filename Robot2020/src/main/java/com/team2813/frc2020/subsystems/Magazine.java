@@ -20,6 +20,10 @@ public class Magazine extends Subsystem {
         WHEEL = (TalonFXWrapper) MotorConfigs.talons.get("magazineWheel");
     }
 
+    public void spinMagazineForward(){
+        demand = Demand.ON;
+    }
+
     @Override
     public void outputTelemetry() {
     }

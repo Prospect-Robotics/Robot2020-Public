@@ -1,6 +1,7 @@
 package com.team2813.frc2020.subsystems;
 
 import com.team2813.frc2020.Robot;
+import com.team2813.lib.actions.*;
 import com.team2813.lib.config.MotorConfig;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
@@ -9,6 +10,8 @@ import com.team2813.lib.motors.TalonFXWrapper;
 import com.team2813.lib.motors.TalonWrapper;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.util.LimelightValues;
+
+import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
 
 /**
  * Class for the shooter on the robot.
@@ -27,6 +30,9 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
     private static final int MIN_ANGLE = 35;
     private static final int MAX_ANGLE = 70;
     private static Position currentPosition = Position.ONE;
+    private Demand demand;
+
+    private Action startAction;
 
     //TODO May be removed
     private boolean manualMode = false;
@@ -50,6 +56,33 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
         setPosition(currentPosition);
     }
 
+    public void unloadPayload(){
+        startAction = new SeriesAction(
+                new LockFunctionAction(this::startSpinningFlywheel, this::isFlywheelReady, true)
+                //TODO Uncomment this ,new FunctionAction(Subsystems.MAGAZINE::spinMagazineForward);
+                ,new LockAction(this::hasFinishButtonBeenPressed, true)
+                ,new FunctionAction(this::stopSpinningFlywheel, true)
+        );
+        LOOPER.addAction(startAction);
+    }
+
+    public void startSpinningFlywheel(){
+        demand = Demand.ON;
+    }
+
+    public void stopSpinningFlywheel(){
+        demand = Demand.OFF;
+    }
+
+    public boolean isFlywheelReady(){
+        //TODO update threshold
+        return FLYWHEEL.getVelocity() > /*Threshold*/ 0.9;
+    }
+
+    public boolean hasFinishButtonBeenPressed(){
+        return SHOOTER_BUTTON.get();
+    }
+
     @Override
     public void outputTelemetry() {
 
@@ -60,8 +93,9 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
         if(manualMode) {
             HOOD_BUTTON.whenPressed(() -> setNextPosition(true));
         }
-        SHOOTER_BUTTON.whenPressed(() -> FLYWHEEL.set(ControlMode.DUTY_CYCLE, 1));
-        SHOOTER_BUTTON.whenReleased(() -> FLYWHEEL.set(ControlMode.DUTY_CYCLE, 0));
+        SHOOTER_BUTTON.whenPressed(() -> {
+            demand = demand == Demand.ON ? Demand.OFF : Demand.ON;
+        });
     }
 
     @Override
@@ -70,6 +104,12 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
         if(!manualMode){
             setPosition(degreesToRevs(distanceToAngle(distance)));
         }
+    }
+
+    @Override
+    public void writePeriodicOutputs(){
+        super.writePeriodicOutputs();
+        FLYWHEEL.set(ControlMode.DUTY_CYCLE, demand.percent);
     }
 
     public enum Position implements Subsystem1d.Position<Shooter.Position> {
@@ -192,6 +232,16 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
         @Override
         public Position getClock(boolean clockwise) {
             return clockwise ? getNextClockwise() : getNextCounter();
+        }
+    }
+
+    enum Demand {
+        ON(1.0), OFF(0.0);
+
+        double percent;
+
+        Demand(double percent) {
+            this.percent = percent;
         }
     }
 
