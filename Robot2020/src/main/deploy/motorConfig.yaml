@@ -5,27 +5,17 @@ talons:
     motorControllerType: TALON_FX
     type: BRUSHLESS
     subsystemName: Drive
-    peakCurrentDuration: 0
-    peakCurrentLimit: 0
-    enableVoltageCompensation: true
-    compSaturationVoltage: 12
-    continuousCurrentLimitAmps: 40
-    motionAcceleration: 0
-    motionCruiseVelocity: 0
-    closedLoopRampRate: 0
-    openLoopRampRate: 0
-    invertSensorPhase: true
+    inverted: NONINVERTED
     statusFrame: STATUS_2
     followers:
       - id: 2
         motorControllerType: TALON_FX
         type: BRUSHLESS
         inverted: FOLLOW_LEADER
-    inverted: NONINVERTED
     pidControllers:
-      - p: .0062
+      - p: .1
         i: 0
-        d: 1
+        d: 0
         f: 0
         maxVelocity: 18000
         maxAcceleration: 45000
@@ -37,27 +27,17 @@ talons:
     motorControllerType: TALON_FX
     type: BRUSHLESS
     subsystemName: Drive
-    peakCurrentDuration: 0
-    peakCurrentLimit: 0
-    enableVoltageCompensation: true
-    compSaturationVoltage: 12
-    continuousCurrentLimitAmps: 40
-    motionAcceleration: 0
-    motionCruiseVelocity: 0
-    closedLoopRampRate: 0
-    openLoopRampRate: 0
-    invertSensorPhase: true
+    inverted: INVERTED
     statusFrame: STATUS_2
     followers:
       - id: 4
         motorControllerType: TALON_FX
         type: BRUSHLESS
         inverted: FOLLOW_LEADER
-    inverted: INVERTED
     pidControllers:
-      - p: 0.0062
+      - p: .1
         i: 0
-        d: 1
+        d: 0
         f: 0
         maxVelocity: 18000
         maxAcceleration: 45000
@@ -113,4 +93,34 @@ sparks:
       invertSensorPhase: true
       statusFrame: STATUS_2
       inverted: NONINVERTED
+  magazineWheel: # Talon
+    deviceNumber: 16
+    motorControllerType: TALON_FX
+    type: BRUSHLESS
+    subsystemName: Magazine
+    inverted: NONINVERTED
+    statusFrame: STATUS_2
+  magazine:
+    deviceNumber: 9
+    motorControllerType: SPARK_MAX
+    type: BRUSHLESS
+    subsystemName: Magazine
+    inverted: NONINVERTED
+    statusFrame: STATUS_2
+    followers:
+      - id: 10
+        motorControllerType: SPARK_MAX
+        type: BRUSHLESS
+        inverted: OPPOSE_LEADER
+    pidControllers:
+      - p: 0
+        i: 0
+        d: 0
+        f: 0
+        maxVelocity: 0
+        maxAcceleration: 0
+        maxIntegralAccumulator: 0
+        integralZone: 0
+        allowableClosedLoopError: 0
+victors:
 ...

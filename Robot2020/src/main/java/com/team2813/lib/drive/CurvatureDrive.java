@@ -17,7 +17,7 @@ public class CurvatureDrive {
         double steer = 2 * Math.asin(steerX) / Math.PI;
 
         steer = -steer;
-        return arcadeDrive.getDemand(pivot ? steer * .3 : throttle * steer, throttle);
+        return arcadeDrive.getDemand(pivot ? steer : throttle * steer, throttle);
     }
 
     public ArcadeDrive getArcadeDrive() {

@@ -9,7 +9,7 @@ public class VelocityDriveTalon {
     private TalonWrapper talon;
     private double maxVelocity;
 
-    public VelocityDriveTalon(double maxVelocity) {
+    public VelocityDriveTalon(double maxVelocity) { // can be in any units
         this.maxVelocity = maxVelocity;
     }
 
@@ -28,13 +28,7 @@ public class VelocityDriveTalon {
 //        talon.getPIDController().setSmartMotionAllowedClosedLoopError(pidConfig.getAllowableClosedLoopError(), 0);
     }
 
-    public void setMaxVelocity(int maxVelocity) {
-        if (maxVelocity != this.maxVelocity)
-            talon.setMotionMagicVelocity(0);
-        this.maxVelocity = maxVelocity;
-    }
-
-    public double getVelocityFromDemand(double demand) {
-        return maxVelocity * demand;
+    public DriveDemand getVelocity(DriveDemand driveDemand) {
+        return new DriveDemand(maxVelocity * driveDemand.getLeft(), maxVelocity * driveDemand.getRight());
     }
 }
