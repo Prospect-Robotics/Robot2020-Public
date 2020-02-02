@@ -7,8 +7,10 @@ import com.team2813.lib.actions.SeriesAction;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.motors.SparkMaxWrapper;
+import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.solenoid.PistonSolenoid;
 
+import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
 
 
 /**
@@ -69,6 +71,7 @@ public class Climber extends Subsystem1d<Climber.Position>{
                 new LockFunctionAction(this::retractClimb, this::positionReached, true),
                 new FunctionAction(this::engageBrake, true)
         );
+        LOOPER.addAction(startAction);
     }
 
     @Override
