@@ -58,7 +58,11 @@ public enum AutoRoutine {
             new RotateTrajectory(180),
             new PauseTrajectory(1), //turn intake off, shoot 5 balls
             new GeneratedTrajectory("general zone", false)
+    ), new SeriesAction(new WaitAction(1))),
+    TEST_REVERSE("test reverse", List.of(
+            new GeneratedTrajectory("test reverse", true)
     ), new SeriesAction(new WaitAction(1)));
+
 
     public String name;
     public RamseteTrajectory trajectory;

@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Transform2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
@@ -29,8 +30,8 @@ public class RamseteAuto {
     public RamseteAuto(DifferentialDriveKinematics kinematics, RamseteTrajectory trajectory) {
         this.kinematics = kinematics;
         this.trajectory = trajectory;
-        for(Trajectory individualTrajectory : this.trajectory.getTrajectories()){
-            if(individualTrajectory instanceof RotateTrajectory){
+        for (Trajectory individualTrajectory : this.trajectory.getTrajectories()) {
+            if (individualTrajectory instanceof RotateTrajectory) {
                 ((RotateTrajectory) individualTrajectory).resetTimer();
             }
         }
@@ -96,8 +97,14 @@ public class RamseteAuto {
 
     public Pose2d initialPose() { // because high possibility there is a pause in the beginning
         for (double i = 0; i < 15; i += .02) {
-            if (!trajectory.sample(i).isPause() && !trajectory.sample(i).isRotate())
-                return trajectory.sample(i).getState().poseMeters;
+            TrajectorySample sample = trajectory.sample(i);
+            if (!sample.isPause() && !sample.isRotate()) {
+                Pose2d pose = sample.getState().poseMeters;
+                System.out.println(pose);
+                if (sample.isReversed())
+                    return new Pose2d(pose.getTranslation(), pose.getRotation().rotateBy(Rotation2d.fromDegrees(180)));
+                else return pose;
+            }
         }
         return new Pose2d(new Translation2d(0, 0), new Rotation2d(0));
     }
