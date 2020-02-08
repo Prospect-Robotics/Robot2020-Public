@@ -90,5 +90,6 @@ sparks:
         maxIntegralAccumulator: 0
         integralZone: 0
         allowableClosedLoopError: 0
+    peakCurrentLimit: 30
 victors:
 ...
