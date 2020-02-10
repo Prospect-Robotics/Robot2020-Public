@@ -22,7 +22,7 @@ public class SparkConfig extends MotorConfig {
     private PeriodicFrame statusFrame; // cannot serialize into PeriodicFrame (see getStatusFrame)
     private int statusFramePeriod = 5;
     private List<FollowerConfig> followers = new ArrayList<>();
-    private List<PIDControllerConfig> pidControllers;
+    private List<PIDControllerConfig> pidControllers = new ArrayList<>();
 
     public int getDeviceNumber() {
         return deviceNumber;
