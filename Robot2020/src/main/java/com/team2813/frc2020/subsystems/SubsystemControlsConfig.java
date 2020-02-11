@@ -3,6 +3,7 @@ package com.team2813.frc2020.subsystems;
 import com.team2813.lib.controls.Axis;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.controls.Controller;
+import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * Stores all of the controllers and their buttons and axes.
@@ -85,5 +86,9 @@ class SubsystemControlsConfig {
 
 	static Button getIntakeOut() {
 		return intakeOut;
+	}
+
+	static Joystick getOperatorJoystick() {
+		return operatorJoystick;
 	}
 }

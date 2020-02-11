@@ -199,8 +199,8 @@ public class MotorConfigs {
             spark.setInverted(SparkMaxWrapper.InvertType.NORMAL.inverted);
 
         for (FollowerConfig followerConfig : config.getFollowers()) {
-            System.out.println("\tCreating follower w/ id of " + followerConfig.getId() + " on " + config.getSubsystemName());
-            SparkMaxWrapper follower = new SparkMaxWrapper(followerConfig.getId(), followerConfig.getType().getValue(), spark);
+            System.out.println("\tCreating follower w/ id of " + followerConfig.getId() + " on " + config.getSubsystemName() + "and inverted: " + followerConfig.getInverted().inverted);
+            SparkMaxWrapper follower = new SparkMaxWrapper(followerConfig.getId(), followerConfig.getType().getValue(), spark, followerConfig.getInverted().inverted);
             follower.setPeakCurrentLimit(config.getPeakCurrentLimit());
             spark.setPeakCurrentLimit(config.getPeakCurrentLimit());
             spark.setSecondaryCurrentLimit(config.getContinuousCurrentLimitAmps());// TODO check this is actually continuous limit

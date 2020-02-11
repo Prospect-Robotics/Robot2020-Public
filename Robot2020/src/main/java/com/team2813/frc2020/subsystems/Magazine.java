@@ -2,14 +2,17 @@ package com.team2813.frc2020.subsystems;
 
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
+import com.team2813.lib.controls.Controller;
 import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.motors.TalonFXWrapper;
 import com.team2813.lib.motors.interfaces.ControlMode;
+import edu.wpi.first.wpilibj.Joystick;
 
 public class Magazine extends Subsystem {
 
     private final SparkMaxWrapper MOTOR;
     private final SparkMaxWrapper KICKER;
+    private final Joystick OPERATOR_JOYSTICK = SubsystemControlsConfig.getOperatorJoystick();
     private final Button START_STOP_BUTTON = SubsystemControlsConfig.getMagButton();
     private final Button REVERSE_BUTTON = SubsystemControlsConfig.getMagReverse();
     private Demand demand;

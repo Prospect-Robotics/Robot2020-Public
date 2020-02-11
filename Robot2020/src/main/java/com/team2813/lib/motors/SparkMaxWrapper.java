@@ -30,10 +30,10 @@ public class SparkMaxWrapper extends CANSparkMax implements Motor {
         this.subsystemName = subsystem;
     }
 
-    public SparkMaxWrapper(int deviceID, MotorType type, SparkMaxWrapper master) {
+    public SparkMaxWrapper(int deviceID, MotorType type, SparkMaxWrapper master, boolean invert) {
         super(deviceID, type);
         this.subsystemName = master.subsystemName;
-        this.follow(master);
+        this.follow(master, invert);
     }
 
     @Override
