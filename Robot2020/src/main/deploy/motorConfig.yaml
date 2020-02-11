@@ -106,7 +106,8 @@ sparks:
     subsystemName: Magazine
     inverted: INVERTED
     statusFrame: STATUS_2
-    continuousCurrentLimitAmps: 50
+    continuousCurrentLimitAmps: 30
+    peakCurrentLimit: 30
     followers:
       - id: 10
         motorControllerType: SPARK_MAX
