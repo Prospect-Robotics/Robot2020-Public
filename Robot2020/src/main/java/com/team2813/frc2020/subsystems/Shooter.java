@@ -35,7 +35,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
     private Action startAction;
 
     //TODO May be removed
-    private boolean manualMode = false;
+    private boolean manualMode = true;
 
     Shooter() {
         super(MotorConfigs.sparks.get("hood"));
