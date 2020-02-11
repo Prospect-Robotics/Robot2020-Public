@@ -97,6 +97,6 @@ sparks:
     subsystemName: Magazine
     inverted: NONINVERTED
     statusFrame: STATUS_2
-
+    peakCurrentLimit: 30
 victors:
 ...
