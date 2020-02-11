@@ -1,13 +1,10 @@
 package com.team2813.frc2020.subsystems;
 
-import com.team2813.frc2020.Robot;
 import com.team2813.lib.actions.*;
-import com.team2813.lib.config.MotorConfig;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.motors.TalonFXWrapper;
-import com.team2813.lib.motors.TalonWrapper;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.util.LimelightValues;
 
@@ -18,10 +15,9 @@ import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
  *
  * @author Sid Banerjee
  * @author Daniel Tsai
- *
  */
 
-public class Shooter extends Subsystem1d<Shooter.Position>{
+public class Shooter extends Subsystem1d<Shooter.Position> {
 
     private static final Button HOOD_BUTTON = SubsystemControlsConfig.getHoodButton();
     private static final Button SHOOTER_BUTTON = SubsystemControlsConfig.getShooterButton();
@@ -30,7 +26,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
     private static final int MIN_ANGLE = 35;
     private static final int MAX_ANGLE = 70;
     private static Position currentPosition = Position.ONE;
-    private Demand demand;
+    private Demand demand = Demand.OFF;
 
     private Action startAction;
 
@@ -40,7 +36,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
     Shooter() {
         super(MotorConfigs.sparks.get("hood"));
         HOOD = MotorConfigs.sparks.get("hood");
-        FLYWHEEL = (TalonFXWrapper) MotorConfigs.talons.get("flywheel");
+        FLYWHEEL = (TalonFXWrapper) MotorConfigs.talons.get("T5E1");
     }
 
 
@@ -56,30 +52,30 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
         setPosition(currentPosition);
     }
 
-    public void unloadPayload(){
+    public void unloadPayload() {
         startAction = new SeriesAction(
                 new LockFunctionAction(this::startSpinningFlywheel, this::isFlywheelReady, true)
                 //TODO Uncomment this ,new FunctionAction(Subsystems.MAGAZINE::spinMagazineForward);
-                ,new LockAction(this::hasFinishButtonBeenPressed, true)
-                ,new FunctionAction(this::stopSpinningFlywheel, true)
+                , new LockAction(this::hasFinishButtonBeenPressed, true)
+                , new FunctionAction(this::stopSpinningFlywheel, true)
         );
         LOOPER.addAction(startAction);
     }
 
-    public void startSpinningFlywheel(){
+    public void startSpinningFlywheel() {
         demand = Demand.ON;
     }
 
-    public void stopSpinningFlywheel(){
+    public void stopSpinningFlywheel() {
         demand = Demand.OFF;
     }
 
-    public boolean isFlywheelReady(){
+    public boolean isFlywheelReady() {
         //TODO update threshold
         return FLYWHEEL.getVelocity() > /*Threshold*/ 0.9;
     }
 
-    public boolean hasFinishButtonBeenPressed(){
+    public boolean hasFinishButtonBeenPressed() {
         return SHOOTER_BUTTON.get();
     }
 
@@ -90,7 +86,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
 
     @Override
     public void teleopControls() {
-        if(manualMode) {
+        if (manualMode) {
             HOOD_BUTTON.whenPressed(() -> setNextPosition(true));
         }
         SHOOTER_BUTTON.whenPressed(() -> {
@@ -99,21 +95,21 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
     }
 
     @Override
-    public void onEnabledLoop(double timestamp){
-        double distance = 2.49/Math.atan(new LimelightValues().getTy().getDouble(0));
-        if(!manualMode){
+    public void onEnabledLoop(double timestamp) {
+        double distance = 2.49 / Math.atan(new LimelightValues().getTy().getDouble(0));
+        if (!manualMode) {
             setPosition(degreesToRevs(distanceToAngle(distance)));
         }
-    }
-
-    @Override
-    public void writePeriodicOutputs(){
-        super.writePeriodicOutputs();
         FLYWHEEL.set(ControlMode.DUTY_CYCLE, demand.percent);
     }
 
+    @Override
+    public void writePeriodicOutputs() {
+        super.writePeriodicOutputs();
+    }
+
     public enum Position implements Subsystem1d.Position<Shooter.Position> {
-        ONE(revsToDegrees(35.0)){
+        ONE(revsToDegrees(35.0)) {
             @Override
             public Position getNextClockwise() {
                 return TWO;
@@ -123,7 +119,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
             public Position getNextCounter() {
                 return EIGHT;
             }
-        }, TWO(revsToDegrees(39.375)){
+        }, TWO(revsToDegrees(39.375)) {
             @Override
             public Position getNextClockwise() {
                 return THREE;
@@ -133,7 +129,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
             public Position getNextCounter() {
                 return ONE;
             }
-        }, THREE(revsToDegrees(43.75)){
+        }, THREE(revsToDegrees(43.75)) {
             @Override
             public Position getNextClockwise() {
                 return FOUR;
@@ -143,7 +139,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
             public Position getNextCounter() {
                 return TWO;
             }
-        }, FOUR(revsToDegrees(52.5)){
+        }, FOUR(revsToDegrees(52.5)) {
             @Override
             public Position getNextClockwise() {
                 return FIVE;
@@ -153,7 +149,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
             public Position getNextCounter() {
                 return THREE;
             }
-        }, FIVE(revsToDegrees(56.875)){
+        }, FIVE(revsToDegrees(56.875)) {
             @Override
             public Position getNextClockwise() {
                 return SIX;
@@ -163,7 +159,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
             public Position getNextCounter() {
                 return FOUR;
             }
-        }, SIX(revsToDegrees(61.25)){
+        }, SIX(revsToDegrees(61.25)) {
             @Override
             public Position getNextClockwise() {
                 return SEVEN;
@@ -174,7 +170,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
                 return FIVE;
             }
 
-        }, SEVEN(revsToDegrees(65.625)){
+        }, SEVEN(revsToDegrees(65.625)) {
             @Override
             public Position getNextClockwise() {
                 return SIX;
@@ -185,7 +181,7 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
                 return EIGHT;
             }
 
-        }, EIGHT(revsToDegrees(70)){
+        }, EIGHT(revsToDegrees(70)) {
             @Override
             public Position getNextClockwise() {
                 return ONE;
@@ -194,12 +190,13 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
             @Override
             public Position getNextCounter() {
                 return SEVEN;
-            }};
+            }
+        };
 
 
         private double position;
 
-        Position(double position){
+        Position(double position) {
             this.position = position;
         }
 
@@ -245,15 +242,15 @@ public class Shooter extends Subsystem1d<Shooter.Position>{
         }
     }
 
-    private static double revsToDegrees(double revs){
-        return revs*(MAX_ANGLE-MIN_ANGLE)/48;
+    private static double revsToDegrees(double revs) {
+        return revs * (MAX_ANGLE - MIN_ANGLE) / 48;
     }
 
-    private static double degreesToRevs(double degrees){
-        return degrees*48/(MAX_ANGLE-MIN_ANGLE);
+    private static double degreesToRevs(double degrees) {
+        return degrees * 48 / (MAX_ANGLE - MIN_ANGLE);
     }
 
-    private static double distanceToAngle(double meters){
+    private static double distanceToAngle(double meters) {
         //TODO Get equation from Sid S.
         return meters;
     }
