@@ -120,5 +120,20 @@ sparks:
     inverted: NONINVERTED
     statusFrame: STATUS_2
     peakCurrentLimit: 30
+#  climber:
+#    deviceNumber: 11
+#    motorControllerType: SPARK_MAX
+#    type: BRUSHLESS
+#    subsystemName: Climber
+#    inverted: NONINVERTED
+#    peakCurrentLimit: 40
+#    stautsFrame: STATUS_2
+  climber:
+    deviceNumber: 11
+    motorControllerType: SPARK_MAX
+    type: BRUSHLESS
+    subsystemName: Climber
+    inverted: NONINVERTED
+    statusFrame: STATUS_2
 victors:
 ...

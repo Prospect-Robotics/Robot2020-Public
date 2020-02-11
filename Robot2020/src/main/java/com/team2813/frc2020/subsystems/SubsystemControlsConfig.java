@@ -33,6 +33,7 @@ class SubsystemControlsConfig {
 
 	// operator
 	private static Controller operatorJoystick = new Controller(1);
+	private static Button climberPiston = operatorJoystick.button(2);
 	private static Button intakePistons = operatorJoystick.button(3);
 	private static Button intakeIn = operatorJoystick.button(5);
 	private static Button intakeOut = operatorJoystick.button(6);
@@ -92,6 +93,10 @@ class SubsystemControlsConfig {
 
 	static Button getIntakeOut() {
 		return intakeOut;
+	}
+
+	static Button getClimberPiston() {
+		return climberPiston;
 	}
 
 	static Joystick getOperatorJoystick() {
