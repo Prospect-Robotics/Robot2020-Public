@@ -1,15 +1,12 @@
 package com.team2813.frc2020.subsystems;
 
-import com.team2813.frc2020.subsystems.Subsystem1d;
-import com.team2813.lib.actions.Action;
-import com.team2813.lib.actions.FunctionAction;
-import com.team2813.lib.actions.LockFunctionAction;
-import com.team2813.lib.actions.SeriesAction;
+import com.team2813.lib.actions.*;
 import com.team2813.lib.config.MotorConfigs;
+import com.team2813.lib.controls.Axis;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.motors.SparkMaxWrapper;
-import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.solenoid.PistonSolenoid;
+import edu.wpi.first.wpilibj.Timer;
 
 import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
 
@@ -22,20 +19,17 @@ import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
 
 public class Climber extends Subsystem1d<Climber.Position> {
 
+    private static final Axis CLIMBER_AXIS = SubsystemControlsConfig.getClimberElevator();
     private static final Button CLIMBER_BUTTON = SubsystemControlsConfig.getClimberButton();
     private static final Button PISTON_BUTTON = SubsystemControlsConfig.getClimberPiston();
     private final SparkMaxWrapper CLIMBER;
     private final PistonSolenoid BRAKE;
     private static Position currentPosition = Position.RETRACTED;
-
-    private Action startAction;
-    private Action abortAction;
-    private Action retractAction;
+    private boolean isClimbing;
 
     Climber() {
         super(MotorConfigs.sparks.get("climber"));
         CLIMBER = MotorConfigs.sparks.get("climber");
-        //TODO Insert PCM port ID
         BRAKE = new PistonSolenoid(0);
     }
 
@@ -55,22 +49,23 @@ public class Climber extends Subsystem1d<Climber.Position> {
         BRAKE.extend();
     }
 
-    public void extendClimb() {
-        setPosition(Position.EXTENDED);
-    }
+    public void disengageBrake() { BRAKE.retract(); }
 
     public void retractClimb() {
+        disengageBrake();
         setPosition(Position.RETRACTED);
     }
 
     public boolean positionReached() {
-        return CLIMBER.getEncoderPosition() == currentPosition.getPos();
+        return CLIMBER.getEncoderPosition() <= currentPosition.getPos();
     }
 
-    public void startClimb() {
-        startAction = new SeriesAction(
+    public void autoRetractClimb() {
+        isClimbing = true;
+        Action startAction = new SeriesAction(
                 new LockFunctionAction(this::retractClimb, this::positionReached, true),
-                new FunctionAction(this::engageBrake, true)
+                new FunctionAction(this::engageBrake, true),
+                new FunctionAction(() -> isClimbing = false, true)
         );
         LOOPER.addAction(startAction);
     }
@@ -81,12 +76,17 @@ public class Climber extends Subsystem1d<Climber.Position> {
 
     @Override
     public void teleopControls() {
-        CLIMBER_BUTTON.whenPressed(() -> setNextPosition(true));
         PISTON_BUTTON.whenPressed(BRAKE::toggle);
+        if (Timer.getMatchTime() < 30 && !isClimbing) {
+            if (Timer.getMatchTime() > 29.9) disengageBrake();
+            CLIMBER_BUTTON.whenPressed(this::autoRetractClimb);
+            setPosition(CLIMBER.getEncoderPosition() + CLIMBER_AXIS.get());
+        }
     }
 
     @Override
     public void onEnabledStart(double timestamp) {
+        BRAKE.set(PistonSolenoid.PistonState.RETRACTED);
     }
 
     @Override
@@ -95,6 +95,11 @@ public class Climber extends Subsystem1d<Climber.Position> {
 
     @Override
     public void onEnabledStop(double timestamp) {
+    }
+
+    @Override
+    public void writePeriodicOutputs() {
+        if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED) super.writePeriodicOutputs();
     }
 
     public enum Position implements Subsystem1d.Position<Climber.Position> {
