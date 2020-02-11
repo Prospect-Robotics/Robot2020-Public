@@ -23,6 +23,10 @@ public class Magazine extends Subsystem {
         KICKER = MotorConfigs.sparks.get("kicker");
     }
 
+    public void spinMagazineForward(){
+        demand = Demand.ON;
+    }
+
     @Override
     public void outputTelemetry() {
     }

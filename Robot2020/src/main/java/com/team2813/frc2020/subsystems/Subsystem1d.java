@@ -43,6 +43,21 @@ abstract class Subsystem1d<P extends Subsystem1d.Position> extends Subsystem {
     }
 
     @Override
+    public void onEnabledStart(double timestamp) {
+
+    }
+
+    @Override
+    public void onEnabledLoop(double timestamp) {
+
+    }
+
+    @Override
+    public void onEnabledStop(double timestamp) {
+
+    }
+
+    @Override
     public void writePeriodicOutputs() {
         try {
             resetIfAtLimit();
@@ -115,7 +130,7 @@ abstract class Subsystem1d<P extends Subsystem1d.Position> extends Subsystem {
         }
     }
 
-    private synchronized void setPosition(double encoderPosition) {
+    synchronized void setPosition(double encoderPosition) {
         System.out.println(motor.getSubsystemName() + "Setting Position to " + encoderPosition);
         periodicIO.demand = encoderPosition;
         periodicIO.openLoop = false;
