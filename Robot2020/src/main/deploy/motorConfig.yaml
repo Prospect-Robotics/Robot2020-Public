@@ -53,7 +53,7 @@ talons:
     peakCurrentLimit: 0
     enableVoltageCompensation: true
     compSaturationVoltage: 12
-    continuousCurrentLimitAmps: 30
+    continuousCurrentLimitAmps: 40
     motionAcceleration: 0
     motionCruiseVelocity: 0
     closedLoopRampRate: 0
