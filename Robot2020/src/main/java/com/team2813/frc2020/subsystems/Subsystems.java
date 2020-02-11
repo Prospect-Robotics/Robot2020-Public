@@ -20,6 +20,7 @@ public class Subsystems {
 	public static Magazine MAGAZINE;
 	public static Shooter SHOOTER;
 	public static Climber CLIMBER;
+//	public static Magazine MAGAZINE;
 
 	public static final Looper LOOPER = new Looper(RobotMode.DISABLED); //FIXME put looper somewhere else
 
@@ -42,7 +43,7 @@ public class Subsystems {
 		SHOOTER = new Shooter();
 		CLIMBER = new Climber();
 		allSubsystems = Collections.unmodifiableList(Arrays.asList(
-				INTAKE, DRIVE, MAGAZINE, SHOOTER, CLIMBER
+				DRIVE, INTAKE, MAGAZINE, SHOOTER, CLIMBER
 		));
 		LOOPER.addLoop(new SmartDashboardLoop());
 	}

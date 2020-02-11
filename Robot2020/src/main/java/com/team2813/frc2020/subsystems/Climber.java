@@ -1,24 +1,78 @@
 package com.team2813.frc2020.subsystems;
 
-import com.team2813.lib.config.MotorConfig;
+import com.team2813.frc2020.subsystems.Subsystem1d;
+import com.team2813.lib.actions.Action;
+import com.team2813.lib.actions.FunctionAction;
+import com.team2813.lib.actions.LockFunctionAction;
+import com.team2813.lib.actions.SeriesAction;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.motors.SparkMaxWrapper;
+import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.solenoid.PistonSolenoid;
 
+import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
+
+
+/**
+ * Class for the climber
+ *
+ * @author Daniel Tsai
+ */
+
 public class Climber extends Subsystem1d<Climber.Position> {
-    private final Button CLIMBER_BUTTON = SubsystemControlsConfig.getClimberPiston();
-    private final PistonSolenoid CLIMBER_PISTON = new PistonSolenoid(0);
-    private final SparkMaxWrapper motor;
+
+    private static final Button CLIMBER_BUTTON = SubsystemControlsConfig.getClimberButton();
+    private static final Button PISTON_BUTTON = SubsystemControlsConfig.getClimberPiston();
+    private final SparkMaxWrapper CLIMBER;
+    private final PistonSolenoid BRAKE;
+    private static Position currentPosition = Position.RETRACTED;
+
+    private Action startAction;
+    private Action abortAction;
+    private Action retractAction;
 
     Climber() {
         super(MotorConfigs.sparks.get("climber"));
-        this.motor = MotorConfigs.sparks.get("climber");
+        CLIMBER = MotorConfigs.sparks.get("climber");
+        //TODO Insert PCM port ID
+        BRAKE = new PistonSolenoid(0);
     }
 
-    Climber(SparkMaxWrapper motor) {
-        super(motor);
-        this.motor = motor;
+    @Override
+    void setNextPosition(boolean clockwise) {
+        currentPosition = currentPosition.getClock(clockwise);
+        setPosition(currentPosition);
+    }
+
+    @Override
+    void setNextPosition(Position position) {
+        currentPosition = position;
+        setPosition(currentPosition);
+    }
+
+    public void engageBrake() {
+        BRAKE.extend();
+    }
+
+    public void extendClimb() {
+        setPosition(Position.EXTENDED);
+    }
+
+    public void retractClimb() {
+        setPosition(Position.RETRACTED);
+    }
+
+    public boolean positionReached() {
+        return CLIMBER.getEncoderPosition() == currentPosition.getPos();
+    }
+
+    public void startClimb() {
+        startAction = new SeriesAction(
+                new LockFunctionAction(this::retractClimb, this::positionReached, true),
+                new FunctionAction(this::engageBrake, true)
+        );
+        LOOPER.addAction(startAction);
     }
 
     @Override
@@ -27,15 +81,12 @@ public class Climber extends Subsystem1d<Climber.Position> {
 
     @Override
     public void teleopControls() {
-        // todo replace with position
-        motor.set(SubsystemControlsConfig.getOperatorJoystick().getRawAxis(1));
-
-        CLIMBER_BUTTON.whenPressed(CLIMBER_PISTON::toggle);
+        CLIMBER_BUTTON.whenPressed(() -> setNextPosition(true));
+        PISTON_BUTTON.whenPressed(BRAKE::toggle);
     }
 
     @Override
     public void onEnabledStart(double timestamp) {
-
     }
 
     @Override
@@ -44,20 +95,30 @@ public class Climber extends Subsystem1d<Climber.Position> {
 
     @Override
     public void onEnabledStop(double timestamp) {
-        CLIMBER_PISTON.retract();
-    }
-
-    @Override
-    void setNextPosition(boolean clockwise) {
-    }
-
-    @Override
-    void setNextPosition(Position position) {
-        setPosition(position == Position.HIGH ? Position.LOW : Position.HIGH);
     }
 
     public enum Position implements Subsystem1d.Position<Climber.Position> {
-        LOW(0), HIGH(0);
+        RETRACTED(0) {
+            @Override
+            public Position getNextClockwise() {
+                return EXTENDED;
+            }
+
+            @Override
+            public Position getNextCounter() {
+                return EXTENDED;
+            }
+        }, EXTENDED(400) {
+            @Override
+            public Position getNextClockwise() {
+                return RETRACTED;
+            }
+
+            @Override
+            public Position getNextCounter() {
+                return RETRACTED;
+            }
+        };
 
         private double position;
 
@@ -72,22 +133,27 @@ public class Climber extends Subsystem1d<Climber.Position> {
 
         @Override
         public Position getNextClockwise() {
-            return null;
+            return this;
         }
 
         @Override
         public Position getNextCounter() {
-            return null;
+            return this;
         }
 
         @Override
         public Position getMin() {
-            return null;
+            return RETRACTED;
         }
 
         @Override
         public Position getMax() {
-            return null;
+            return EXTENDED;
+        }
+
+        @Override
+        public Position getClock(boolean clockwise) {
+            return clockwise ? getNextClockwise() : getNextCounter();
         }
     }
 }

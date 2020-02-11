@@ -83,6 +83,22 @@ sparks:
     invertSensorPhase: true
     statusFrame: STATUS_2
     inverted: NONINVERTED
+  climber:
+    deviceNumber: 11
+    type: BRUSHLESS
+    subsystemName: Climber
+    inverted: INVERTED
+    statusFrame: STATUS_2
+    pidControllers:
+      - p: 0
+        i: 0
+        d: 0
+        f: 0
+        maxVelocity: 0
+        maxAcceleration: 0
+        maxIntegralAccumulator: 0
+        integralZone: 0
+        allowableClosedLoopError: 0
   magazine:
     deviceNumber: 9
     motorControllerType: SPARK_MAX
@@ -90,6 +106,7 @@ sparks:
     subsystemName: Magazine
     inverted: INVERTED
     statusFrame: STATUS_2
+    continuousCurrentLimitAmps: 50
     followers:
       - id: 10
         motorControllerType: SPARK_MAX
@@ -120,20 +137,5 @@ sparks:
     inverted: NONINVERTED
     statusFrame: STATUS_2
     peakCurrentLimit: 30
-#  climber:
-#    deviceNumber: 11
-#    motorControllerType: SPARK_MAX
-#    type: BRUSHLESS
-#    subsystemName: Climber
-#    inverted: NONINVERTED
-#    peakCurrentLimit: 40
-#    stautsFrame: STATUS_2
-  climber:
-    deviceNumber: 11
-    motorControllerType: SPARK_MAX
-    type: BRUSHLESS
-    subsystemName: Climber
-    inverted: NONINVERTED
-    statusFrame: STATUS_2
 victors:
 ...
