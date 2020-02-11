@@ -35,7 +35,7 @@ public class Climber extends Subsystem1d<Climber.Position>{
         super((SparkMaxWrapper) MotorConfigs.sparks.get("climb"));
         CLIMBER = (SparkMaxWrapper) MotorConfigs.sparks.get("climb");
         //TODO Insert PCM port ID
-        BRAKE = new PistonSolenoid(5);
+        BRAKE = new PistonSolenoid(0);
     }
 
     @Override
