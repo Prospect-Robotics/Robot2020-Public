@@ -12,14 +12,14 @@ public class Intake extends Subsystem {
     private final Button PISTONS_BUTTON = SubsystemControlsConfig.getIntakePistons();
     private final Button INTAKE_IN_BUTTON = SubsystemControlsConfig.getIntakeIn();
     private final Button INTAKE_OUT_BUTTON = SubsystemControlsConfig.getIntakeOut();
-    private Demand demand;
+    private Demand demand = Demand.OFF;
 
     Intake() {
         INTAKE_MOTOR = MotorConfigs.sparks.get("intake");
     }
 
-    private static PistonSolenoid LEFT_PISTON = new PistonSolenoid(0);
-    private static PistonSolenoid RIGHT_PISTON = new PistonSolenoid(1);
+    private static PistonSolenoid LEFT_PISTON = new PistonSolenoid(1);
+    private static PistonSolenoid RIGHT_PISTON = new PistonSolenoid(2);
 
     private boolean deployed = false;
 

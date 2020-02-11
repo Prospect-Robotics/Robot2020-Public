@@ -9,7 +9,7 @@ import com.team2813.lib.motors.interfaces.ControlMode;
 public class Magazine extends Subsystem {
 
     private final SparkMaxWrapper MOTOR;
-    private final TalonFXWrapper WHEEL;
+    private final SparkMaxWrapper KICKER;
     private final Button START_STOP_BUTTON = SubsystemControlsConfig.getMagButton();
     private final Button REVERSE_BUTTON = SubsystemControlsConfig.getMagReverse();
     private Demand demand;
@@ -17,7 +17,7 @@ public class Magazine extends Subsystem {
     Magazine() {
         MOTOR = MotorConfigs.sparks.get("magazine");
         demand = Demand.OFF;
-        WHEEL = (TalonFXWrapper) MotorConfigs.talons.get("magazineWheel");
+        KICKER = MotorConfigs.sparks.get("kicker");
     }
 
     @Override
@@ -51,9 +51,9 @@ public class Magazine extends Subsystem {
     protected void writePeriodicOutputs() {
         MOTOR.set(ControlMode.DUTY_CYCLE, demand.percent);
         if(demand == Demand.ON) {
-            WHEEL.set(ControlMode.DUTY_CYCLE, demand.percent);
+            KICKER.set(ControlMode.DUTY_CYCLE, demand.percent);
         } else {
-            WHEEL.set(ControlMode.DUTY_CYCLE, Demand.OFF.percent);
+            KICKER.set(ControlMode.DUTY_CYCLE, Demand.OFF.percent);
         }
     }
 
