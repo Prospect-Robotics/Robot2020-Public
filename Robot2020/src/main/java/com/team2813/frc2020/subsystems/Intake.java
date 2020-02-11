@@ -18,8 +18,7 @@ public class Intake extends Subsystem {
         INTAKE_MOTOR = MotorConfigs.sparks.get("intake");
     }
 
-    private static PistonSolenoid LEFT_PISTON = new PistonSolenoid(1);
-    private static PistonSolenoid RIGHT_PISTON = new PistonSolenoid(2);
+    private static PistonSolenoid PISTONS = new PistonSolenoid(1, 2);
 
     private boolean deployed = false;
 
@@ -87,11 +86,9 @@ public class Intake extends Subsystem {
     public void setDeployed(boolean deployed) {
         this.deployed = deployed;
         if (deployed) {
-            LEFT_PISTON.set(PistonSolenoid.PistonState.EXTENDED);
-            RIGHT_PISTON.set(PistonSolenoid.PistonState.EXTENDED);
+            PISTONS.set(PistonSolenoid.PistonState.EXTENDED);
         } else {
-            LEFT_PISTON.set(PistonSolenoid.PistonState.RETRACTED);
-            RIGHT_PISTON.set(PistonSolenoid.PistonState.RETRACTED);
+            PISTONS.set(PistonSolenoid.PistonState.RETRACTED);
         }
     }
 

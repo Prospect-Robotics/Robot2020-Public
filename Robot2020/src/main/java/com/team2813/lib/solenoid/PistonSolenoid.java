@@ -40,8 +40,11 @@ public class PistonSolenoid {
 		set(PistonState.EXTENDED);
 	}
 
+	public void toggle() {
+		set(get() == PistonState.RETRACTED ? PistonState.EXTENDED : PistonState.RETRACTED);
+	}
+
 	public PistonState get() {
-		// TODO fix could cause problems
 		return PistonState.from(solenoids.get(0).get());
 	}
 
