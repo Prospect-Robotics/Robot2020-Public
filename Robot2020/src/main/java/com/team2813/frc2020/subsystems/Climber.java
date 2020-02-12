@@ -67,7 +67,7 @@ public class Climber extends Subsystem1d<Climber.Position> {
     }
 
     public boolean positionReached() {
-        return getMotor().getEncoderPosition() <= currentPosition.getPos();
+        return getMotor().getEncoderPosition() >= currentPosition.getPos();
     }
 
     public void autoRetractClimb() {
@@ -75,7 +75,6 @@ public class Climber extends Subsystem1d<Climber.Position> {
         Action startAction = new SeriesAction(
                 new LockFunctionAction(this::retractClimb, this::positionReached, true),
                 new FunctionAction(this::engageBrake, true),
-                new FunctionAction(this::retractClimb, true),
                 new FunctionAction(() -> isClimbing = false, true)
         );
         LOOPER.addAction(startAction);
