@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.Joystick;
 public class Magazine extends Subsystem {
 
     private final SparkMaxWrapper MOTOR;
-    private final SparkMaxWrapper KICKER;
+    protected final SparkMaxWrapper KICKER;
     private final Joystick OPERATOR_JOYSTICK = SubsystemControlsConfig.getOperatorJoystick();
     private final Button START_STOP_BUTTON = SubsystemControlsConfig.getMagButton();
     private final Button REVERSE_BUTTON = SubsystemControlsConfig.getMagReverse();
@@ -58,9 +58,9 @@ public class Magazine extends Subsystem {
     protected void writePeriodicOutputs() {
         MOTOR.set(ControlMode.DUTY_CYCLE, demand.percent);
         if(demand == Demand.ON) {
-            KICKER.set(ControlMode.DUTY_CYCLE, demand.percent);
+//            KICKER.set(ControlMode.DUTY_CYCLE, demand.percent);
         } else {
-            KICKER.set(ControlMode.DUTY_CYCLE, Demand.OFF.percent);
+            // KICKER.set(ControlMode.DUTY_CYCLE, Demand.OFF.percent);
         }
     }
 

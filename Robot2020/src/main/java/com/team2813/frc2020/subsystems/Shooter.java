@@ -9,6 +9,7 @@ import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.util.LimelightValues;
 
 import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
+import static com.team2813.frc2020.subsystems.Subsystems.MAGAZINE;
 
 /**
  * Class for the shooter on the robot.
@@ -64,10 +65,12 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     public void startSpinningFlywheel() {
         demand = Demand.ON;
+        MAGAZINE.KICKER.set(ControlMode.DUTY_CYCLE, 0.8);
     }
 
     public void stopSpinningFlywheel() {
         demand = Demand.OFF;
+        MAGAZINE.KICKER.set(ControlMode.DUTY_CYCLE, 0.0);
     }
 
     public boolean isFlywheelReady() {
@@ -90,7 +93,9 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
             HOOD_BUTTON.whenPressed(() -> setNextPosition(true));
         }
         SHOOTER_BUTTON.whenPressed(() -> {
-            demand = demand == Demand.ON ? Demand.OFF : Demand.ON;
+//            demand = demand == Demand.ON ? Demand.OFF : Demand.ON;
+            if (demand == Demand.ON) stopSpinningFlywheel();
+            else startSpinningFlywheel();
         });
     }
 

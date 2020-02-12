@@ -20,7 +20,6 @@ public class Subsystems {
 	public static Magazine MAGAZINE;
 	public static Shooter SHOOTER;
 	public static Climber CLIMBER;
-//	public static Magazine MAGAZINE;
 
 	public static final Looper LOOPER = new Looper(RobotMode.DISABLED); //FIXME put looper somewhere else
 

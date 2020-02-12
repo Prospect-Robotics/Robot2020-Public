@@ -14,7 +14,7 @@ import static com.team2813.lib.logging.LogLevel.DEBUG;
 abstract class Subsystem1d<P extends Subsystem1d.Position> extends Subsystem {
 
     private Motor motor;
-    PeriodicIO periodicIO = new PeriodicIO();
+    protected PeriodicIO periodicIO = new PeriodicIO();
     private boolean zeroed = false;
 //	Mode mode = Mode.HOLDING;
 
