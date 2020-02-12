@@ -90,7 +90,7 @@ sparks:
     inverted: INVERTED
     statusFrame: STATUS_2
     pidControllers:
-      - p: 0.001
+      - p: 0.0002
         i: 0
         d: 0
         f: 0
