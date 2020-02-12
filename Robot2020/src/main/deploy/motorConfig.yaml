@@ -44,14 +44,14 @@ talons:
         maxIntegralAccumulator: 0
         integralZone: 0
         allowableClosedLoopError: 0
-  magazineWheel: # Talon
-    deviceNumber: 16
-    motorControllerType: TALON_FX
-    type: BRUSHLESS
-    subsystemName: Magazine
-    inverted: NONINVERTED
-    statusFrame: STATUS_2
-#  shooter:
+#  magazineWheel: # Talon
+#    deviceNumber: 16
+#    motorControllerType: TALON_FX
+#    type: BRUSHLESS
+#    subsystemName: Magazine
+#    inverted: NONINVERTED
+#    statusFrame: STATUS_2
+##  shooter:
 #    deviceNumber: 15
 #    type: BRUSHED
 #    subsystemName: Shooter

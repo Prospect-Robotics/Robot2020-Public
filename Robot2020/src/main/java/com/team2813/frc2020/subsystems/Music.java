@@ -10,14 +10,14 @@ public class Music extends Subsystem{
     Orchestra orchestra;
 
     private ArrayList<TalonFX> instruments;
-    private TalonFX INSTRUMENT1 = new TalonFX(1);
-    private TalonFX INSTRUMENT2 = new TalonFX(2);
-    private TalonFX INSTRUMENT3 = new TalonFX(3);
-    private TalonFX INSTRUMENT4 = new TalonFX(4);
-    private TalonFX INSTRUMENT5 = new TalonFX(5);
-    private TalonFX INSTRUMENT6 = new TalonFX(6);
 
     Music(){
+        TalonFX INSTRUMENT1 = new TalonFX(1);
+        TalonFX INSTRUMENT2 = new TalonFX(2);
+        TalonFX INSTRUMENT3 = new TalonFX(3);
+        TalonFX INSTRUMENT4 = new TalonFX(4);
+        TalonFX INSTRUMENT5 = new TalonFX(5);
+        TalonFX INSTRUMENT6 = new TalonFX(6);
         instruments.add(INSTRUMENT1);
         instruments.add(INSTRUMENT2);
         instruments.add(INSTRUMENT3);
