@@ -1,17 +1,9 @@
 plugins {
     id "java"
-    id "idea"
-    id "edu.wpi.first.GradleRIO" version "2020.2.2"
+    id "edu.wpi.first.GradleRIO" version "2020.1.2"
 }
 
-repositories {
-    mavenCentral()
-}
-
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
-
-def ROBOT_MAIN_CLASS = "com.team2813.frc2020.Main"
+def ROBOT_MAIN_CLASS = "dc.Main"
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
@@ -22,7 +14,7 @@ deploy {
             // or from command line. If not found an exception will be thrown.
             // You can use getTeamOrDefault(team) instead of getTeamNumber if you
             // want to store a team number in this file.
-            team = frc.getTeamNumber()
+            team = frc.getTeamOrDefault(2813)
         }
     }
     artifacts {
@@ -42,9 +34,6 @@ deploy {
     }
 }
 
-// Set this to true to enable desktop support.
-def includeDesktopSupport = true
-
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
 dependencies {
@@ -57,23 +46,10 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
-    compile wpi.deps.wpilib()
-    compile wpi.deps.vendor.java()
-
-    testImplementation 'junit:junit:4.12'
-
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.0'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.0'
-    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.10.0'
-
-    // Enable simulation gui support. Must check the box in vscode to enable support
-    // upon debugging
+    // In Java for now, the argument must be false
     simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
 
-    testCompile 'junit:junit:4.12'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.0'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.0'
-    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.10.0'
+    testImplementation 'junit:junit:4.12'
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
@@ -83,3 +59,4 @@ jar {
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
 }
+
