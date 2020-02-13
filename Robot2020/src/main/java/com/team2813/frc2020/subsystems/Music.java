@@ -2,11 +2,11 @@ package com.team2813.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.music.Orchestra;
+import com.team2813.lib.motors.TalonFXWrapper;
 
 import java.util.ArrayList;
 
 public class Music extends Subsystem{
-
     Orchestra orchestra;
 
     private ArrayList<TalonFX> instruments;
@@ -18,6 +18,7 @@ public class Music extends Subsystem{
         TalonFX INSTRUMENT4 = new TalonFX(4);
         TalonFX INSTRUMENT5 = new TalonFX(5);
         TalonFX INSTRUMENT6 = new TalonFX(6);
+        instruments = new ArrayList<>();
         instruments.add(INSTRUMENT1);
         instruments.add(INSTRUMENT2);
         instruments.add(INSTRUMENT3);
