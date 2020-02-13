@@ -94,8 +94,8 @@ sparks:
         i: 0
         d: 0
         f: 0
-        maxVelocity: 0
-        maxAcceleration: 0
+        maxVelocity: 10000
+        maxAcceleration: 10000
         maxIntegralAccumulator: 0
         integralZone: 0
         allowableClosedLoopError: 0

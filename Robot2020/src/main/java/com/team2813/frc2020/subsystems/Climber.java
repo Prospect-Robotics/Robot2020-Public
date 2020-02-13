@@ -120,12 +120,14 @@ public class Climber extends Subsystem1d<Climber.Position> {
 
     @Override
     public void writePeriodicOutputs() {
+        if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED && isClimbing) {
+            super.writePeriodicOutputs();
+        }
         if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED && (isVelocity)) {
             getMotor().set(ControlMode.VELOCITY, RAISE_VELOCITY*velocityFactor);
-        } else {
+        } else if (isVelocity) {
             getMotor().set(ControlMode.VELOCITY, 0.0);
         }
-        if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED && isClimbing) super.writePeriodicOutputs();
     }
 
     public enum Position implements Subsystem1d.Position<Climber.Position> {
