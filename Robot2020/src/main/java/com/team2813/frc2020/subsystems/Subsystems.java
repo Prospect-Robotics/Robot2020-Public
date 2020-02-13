@@ -18,7 +18,7 @@ public class Subsystems {
 	public static DriveTalon DRIVE;
 	public static Intake INTAKE;
 	public static Magazine MAGAZINE;
-	public static Shooter SHOOTER;
+//	public static Shooter SHOOTER;
 	public static Climber CLIMBER;
 
 	public static final Looper LOOPER = new Looper(RobotMode.DISABLED); //FIXME put looper somewhere else
@@ -39,10 +39,10 @@ public class Subsystems {
 		DRIVE = new DriveTalon();
 		INTAKE = new Intake();
 		MAGAZINE = new Magazine();
-		SHOOTER = new Shooter();
+//		SHOOTER = new Shooter();
 		CLIMBER = new Climber();
 		allSubsystems = Collections.unmodifiableList(Arrays.asList(
-				DRIVE, INTAKE, MAGAZINE, SHOOTER, CLIMBER
+				DRIVE, INTAKE, MAGAZINE, /*SHOOTER,*/ CLIMBER
 		));
 		LOOPER.addLoop(new SmartDashboardLoop());
 	}

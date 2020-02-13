@@ -67,22 +67,22 @@ talons:
         type: BRUSHLESS
         inverted: OPPOSE_LEADER
 sparks:
-  hood:
-    deviceNumber: 7
-    type: BRUSHLESS
-    subsystemName: Shooter
-    peakCurrentDuration: 0
-    peakCurrentLimit: 0
-    enableVoltageCompensation: true
-    compSaturationVoltage: 12
-    continuousCurrentLimitAmps: 30
-    motionAcceleration: 0
-    motionCruiseVelocity: 0
-    closedLoopRampRate: 0
-    openLoopRampRate: 0
-    invertSensorPhase: true
-    statusFrame: STATUS_2
-    inverted: NONINVERTED
+#  hood:
+#    deviceNumber: 7
+#    type: BRUSHLESS
+#    subsystemName: Shooter
+#    peakCurrentDuration: 0
+#    peakCurrentLimit: 0
+#    enableVoltageCompensation: true
+#    compSaturationVoltage: 12
+#    continuousCurrentLimitAmps: 30
+#    motionAcceleration: 0
+#    motionCruiseVelocity: 0
+#    closedLoopRampRate: 0
+#    openLoopRampRate: 0
+#    invertSensorPhase: true
+#    statusFrame: STATUS_2
+#    inverted: NONINVERTED
   climber:
     deviceNumber: 11
     type: BRUSHLESS
