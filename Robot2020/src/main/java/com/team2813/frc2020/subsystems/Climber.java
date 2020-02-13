@@ -35,8 +35,6 @@ public class Climber extends Subsystem1d<Climber.Position> {
     private double velocityFactor = 0;
     private boolean stop = false;
 
-    private double previousVelocity = 0;
-
     Climber() {
         super(MotorConfigs.sparks.get("climber"));
 //        CLIMBER = MotorConfigs.sparks.get("climber");
