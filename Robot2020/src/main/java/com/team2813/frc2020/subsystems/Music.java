@@ -40,7 +40,7 @@ public class Music extends Subsystem{
 
     @Override
     public void onEnabledStart(double timestamp) {
-        orchestra.loadMusic("megalovania.chrp");
+        orchestra.loadMusic("src/main/deploy/mega.chrp");
         orchestra.play();
     }
 
