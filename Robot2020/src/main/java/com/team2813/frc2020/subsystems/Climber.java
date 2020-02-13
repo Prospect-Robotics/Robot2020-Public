@@ -133,10 +133,6 @@ public class Climber extends Subsystem1d<Climber.Position> {
         }
         if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED && isClimbing) {
             super.writePeriodicOutputs();
-            if (((SparkMaxWrapper) getMotor()).getEncoder().getVelocity() - previousVelocity > -.1 && ((SparkMaxWrapper) getMotor()).getEncoder().getVelocity() - previousVelocity < 0.0) {
-                engageBrake();
-                stop = true;
-            }
         }
         else if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED && (isVelocity)) {
             periodicIO.demand += velocityFactor;
