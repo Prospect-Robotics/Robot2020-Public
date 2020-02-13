@@ -25,6 +25,7 @@ public class Climber extends Subsystem1d<Climber.Position> {
     private static final Axis CLIMBER_AXIS = SubsystemControlsConfig.getClimberElevator();
     private static final Button CLIMBER_BUTTON = SubsystemControlsConfig.getClimberButton();
     private static final Button PISTON_BUTTON = SubsystemControlsConfig.getClimberPiston();
+    private static final Button STOP_CLIMBER = SubsystemControlsConfig.getClimberDisable();
 //    private final SparkMaxWrapper CLIMBER;
     private final PistonSolenoid BRAKE;
     private static Position currentPosition = Position.RETRACTED;
@@ -32,6 +33,9 @@ public class Climber extends Subsystem1d<Climber.Position> {
     private boolean isVelocity = false;
     private final int RAISE_VELOCITY = 3500;//rpm
     private double velocityFactor = 0;
+    private boolean stop = false;
+
+    private double previousVelocity = 0;
 
     Climber() {
         super(MotorConfigs.sparks.get("climber"));
@@ -84,11 +88,15 @@ public class Climber extends Subsystem1d<Climber.Position> {
     public void outputTelemetry() {
         SmartDashboard.putNumber("Climber Encoder", getMotor().getEncoderPosition());
         SmartDashboard.putNumber("Climber Demand", periodicIO.demand);
+        SmartDashboard.putBoolean("Climber Brake", !BRAKE.get().value);
+        SmartDashboard.putNumber("Climber Data", ((SparkMaxWrapper) getMotor()).getEncoder().getVelocity() - previousVelocity);
+        SmartDashboard.putBoolean("Climber Stopped", stop);
     }
 
     @Override
     public void teleopControls() {
         PISTON_BUTTON.whenPressed(BRAKE::toggle);
+        STOP_CLIMBER.whenPressed(() -> stop = true);
         if (/*Timer.getMatchTime() < 30 && */!isClimbing) {
 //            if (Timer.getMatchTime() > 29.9) disengageBrake();
             CLIMBER_BUTTON.whenPressed(this::autoRetractClimb);
@@ -120,18 +128,31 @@ public class Climber extends Subsystem1d<Climber.Position> {
 
     @Override
     public void writePeriodicOutputs() {
+        if (stop) {
+            getMotor().set(ControlMode.DUTY_CYCLE, 0.0);
+        }
         if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED && isClimbing) {
             super.writePeriodicOutputs();
+            if (((SparkMaxWrapper) getMotor()).getEncoder().getVelocity() - previousVelocity > -.1 && ((SparkMaxWrapper) getMotor()).getEncoder().getVelocity() - previousVelocity < 0.0) {
+                engageBrake();
+                stop = true;
+            }
         }
         else if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED && (isVelocity)) {
-            getMotor().set(ControlMode.VELOCITY, RAISE_VELOCITY*velocityFactor);
+            periodicIO.demand += velocityFactor;
+            periodicIO.demand = Math.max(-57, Math.min(0, periodicIO.demand));//to cap between top and bottom
+            super.writePeriodicOutputs();
+
+//            getMotor().set(ControlMode.VELOCITY, RAISE_VELOCITY*velocityFactor);
         } else {
-            getMotor().set(ControlMode.VELOCITY, 0.0);
+            getMotor().set(ControlMode.DUTY_CYCLE, 0.0);
         }
+
+        previousVelocity = ((SparkMaxWrapper) getMotor()).getEncoder().getVelocity();
     }
 
     public enum Position implements Subsystem1d.Position<Climber.Position> {
-        RETRACTED(0) {
+        RETRACTED(-10) {
             @Override
             public Position getNextClockwise() {
                 return EXTENDED;
@@ -141,7 +162,7 @@ public class Climber extends Subsystem1d<Climber.Position> {
             public Position getNextCounter() {
                 return EXTENDED;
             }
-        }, EXTENDED(400) {
+        }, EXTENDED(-400) {
             @Override
             public Position getNextClockwise() {
                 return RETRACTED;

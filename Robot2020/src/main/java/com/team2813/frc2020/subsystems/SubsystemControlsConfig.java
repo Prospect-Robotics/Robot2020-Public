@@ -40,6 +40,7 @@ class SubsystemControlsConfig {
 	private static Button shooterButton = operatorJoystick.button(4);
 	private static Button climberButton = operatorJoystick.button(7);
 	private static Axis climberElevator = operatorJoystick.axis(1);
+	private static Button climberDisable = operatorJoystick.button(10);
 
 	static Button getIntakePistons() {
 		return intakePistons;
@@ -111,7 +112,7 @@ class SubsystemControlsConfig {
 		return climberElevator;
 	}
 
-	public static void setClimberElevator(Axis climberElevator) {
-		SubsystemControlsConfig.climberElevator = climberElevator;
+	public static Button getClimberDisable() {
+		return climberDisable;
 	}
 }
