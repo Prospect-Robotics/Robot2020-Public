@@ -123,9 +123,9 @@ public class Climber extends Subsystem1d<Climber.Position> {
         if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED && isClimbing) {
             super.writePeriodicOutputs();
         }
-        if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED && (isVelocity)) {
+        else if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED && (isVelocity)) {
             getMotor().set(ControlMode.VELOCITY, RAISE_VELOCITY*velocityFactor);
-        } else if (isVelocity) {
+        } else {
             getMotor().set(ControlMode.VELOCITY, 0.0);
         }
     }
