@@ -5,6 +5,7 @@ import com.team2813.lib.actions.*;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Axis;
 import com.team2813.lib.controls.Button;
+import com.team2813.lib.controls.POV;
 import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.motors.interfaces.LimitDirection;
@@ -23,6 +24,7 @@ import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
 public class Climber extends Subsystem1d<Climber.Position> {
 
     private static final Axis CLIMBER_AXIS = SubsystemControlsConfig.getClimberElevator();
+    private static final POV CLIMBER_CONTROL = SubsystemControlsConfig.getClimberElevator_();
     private static final Button CLIMBER_BUTTON = SubsystemControlsConfig.getClimberButton();
     private static final Button PISTON_BUTTON = SubsystemControlsConfig.getClimberPiston();
     private static final Button STOP_CLIMBER = SubsystemControlsConfig.getClimberDisable();
@@ -110,7 +112,13 @@ public class Climber extends Subsystem1d<Climber.Position> {
                 isVelocity = false;
             }
             velocityFactor = CLIMBER_AXIS.get();
-
+            /*
+            if(CLIMBER_CONTROL.get() == 0){
+                velocityFactor = 1;
+            }else if(CLIMBER_CONTROL.get() == 180){
+                velocityFactor = -1;
+            }
+            */
 
 //            CLIMBER.getEncoderPosition() + CLIMBER_AXIS.get() - 10);
         }

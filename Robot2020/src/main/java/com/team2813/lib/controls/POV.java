@@ -5,7 +5,7 @@ package com.team2813.lib.controls;
  * that has method to get the angle of
  * the POV
  *
- * @author Grady Whelan
+ * @author Daniel Tsai
  */
 public class POV{
     private Controller controller;
