@@ -3,6 +3,7 @@ package com.team2813.frc2020.subsystems;
 import com.team2813.lib.controls.Axis;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.controls.Controller;
+import com.team2813.lib.controls.POV;
 import edu.wpi.first.wpilibj.Joystick;
 
 /**
@@ -41,6 +42,7 @@ class SubsystemControlsConfig {
 	private static Button shooterButton = operatorJoystick.button(4);
 	private static Button climberButton = operatorJoystick.button(7);
 	private static Axis climberElevator = operatorJoystick.axis(1);
+	private static POV climberElevator_ = operatorJoystick.pov();
 	private static Button climberDisable = operatorJoystick.button(10);
 
 	static Button getIntakePistons() {
@@ -116,6 +118,8 @@ class SubsystemControlsConfig {
 	public static Axis getClimberElevator() {
 		return climberElevator;
 	}
+
+	public static POV getClimberElevator_() { return climberElevator_; }
 
 	public static Button getClimberDisable() {
 		return climberDisable;

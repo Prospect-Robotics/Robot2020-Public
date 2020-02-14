@@ -5,6 +5,7 @@ import com.team2813.lib.actions.*;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Axis;
 import com.team2813.lib.controls.Button;
+import com.team2813.lib.controls.POV;
 import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.motors.interfaces.LimitDirection;
@@ -23,6 +24,7 @@ import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
 public class Climber extends Subsystem1d<Climber.Position> {
 
     private static final Axis CLIMBER_AXIS = SubsystemControlsConfig.getClimberElevator();
+    private static final POV CLIMBER_CONTROL = SubsystemControlsConfig.getClimberElevator_();
     private static final Button CLIMBER_BUTTON = SubsystemControlsConfig.getClimberButton();
     private static final Button PISTON_BUTTON = SubsystemControlsConfig.getClimberPiston();
     private static final Button STOP_CLIMBER = SubsystemControlsConfig.getClimberDisable();
@@ -63,6 +65,10 @@ public class Climber extends Subsystem1d<Climber.Position> {
 
     public void disengageBrake() {
         BRAKE.extend();
+    }
+
+    public boolean isBrakeEngaged() {
+        return BRAKE.get() == PistonSolenoid.PistonState.RETRACTED;
     }
 
     public void retractClimb() {
@@ -106,7 +112,13 @@ public class Climber extends Subsystem1d<Climber.Position> {
                 isVelocity = false;
             }
             velocityFactor = CLIMBER_AXIS.get();
-
+            /*
+            if(CLIMBER_CONTROL.get() == 0){
+                velocityFactor = 1;
+            }else if(CLIMBER_CONTROL.get() == 180){
+                velocityFactor = -1;
+            }
+            */
 
 //            CLIMBER.getEncoderPosition() + CLIMBER_AXIS.get() - 10);
         }
@@ -129,13 +141,13 @@ public class Climber extends Subsystem1d<Climber.Position> {
     public void writePeriodicOutputs() {
         if (stop) {
             getMotor().set(ControlMode.DUTY_CYCLE, 0.0);
-        } else if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED && (isVelocity)) {
+        } else if (!isBrakeEngaged() && isVelocity) {
             periodicIO.demand += velocityFactor;
             periodicIO.demand = Math.max(-78, Math.min(0, periodicIO.demand));//to cap between top and bottom
             super.writePeriodicOutputs();
 
 //            getMotor().set(ControlMode.VELOCITY, RAISE_VELOCITY*velocityFactor);
-        } else if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED && isClimbing) {
+        } else if (!isBrakeEngaged() && isClimbing) {
             super.writePeriodicOutputs();
         } else {
             getMotor().set(ControlMode.DUTY_CYCLE, 0.0);

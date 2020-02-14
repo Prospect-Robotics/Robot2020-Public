@@ -1,26 +1,32 @@
 package com.team2813.frc2020.subsystems;
 
+import com.ctre.phoenix.CANifier;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.controls.Controller;
 import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.motors.TalonFXWrapper;
 import com.team2813.lib.motors.interfaces.ControlMode;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class Magazine extends Subsystem {
 
     private final SparkMaxWrapper MOTOR;
     protected final SparkMaxWrapper KICKER;
+    private final CANifier INTAKE_COUNTER;
     private final Joystick OPERATOR_JOYSTICK = SubsystemControlsConfig.getOperatorJoystick();
     private final Button START_STOP_BUTTON = SubsystemControlsConfig.getMagButton();
     private final Button REVERSE_BUTTON = SubsystemControlsConfig.getMagReverse();
     private Demand demand;
 
+    private boolean isCounterOn = false;
+
     Magazine() {
         MOTOR = MotorConfigs.sparks.get("magazine");
         demand = Demand.OFF;
         KICKER = MotorConfigs.sparks.get("kicker");
+        INTAKE_COUNTER = new CANifier(14);
     }
 
     public void spinMagazineForward(){
@@ -66,6 +72,11 @@ public class Magazine extends Subsystem {
     @Override
     public void onEnabledStop(double timestamp) {
 
+    }
+
+    @Override
+    protected void readPeriodicInputs() {
+        isCounterOn = INTAKE_COUNTER.getGeneralInput(CANifier.GeneralPin.SDA);
     }
 
     @Override
