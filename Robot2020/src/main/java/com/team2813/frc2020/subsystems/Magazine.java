@@ -27,6 +27,18 @@ public class Magazine extends Subsystem {
         demand = Demand.ON;
     }
 
+    public void spinMagazineIntake(){
+        demand = Demand.INTAKE;
+    }
+
+    public void spinMagazineReverse(){
+        demand = Demand.REV;
+    }
+
+    public void stopMagazine() {
+        demand = Demand.OFF;
+    }
+
     @Override
     public void outputTelemetry() {
     }
@@ -36,7 +48,9 @@ public class Magazine extends Subsystem {
         START_STOP_BUTTON.whenPressed(() -> {
             demand = demand == Demand.ON ? Demand.OFF : Demand.ON;
         });
-        REVERSE_BUTTON.whenPressedReleased(() -> demand = Demand.REV, () -> demand = Demand.OFF);
+        REVERSE_BUTTON.whenPressed(() -> {
+            demand = demand == Demand.REV ? Demand.OFF : Demand.REV;
+        });
     }
 
     @Override
@@ -65,7 +79,7 @@ public class Magazine extends Subsystem {
     }
 
     enum Demand {
-        ON(0.5), OFF(0.0), REV(-0.3);
+        ON(0.5), OFF(0.0), REV(-0.3), INTAKE(0.2);
 
         double percent;
 

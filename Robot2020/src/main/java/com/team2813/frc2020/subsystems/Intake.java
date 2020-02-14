@@ -8,7 +8,8 @@ import com.team2813.lib.solenoid.PistonSolenoid;
 public class Intake extends Subsystem {
 
     private SparkMaxWrapper INTAKE_MOTOR;
-    private final Button INTAKE_BUTTON = SubsystemControlsConfig.getIntakeButton();
+    private final Button INTAKE_DEPLOY_BUTTON = SubsystemControlsConfig.getIntakeDeployButton();
+    private final Button INTAKE_SPIN_BUTTON = SubsystemControlsConfig.getIntakeSpinButton();
     private final Button PISTONS_BUTTON = SubsystemControlsConfig.getIntakePistons();
     private final Button INTAKE_IN_BUTTON = SubsystemControlsConfig.getIntakeIn();
     private final Button INTAKE_OUT_BUTTON = SubsystemControlsConfig.getIntakeOut();
@@ -30,15 +31,23 @@ public class Intake extends Subsystem {
     @Override
     public void teleopControls() {
         // driver
-        INTAKE_BUTTON.whenPressed(() -> {
-            if (demand == Demand.IN) {
-                setIntake(Demand.OFF);
-                setDeployed(false);
-            } else {
-                setIntake(Demand.IN);
-                setDeployed(true);
-            }
+        INTAKE_DEPLOY_BUTTON.whenPressed(PISTONS::toggle);
+        INTAKE_SPIN_BUTTON.whenPressedReleased(() -> {
+            setIntake(Demand.IN);
+            Subsystems.MAGAZINE.spinMagazineIntake();
+        }, () -> {
+            setIntake(Demand.OFF);
+            Subsystems.MAGAZINE.stopMagazine();
         });
+//        INTAKE_BUTTON.whenPressed(/*() -> {
+//            if (demand == Demand.IN) {
+//                setIntake(Demand.OFF);
+//                setDeployed(false);
+//            } else {
+//                setIntake(Demand.IN);
+//                setDeployed(true);
+//            }
+//        });*/
 
         // operator
         PISTONS_BUTTON.whenPressed(() -> setDeployed(!deployed));

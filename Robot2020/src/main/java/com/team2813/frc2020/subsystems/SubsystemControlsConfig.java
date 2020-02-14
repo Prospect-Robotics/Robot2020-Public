@@ -21,7 +21,8 @@ class SubsystemControlsConfig {
 	private static Controller driveJoystick = new Controller(0);
 	private static Button pivotButton = driveJoystick.button(1);
 	private static Button autoButton = driveJoystick.button(2);
-	private static Button intakeButton = driveJoystick.button(3);
+	private static Button intakeDeployButton = driveJoystick.button(4);
+	private static Button intakeSpinButton = driveJoystick.button(3);
 	private static Button hoodButton = driveJoystick.button(3);
 	private static Button magButton = driveJoystick.button(5);
 	private static Button magReverse = driveJoystick.button(6);
@@ -46,9 +47,13 @@ class SubsystemControlsConfig {
 		return intakePistons;
 	}
 
-	static Button getIntakeButton() {
-        return intakeButton;
+	static Button getIntakeDeployButton() {
+        return intakeDeployButton;
     }
+
+	static Button getIntakeSpinButton() {
+		return intakeSpinButton;
+	}
 
 	static Button getMagReverse() {
 		return magReverse;

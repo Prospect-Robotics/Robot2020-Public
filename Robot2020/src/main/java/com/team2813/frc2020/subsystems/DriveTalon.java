@@ -133,7 +133,7 @@ public class DriveTalon extends Subsystem {
             driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());;
         } else {
             double steer = CURVATURE_STEER.get();
-            if (PIVOT_BUTTON.get()) steer *= .4; // cap it so it's not too sensitive
+            if (PIVOT_BUTTON.get()) steer *= .8; // cap it so it's not too sensitive
             driveDemand = curvatureDrive.getDemand(CURVATURE_FORWARD.get(), CURVATURE_REVERSE.get(), steer, PIVOT_BUTTON.get());
         }
 
