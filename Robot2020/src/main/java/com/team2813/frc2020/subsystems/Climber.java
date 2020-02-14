@@ -65,6 +65,10 @@ public class Climber extends Subsystem1d<Climber.Position> {
         BRAKE.extend();
     }
 
+    public boolean isBrakeEngaged() {
+        return BRAKE.get() == PistonSolenoid.PistonState.RETRACTED;
+    }
+
     public void retractClimb() {
         disengageBrake();
         setPosition(Position.RETRACTED);
@@ -129,13 +133,13 @@ public class Climber extends Subsystem1d<Climber.Position> {
     public void writePeriodicOutputs() {
         if (stop) {
             getMotor().set(ControlMode.DUTY_CYCLE, 0.0);
-        } else if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED && (isVelocity)) {
+        } else if (!isBrakeEngaged() && isVelocity) {
             periodicIO.demand += velocityFactor;
             periodicIO.demand = Math.max(-78, Math.min(0, periodicIO.demand));//to cap between top and bottom
             super.writePeriodicOutputs();
 
 //            getMotor().set(ControlMode.VELOCITY, RAISE_VELOCITY*velocityFactor);
-        } else if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED && isClimbing) {
+        } else if (!isBrakeEngaged() && isClimbing) {
             super.writePeriodicOutputs();
         } else {
             getMotor().set(ControlMode.DUTY_CYCLE, 0.0);
