@@ -26,7 +26,7 @@ public class Climber extends Subsystem1d<Climber.Position> {
     private static final Button CLIMBER_BUTTON = SubsystemControlsConfig.getClimberButton();
     private static final Button PISTON_BUTTON = SubsystemControlsConfig.getClimberPiston();
     private static final Button STOP_CLIMBER = SubsystemControlsConfig.getClimberDisable();
-//    private final SparkMaxWrapper CLIMBER;
+    //    private final SparkMaxWrapper CLIMBER;
     private final PistonSolenoid BRAKE;
     private static Position currentPosition = Position.RETRACTED;
     private boolean isClimbing = false;
@@ -39,7 +39,7 @@ public class Climber extends Subsystem1d<Climber.Position> {
         super(MotorConfigs.sparks.get("climber"));
 //        CLIMBER = MotorConfigs.sparks.get("climber");
         BRAKE = new PistonSolenoid(0);
-        getMotor().setSoftLimit(LimitDirection.REVERSE, -59.0);
+        getMotor().setSoftLimit(LimitDirection.REVERSE, -78.0);
         getMotor().setSoftLimit(LimitDirection.FORWARD, 0.0);
         ((SparkMaxWrapper) getMotor()).enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
         ((SparkMaxWrapper) getMotor()).enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
@@ -61,7 +61,9 @@ public class Climber extends Subsystem1d<Climber.Position> {
         BRAKE.retract();
     }
 
-    public void disengageBrake() { BRAKE.extend(); }
+    public void disengageBrake() {
+        BRAKE.extend();
+    }
 
     public void retractClimb() {
         disengageBrake();
@@ -87,7 +89,6 @@ public class Climber extends Subsystem1d<Climber.Position> {
         SmartDashboard.putNumber("Climber Encoder", getMotor().getEncoderPosition());
         SmartDashboard.putNumber("Climber Demand", periodicIO.demand);
         SmartDashboard.putBoolean("Climber Brake", !BRAKE.get().value);
-        SmartDashboard.putNumber("Climber Data", ((SparkMaxWrapper) getMotor()).getEncoder().getVelocity() - previousVelocity);
         SmartDashboard.putBoolean("Climber Stopped", stop);
     }
 
@@ -105,7 +106,7 @@ public class Climber extends Subsystem1d<Climber.Position> {
                 isVelocity = false;
             }
             velocityFactor = CLIMBER_AXIS.get();
-            
+
 
 //            CLIMBER.getEncoderPosition() + CLIMBER_AXIS.get() - 10);
         }
@@ -128,25 +129,21 @@ public class Climber extends Subsystem1d<Climber.Position> {
     public void writePeriodicOutputs() {
         if (stop) {
             getMotor().set(ControlMode.DUTY_CYCLE, 0.0);
-        }
-        if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED && isClimbing) {
-            super.writePeriodicOutputs();
-        }
-        else if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED && (isVelocity)) {
+        } else if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED && (isVelocity)) {
             periodicIO.demand += velocityFactor;
-            periodicIO.demand = Math.max(-57, Math.min(0, periodicIO.demand));//to cap between top and bottom
+            periodicIO.demand = Math.max(-78, Math.min(0, periodicIO.demand));//to cap between top and bottom
             super.writePeriodicOutputs();
 
 //            getMotor().set(ControlMode.VELOCITY, RAISE_VELOCITY*velocityFactor);
+        } else if (BRAKE.get() == PistonSolenoid.PistonState.EXTENDED && isClimbing) {
+            super.writePeriodicOutputs();
         } else {
             getMotor().set(ControlMode.DUTY_CYCLE, 0.0);
         }
-
-        previousVelocity = ((SparkMaxWrapper) getMotor()).getEncoder().getVelocity();
     }
 
     public enum Position implements Subsystem1d.Position<Climber.Position> {
-        RETRACTED(-10) {
+        RETRACTED(0) {
             @Override
             public Position getNextClockwise() {
                 return EXTENDED;
@@ -156,7 +153,7 @@ public class Climber extends Subsystem1d<Climber.Position> {
             public Position getNextCounter() {
                 return EXTENDED;
             }
-        }, EXTENDED(-400) {
+        }, EXTENDED(-78) {
             @Override
             public Position getNextClockwise() {
                 return RETRACTED;

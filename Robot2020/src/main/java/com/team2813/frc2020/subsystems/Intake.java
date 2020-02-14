@@ -30,12 +30,14 @@ public class Intake extends Subsystem {
     @Override
     public void teleopControls() {
         // driver
-        INTAKE_BUTTON.whenPressedReleased(() -> {
-            setIntake(Demand.IN);
-            setDeployed(true);
-        }, () -> {
-            setIntake(Demand.OFF);
-            setDeployed(false);
+        INTAKE_BUTTON.whenPressed(() -> {
+            if (demand == Demand.IN) {
+                setIntake(Demand.OFF);
+                setDeployed(false);
+            } else {
+                setIntake(Demand.IN);
+                setDeployed(true);
+            }
         });
 
         // operator
