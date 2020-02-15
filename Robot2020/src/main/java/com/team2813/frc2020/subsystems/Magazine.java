@@ -81,28 +81,23 @@ public class Magazine extends Subsystem {
 
     @Override
     protected void readPeriodicInputs() {
-        if (isCounterBlocked() == true) {
+        if (isCounterBlocked()) {
             if (ammo < 5 && !triggered) { // block only runs once
                 ammo++;
             }
             if (ammo == 5) { // if there is more than 5 balls
-                demand = Demand.REV; // spit it out
+                spinMagazineReverse(); // spit it out
             } else {
-                demand = Demand.ON; // take it in
+                spinMagazineIntake(); // take it in
             }
             triggered = true;
         } else triggered = false;
-        demand = Demand.OFF; // default to not move anything
+        stopMagazine(); // default to not move anything
     }
 
     @Override
     protected void writePeriodicOutputs() {
         MOTOR.set(ControlMode.DUTY_CYCLE, demand.percent);
-        if (demand == Demand.ON) {
-//            KICKER.set(ControlMode.DUTY_CYCLE, demand.percent);
-        } else {
-            // KICKER.set(ControlMode.DUTY_CYCLE, Demand.OFF.percent);
-        }
     }
 
     enum Demand {
