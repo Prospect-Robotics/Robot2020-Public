@@ -13,6 +13,7 @@ public interface Motor {
     // encoder position
     public Object setEncoderPosition(double position);
     public double getEncoderPosition();
+    public double getVelocity();
 
     // config
     public Object setFactoryDefaults();

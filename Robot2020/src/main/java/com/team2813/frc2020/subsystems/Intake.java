@@ -4,6 +4,7 @@ import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.solenoid.PistonSolenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Intake extends Subsystem {
 
@@ -25,7 +26,7 @@ public class Intake extends Subsystem {
 
     @Override
     public void outputTelemetry() {
-
+        SmartDashboard.putBoolean("Intake Deployed", deployed);
     }
 
     @Override
@@ -39,15 +40,6 @@ public class Intake extends Subsystem {
             setIntake(Demand.OFF);
             Subsystems.MAGAZINE.stopMagazine();
         });
-//        INTAKE_BUTTON.whenPressed(/*() -> {
-//            if (demand == Demand.IN) {
-//                setIntake(Demand.OFF);
-//                setDeployed(false);
-//            } else {
-//                setIntake(Demand.IN);
-//                setDeployed(true);
-//            }
-//        });*/
 
         // operator
         PISTONS_BUTTON.whenPressed(() -> setDeployed(!deployed));
@@ -96,11 +88,7 @@ public class Intake extends Subsystem {
 
     public void setDeployed(boolean deployed) {
         this.deployed = deployed;
-        if (deployed) {
-            PISTONS.set(PistonSolenoid.PistonState.EXTENDED);
-        } else {
-            PISTONS.set(PistonSolenoid.PistonState.RETRACTED);
-        }
+        PISTONS.set(deployed ? PistonSolenoid.PistonState.EXTENDED : PistonSolenoid.PistonState.RETRACTED);
     }
 
     public void setIntake(Demand demand) {

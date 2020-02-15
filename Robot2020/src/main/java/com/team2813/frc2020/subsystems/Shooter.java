@@ -7,6 +7,7 @@ import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.motors.TalonFXWrapper;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.util.LimelightValues;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
 import static com.team2813.frc2020.subsystems.Subsystems.MAGAZINE;
@@ -24,10 +25,12 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     private static final Button SHOOTER_BUTTON = SubsystemControlsConfig.getShooterButton();
     private final SparkMaxWrapper HOOD;
     private final TalonFXWrapper FLYWHEEL;
+    protected final SparkMaxWrapper KICKER;
     private static final int MIN_ANGLE = 35;
     private static final int MAX_ANGLE = 70;
     private static Position currentPosition = Position.ONE;
     private Demand demand = Demand.OFF;
+    private KickerDemand kickerDemand = KickerDemand.OFF;
 
     private Action startAction;
 
@@ -38,6 +41,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         super(MotorConfigs.sparks.get("hood"));
         HOOD = MotorConfigs.sparks.get("hood");
         FLYWHEEL = (TalonFXWrapper) MotorConfigs.talons.get("T5E1");
+        KICKER = MotorConfigs.sparks.get("kicker");
     }
 
 
@@ -63,14 +67,18 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         LOOPER.addAction(startAction);
     }
 
+    public void setKicker(KickerDemand demand) {
+        kickerDemand = demand;
+    }
+
     public void startSpinningFlywheel() {
         demand = Demand.ON;
-        MAGAZINE.KICKER.set(ControlMode.DUTY_CYCLE, 0.8);
+        setKicker(KickerDemand.ON);
     }
 
     public void stopSpinningFlywheel() {
         demand = Demand.OFF;
-        MAGAZINE.KICKER.set(ControlMode.DUTY_CYCLE, 0.0);
+        setKicker(KickerDemand.OFF);
     }
 
     public boolean isFlywheelReady() {
@@ -84,7 +92,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     @Override
     public void outputTelemetry() {
-
+        SmartDashboard.putNumber("Shooter Velocity (RPM)", FLYWHEEL.getVelocity());
     }
 
     @Override
@@ -92,25 +100,21 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         if (manualMode) {
             HOOD_BUTTON.whenPressed(() -> setNextPosition(true));
         }
-        SHOOTER_BUTTON.whenPressed(() -> {
-//            demand = demand == Demand.ON ? Demand.OFF : Demand.ON;
-            if (demand == Demand.ON) stopSpinningFlywheel();
-            else startSpinningFlywheel();
-        });
+        SHOOTER_BUTTON.whenPressedReleased(this::startSpinningFlywheel, this::stopSpinningFlywheel);
     }
 
     @Override
-    public void onEnabledLoop(double timestamp) {
+    public void onEnabledLoop(double timestamp) {}
+
+    @Override
+    public void writePeriodicOutputs() {
+        super.writePeriodicOutputs();
         double distance = 2.49 / Math.atan(new LimelightValues().getTy().getDouble(0));
         if (!manualMode) {
             setPosition(degreesToRevs(distanceToAngle(distance)));
         }
         FLYWHEEL.set(ControlMode.DUTY_CYCLE, demand.percent);
-    }
-
-    @Override
-    public void writePeriodicOutputs() {
-        super.writePeriodicOutputs();
+        KICKER.set(ControlMode.DUTY_CYCLE, kickerDemand.percent);
     }
 
     public enum Position implements Subsystem1d.Position<Shooter.Position> {
@@ -238,11 +242,21 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     }
 
     enum Demand {
-        ON(1.0), OFF(0.0);
+        ON(.7), OFF(0.0);
 
         double percent;
 
         Demand(double percent) {
+            this.percent = percent;
+        }
+    }
+
+    enum KickerDemand {
+        ON(0.8), OFF(0.0), REV(-0.2);
+
+        double percent;
+
+        KickerDemand(double percent) {
             this.percent = percent;
         }
     }

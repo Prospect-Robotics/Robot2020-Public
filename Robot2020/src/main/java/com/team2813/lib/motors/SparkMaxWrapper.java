@@ -57,6 +57,11 @@ public class SparkMaxWrapper extends CANSparkMax implements Motor {
     }
 
     @Override
+    public double getVelocity() {
+        return encoder.getVelocity();
+    }
+
+    @Override
     public CANError setFactoryDefaults() {
         return restoreFactoryDefaults();
     }
