@@ -66,6 +66,16 @@ talons:
         motorControllerType: TALON_FX
         type: BRUSHLESS
         inverted: OPPOSE_LEADER
+    pidControllers:
+      - p: .3
+        i: 0
+        d: 0
+        f: 0
+        maxVelocity: 18000
+        maxAcceleration: 45000
+        maxIntegralAccumulator: 0
+        integralZone: 0
+        allowableClosedLoopError: 100
 sparks:
   hood:
     deviceNumber: 7

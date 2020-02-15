@@ -7,6 +7,7 @@ import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.motors.TalonFXWrapper;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.util.LimelightValues;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
@@ -31,6 +32,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     private static Position currentPosition = Position.ONE;
     private Demand demand = Demand.OFF;
     private KickerDemand kickerDemand = KickerDemand.OFF;
+    private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(0.1,0.01);
 
     private Action startAction;
 
@@ -99,7 +101,11 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     @Override
     public void teleopControls() {
         if (manualMode) {
-            HOOD_BUTTON.whenPressed(() -> setNextPosition(true));
+            HOOD_BUTTON.whenPressed(() -> {
+
+                setNextPosition(true);
+
+            });
         }
         SHOOTER_BUTTON.whenPressedReleased(this::startSpinningFlywheel, this::stopSpinningFlywheel);
     }
@@ -114,11 +120,98 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         if (!manualMode) {
             setPosition(degreesToRevs(distanceToAngle(distance)));
         }
-        FLYWHEEL.set(ControlMode.DUTY_CYCLE, demand.percent);
+        if(demand == Demand.ON) {
+            FLYWHEEL.set(ControlMode.VELOCITY, demand.velocity, shooterFeedforward.calculate(demand.velocity));
+        }else{
+            FLYWHEEL.set(ControlMode.DUTY_CYCLE, 0);
+        }
         KICKER.set(ControlMode.DUTY_CYCLE, kickerDemand.percent);
     }
 
     public enum Position implements Subsystem1d.Position<Shooter.Position> {
+//        ONE(revsToDegrees(35.0)) {
+//            @Override
+//            public Position getNextClockwise() {
+//                return TWO;
+//            }
+//
+//            @Override
+//            public Position getNextCounter() {
+//                return EIGHT;
+//            }
+//        }, TWO(revsToDegrees(39.375)) {
+//            @Override
+//            public Position getNextClockwise() {
+//                return THREE;
+//            }
+//
+//            @Override
+//            public Position getNextCounter() {
+//                return ONE;
+//            }
+//        }, THREE(revsToDegrees(43.75)) {
+//            @Override
+//            public Position getNextClockwise() {
+//                return FOUR;
+//            }
+//
+//            @Override
+//            public Position getNextCounter() {
+//                return TWO;
+//            }
+//        }, FOUR(revsToDegrees(52.5)) {
+//            @Override
+//            public Position getNextClockwise() {
+//                return FIVE;
+//            }
+//
+//            @Override
+//            public Position getNextCounter() {
+//                return THREE;
+//            }
+//        }, FIVE(revsToDegrees(56.875)) {
+//            @Override
+//            public Position getNextClockwise() {
+//                return SIX;
+//            }
+//
+//            @Override
+//            public Position getNextCounter() {
+//                return FOUR;
+//            }
+//        }, SIX(revsToDegrees(61.25)) {
+//            @Override
+//            public Position getNextClockwise() {
+//                return SEVEN;
+//            }
+//
+//            @Override
+//            public Position getNextCounter() {
+//                return FIVE;
+//            }
+//
+//        }, SEVEN(revsToDegrees(65.625)) {
+//            @Override
+//            public Position getNextClockwise() {
+//                return SIX;
+//            }
+//
+//            @Override
+//            public Position getNextCounter() {
+//                return EIGHT;
+//            }
+//
+//        }, EIGHT(revsToDegrees(70)) {
+//            @Override
+//            public Position getNextClockwise() {
+//                return ONE;
+//            }
+//
+//            @Override
+//            public Position getNextCounter() {
+//                return SEVEN;
+//            }
+//        };
         ONE(revsToDegrees(35.0)) {
             @Override
             public Position getNextClockwise() {
@@ -127,79 +220,17 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
             @Override
             public Position getNextCounter() {
-                return EIGHT;
+                return TWO;
             }
         }, TWO(revsToDegrees(39.375)) {
             @Override
             public Position getNextClockwise() {
-                return THREE;
-            }
-
-            @Override
-            public Position getNextCounter() {
-                return ONE;
-            }
-        }, THREE(revsToDegrees(43.75)) {
-            @Override
-            public Position getNextClockwise() {
-                return FOUR;
-            }
-
-            @Override
-            public Position getNextCounter() {
-                return TWO;
-            }
-        }, FOUR(revsToDegrees(52.5)) {
-            @Override
-            public Position getNextClockwise() {
-                return FIVE;
-            }
-
-            @Override
-            public Position getNextCounter() {
-                return THREE;
-            }
-        }, FIVE(revsToDegrees(56.875)) {
-            @Override
-            public Position getNextClockwise() {
-                return SIX;
-            }
-
-            @Override
-            public Position getNextCounter() {
-                return FOUR;
-            }
-        }, SIX(revsToDegrees(61.25)) {
-            @Override
-            public Position getNextClockwise() {
-                return SEVEN;
-            }
-
-            @Override
-            public Position getNextCounter() {
-                return FIVE;
-            }
-
-        }, SEVEN(revsToDegrees(65.625)) {
-            @Override
-            public Position getNextClockwise() {
-                return SIX;
-            }
-
-            @Override
-            public Position getNextCounter() {
-                return EIGHT;
-            }
-
-        }, EIGHT(revsToDegrees(70)) {
-            @Override
-            public Position getNextClockwise() {
                 return ONE;
             }
 
             @Override
             public Position getNextCounter() {
-                return SEVEN;
+                return ONE;
             }
         };
 
@@ -231,9 +262,10 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
             return ONE;
         }
 
+        //TODO MAX Changed to TWO, should the returned to MAX
         @Override
         public Position getMax() {
-            return EIGHT;
+            return TWO;
         }
 
         @Override
@@ -243,12 +275,12 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     }
 
     enum Demand {
-        ON(.7), OFF(0.0);
+        ON(4500), OFF(0.0);
 
-        double percent;
+        double velocity;
 
-        Demand(double percent) {
-            this.percent = percent;
+        Demand(double velocity) {
+            this.velocity = velocity;
         }
     }
 
@@ -262,6 +294,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         }
     }
 
+    //TODO 48 is a magic number, must be turned into a Constant called MaxRevs
     private static double revsToDegrees(double revs) {
         return revs * (MAX_ANGLE - MIN_ANGLE) / 48;
     }
