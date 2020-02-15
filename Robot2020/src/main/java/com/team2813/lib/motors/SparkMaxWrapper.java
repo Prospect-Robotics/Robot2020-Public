@@ -37,6 +37,16 @@ public class  SparkMaxWrapper extends CANSparkMax implements Motor<CANError> {
     }
 
     @Override
+    public boolean isOK(CANError e) {
+        return e == CANError.kOk;
+    }
+
+    @Override
+    public void throwIfNotOK(CANError e) throws SparkMaxException {
+        SparkMaxException.throwIfNotOk(e);
+    }
+
+    @Override
     public CANError set(ControlMode controlMode, double demand) {
         return pid.setReference(demand, controlMode.getSparkMode());
     }

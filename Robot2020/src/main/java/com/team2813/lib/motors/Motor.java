@@ -30,4 +30,7 @@ public interface Motor<ErrorType> {
     public ErrorType setMotionMagicAcceleration(double acceleration);
 
     public String getSubsystemName();
+
+    public boolean isOK(ErrorType e);
+    public void throwIfNotOK(ErrorType e) throws Exception;
 }

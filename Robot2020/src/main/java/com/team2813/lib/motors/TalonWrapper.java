@@ -17,6 +17,16 @@ public abstract class TalonWrapper<Controller extends BaseTalon> implements Moto
     public Controller controller;
 
     @Override
+    public boolean isOK(ErrorCode e) {
+        return e == ErrorCode.OK;
+    }
+
+    @Override
+    public void throwIfNotOK(ErrorCode e) throws CTREException {
+        CTREException.throwIfNotOk(e);
+    }
+
+    @Override
     public ErrorCode set(ControlMode controlMode, double demand) {
         return this.set(controlMode, demand, 0);
     }
