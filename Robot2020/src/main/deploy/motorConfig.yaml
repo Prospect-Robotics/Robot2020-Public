@@ -67,15 +67,15 @@ talons:
         type: BRUSHLESS
         inverted: OPPOSE_LEADER
     pidControllers:
-      - p: .3
+      - p: 0.35
         i: 0
-        d: 0
+        d: 5
         f: 0
         maxVelocity: 18000
         maxAcceleration: 45000
         maxIntegralAccumulator: 0
         integralZone: 0
-        allowableClosedLoopError: 100
+        allowableClosedLoopError: 0
 sparks:
   hood:
     deviceNumber: 7

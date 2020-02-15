@@ -24,15 +24,16 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     private static final Button HOOD_BUTTON = SubsystemControlsConfig.getHoodButton();
     private static final Button SHOOTER_BUTTON = SubsystemControlsConfig.getShooterButton();
-//    private final SparkMaxWrapper HOOD;
+    private final SparkMaxWrapper HOOD;
     private final TalonFXWrapper FLYWHEEL;
     protected final SparkMaxWrapper KICKER;
     private static final int MIN_ANGLE = 35;
     private static final int MAX_ANGLE = 70;
+    private static final double MAX_ENCODER = 400;
     private static Position currentPosition = Position.ONE;
     private Demand demand = Demand.OFF;
     private KickerDemand kickerDemand = KickerDemand.OFF;
-    private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(0.1,0.01);
+    private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(0.266,0.112, 0.0189);
 
     private Action startAction;
 
@@ -41,7 +42,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     Shooter() {
         super(MotorConfigs.sparks.get("hood"));
-//        HOOD = MotorConfigs.sparks.get("hood");
+        HOOD = MotorConfigs.sparks.get("hood");
         FLYWHEEL = (TalonFXWrapper) MotorConfigs.talons.get("T5E1");
         KICKER = MotorConfigs.sparks.get("kicker");
         ((SparkMaxWrapper) getMotor()).getPIDController().setFeedbackDevice(((SparkMaxWrapper) getMotor()).getAlternateEncoder());
@@ -95,7 +96,9 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     @Override
     public void outputTelemetry() {
+
         SmartDashboard.putNumber("Shooter Velocity (RPM)", FLYWHEEL.getVelocity());
+        SmartDashboard.putNumber("Hood Position (Rev", HOOD.getEncoderPosition());
     }
 
     @Override
@@ -121,6 +124,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
             setPosition(degreesToRevs(distanceToAngle(distance)));
         }
         if(demand == Demand.ON) {
+            //TODO Temporarily/Permenantly removed feedforward
             FLYWHEEL.set(ControlMode.VELOCITY, demand.velocity, shooterFeedforward.calculate(demand.velocity));
         }else{
             FLYWHEEL.set(ControlMode.DUTY_CYCLE, 0);
@@ -294,13 +298,12 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         }
     }
 
-    //TODO 48 is a magic number, must be turned into a Constant called MaxRevs
     private static double revsToDegrees(double revs) {
-        return revs * (MAX_ANGLE - MIN_ANGLE) / 48;
+        return revs * (MAX_ANGLE - MIN_ANGLE) / MAX_ENCODER;
     }
 
     private static double degreesToRevs(double degrees) {
-        return degrees * 48 / (MAX_ANGLE - MIN_ANGLE);
+        return degrees * MAX_ENCODER / (MAX_ANGLE - MIN_ANGLE);
     }
 
     private static double distanceToAngle(double meters) {
