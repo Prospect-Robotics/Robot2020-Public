@@ -22,7 +22,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     private static final Button HOOD_BUTTON = SubsystemControlsConfig.getHoodButton();
     private static final Button SHOOTER_BUTTON = SubsystemControlsConfig.getShooterButton();
-    private final SparkMaxWrapper HOOD;
+//    private final SparkMaxWrapper HOOD;
     private final TalonFXWrapper FLYWHEEL;
     private static final int MIN_ANGLE = 35;
     private static final int MAX_ANGLE = 70;
@@ -36,8 +36,9 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     Shooter() {
         super(MotorConfigs.sparks.get("hood"));
-        HOOD = MotorConfigs.sparks.get("hood");
+//        HOOD = MotorConfigs.sparks.get("hood");
         FLYWHEEL = (TalonFXWrapper) MotorConfigs.talons.get("T5E1");
+        ((SparkMaxWrapper) getMotor()).getPIDController().setFeedbackDevice(((SparkMaxWrapper) getMotor()).getAlternateEncoder());
     }
 
 
