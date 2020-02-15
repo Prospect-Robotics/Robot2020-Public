@@ -1,7 +1,6 @@
 package com.team2813.lib.motors;
 
 import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -19,12 +18,11 @@ public class TalonFXWrapper extends TalonWrapper<TalonFX> {
 		System.out.println("Initializing Talon FX with ID " + deviceNumber);
 	}
 
-	public Object setCurrentLimit(int amps) {
+	public ErrorCode setCurrentLimit(int amps) {
 
 		SupplyCurrentLimitConfiguration currentLimitConfiguration =
 				  new SupplyCurrentLimitConfiguration(true, amps, amps, 0.25);
 		return controller.configSupplyCurrentLimit(currentLimitConfiguration);
-//		return null;
 	}
 
 	@Override
@@ -32,7 +30,7 @@ public class TalonFXWrapper extends TalonWrapper<TalonFX> {
 //		StatorCurrentLimitConfiguration currentLimitConfiguration =
 //				  new StatorCurrentLimitConfiguration(true, amps, amps, 0.25);
 //		return controller.configStatorCurrentLimit(currentLimitConfiguration);
-		return null;
+		return ErrorCode.OK;
 	}
 
 	public ErrorCode configEncoder(TalonFXFeedbackDevice encoder, PIDProfile profile, int timeoutMs) {

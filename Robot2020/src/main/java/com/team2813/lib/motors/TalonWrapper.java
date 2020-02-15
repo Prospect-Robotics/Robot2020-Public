@@ -10,20 +10,19 @@ import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.motors.interfaces.LimitDirection;
 import edu.wpi.first.wpilibj.util.Units;
 
-public abstract class TalonWrapper<Controller extends BaseTalon> implements Motor {
+public abstract class TalonWrapper<Controller extends BaseTalon> implements Motor<ErrorCode> {
     private TimeoutMode timeoutMode = TimeoutMode.CONSTRUCTING;
     public String subsystemName;
 
     public Controller controller;
 
     @Override
-    public Object set(ControlMode controlMode, double demand) {
-        this.set(controlMode, demand, 0);
-        return null;
+    public ErrorCode set(ControlMode controlMode, double demand) {
+        return this.set(controlMode, demand, 0);
     }
 
     @Override
-    public Object set(ControlMode controlMode, double demand, double feedForward) {
+    public ErrorCode set(ControlMode controlMode, double demand, double feedForward) {
         switch (controlMode){
             case VELOCITY:
                 demand = Units2813.motorRevsToTicks(demand / 60 / 10);
@@ -33,7 +32,7 @@ public abstract class TalonWrapper<Controller extends BaseTalon> implements Moto
                 break;
         }
         controller.set(controlMode.getTalonMode(), demand, DemandType.ArbitraryFeedForward, feedForward);
-        return null;
+        return ErrorCode.OK;  // controller.set is void, does not return any errors
     }
 
     @Override
@@ -122,13 +121,13 @@ public abstract class TalonWrapper<Controller extends BaseTalon> implements Moto
         return subsystemName;
     }
 
-    public abstract Object setCurrentLimit(int limitAmps);
+    public abstract ErrorCode setCurrentLimit(int limitAmps);
 
     public void enableLimitSwitches() {
         controller.overrideLimitSwitchesEnable(true);
     }
 
-    public Object setClosedLoopRamp(double rate) {
+    public ErrorCode setClosedLoopRamp(double rate) {
         return controller.configClosedloopRamp(rate);
     }
 

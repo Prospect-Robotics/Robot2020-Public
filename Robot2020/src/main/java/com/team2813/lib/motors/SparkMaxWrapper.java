@@ -11,7 +11,7 @@ import com.team2813.lib.motors.interfaces.LimitDirection;
 import com.team2813.lib.sparkMax.SparkMaxException;
 
 @SuppressWarnings("UnusedReturnValue")
-public class SparkMaxWrapper extends CANSparkMax implements Motor {
+public class  SparkMaxWrapper extends CANSparkMax implements Motor<CANError> {
     public String subsystemName;
     private SparkConfig config;
     private CANEncoder encoder = getEncoder();

@@ -16,7 +16,7 @@ public class TalonSRXWrapper extends TalonWrapper<TalonSRX> {
 		System.out.println("Initializing Talon SRX with ID " + deviceNumber);
 	}
 
-	public Object setCurrentLimit(int limitAmps) {
+	public ErrorCode setCurrentLimit(int limitAmps) {
 		return controller.configContinuousCurrentLimit(limitAmps);
 	}
 
