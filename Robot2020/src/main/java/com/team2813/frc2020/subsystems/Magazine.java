@@ -81,18 +81,18 @@ public class Magazine extends Subsystem {
 
     @Override
     protected void readPeriodicInputs() {
-        if (isCounterBlocked()) {
-            if (ammo < 5 && !triggered) { // block only runs once
-                ammo++;
-            }
-            if (ammo == 5) { // if there is more than 5 balls
-                spinMagazineReverse(); // spit it out
-            } else {
-                spinMagazineIntake(); // take it in
-            }
-            triggered = true;
-        } else triggered = false;
-        stopMagazine(); // default to not move anything
+//        if (isCounterBlocked()) {
+//            if (ammo < 5 && !triggered) { // block only runs once
+//                ammo++;
+//            }
+//            if (ammo == 5) { // if there is more than 5 balls
+//                spinMagazineReverse(); // spit it out
+//            } else {
+//                spinMagazineIntake(); // take it in
+//            }
+//            triggered = true;
+//        } else triggered = false;
+//        stopMagazine(); // default to not move anything
     }
 
     @Override

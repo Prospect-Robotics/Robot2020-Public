@@ -29,8 +29,8 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     protected final SparkMaxWrapper KICKER;
     private static final int MIN_ANGLE = 35;
     private static final int MAX_ANGLE = 70;
-    private static final double MAX_ENCODER = 400;
-    private static Position currentPosition = Position.ONE;
+    private static final double MAX_ENCODER = 41;
+    private static Position currentPosition = Position.INITIATION;
     private Demand demand = Demand.OFF;
     private KickerDemand kickerDemand = KickerDemand.OFF;
     private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(0.266,0.112, 0.0189);
@@ -42,10 +42,10 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     Shooter() {
         super(MotorConfigs.sparks.get("hood"));
-        HOOD = MotorConfigs.sparks.get("hood");
+        HOOD = (SparkMaxWrapper) getMotor();
         FLYWHEEL = (TalonFXWrapper) MotorConfigs.talons.get("T5E1");
         KICKER = MotorConfigs.sparks.get("kicker");
-        ((SparkMaxWrapper) getMotor()).getPIDController().setFeedbackDevice(((SparkMaxWrapper) getMotor()).getAlternateEncoder());
+        HOOD.getPIDController().setFeedbackDevice(((SparkMaxWrapper) getMotor()).getAlternateEncoder());
     }
 
 
@@ -121,7 +121,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         super.writePeriodicOutputs();
         double distance = 2.49 / Math.atan(new LimelightValues().getTy().getDouble(0));
         if (!manualMode) {
-            setPosition(degreesToRevs(distanceToAngle(distance)));
+//            setPosition(degreesToRevs(distanceToAngle(distance)));
         }
         if(demand == Demand.ON) {
             //TODO Temporarily/Permenantly removed feedforward
@@ -216,27 +216,30 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 //                return SEVEN;
 //            }
 //        };
-        ONE(revsToDegrees(35.0)) {
-            @Override
-            public Position getNextClockwise() {
-                return TWO;
-            }
-
-            @Override
-            public Position getNextCounter() {
-                return TWO;
-            }
-        }, TWO(revsToDegrees(39.375)) {
-            @Override
-            public Position getNextClockwise() {
-                return ONE;
-            }
-
-            @Override
-            public Position getNextCounter() {
-                return ONE;
-            }
-        };
+//        ONE(revsToDegrees(35.0)) {
+//            @Override
+//            public Position getNextClockwise() {
+//                return TWO;
+//            }
+//
+//            @Override
+//            public Position getNextCounter() {
+//                return TWO;
+//            }
+//        }, TWO(revsToDegrees(39.375)) {
+//            @Override
+//            public Position getNextClockwise() {
+//                return ONE;
+//            }
+//
+//            @Override
+//            public Position getNextCounter() {
+//                return ONE;
+//            }
+//        },;
+        MIN(0),
+        MAX(MAX_ENCODER),
+        INITIATION(0);
 
 
         private double position;
@@ -263,13 +266,13 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
         @Override
         public Position getMin() {
-            return ONE;
+            return MIN;
         }
 
         //TODO MAX Changed to TWO, should the returned to MAX
         @Override
         public Position getMax() {
-            return TWO;
+            return MAX;
         }
 
         @Override
@@ -279,7 +282,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     }
 
     enum Demand {
-        ON(4500), OFF(0.0);
+        ON(2000), OFF(0.0);
 
         double velocity;
 
