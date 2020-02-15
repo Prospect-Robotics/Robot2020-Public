@@ -1,6 +1,7 @@
 package com.team2813.frc2020.subsystems;
 
 import com.ctre.phoenix.CANifier;
+import com.ctre.phoenix.ParamEnum;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.controls.Controller;
@@ -9,6 +10,7 @@ import com.team2813.lib.motors.TalonFXWrapper;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Magazine extends Subsystem {
 
@@ -20,7 +22,8 @@ public class Magazine extends Subsystem {
     private final Button REVERSE_BUTTON = SubsystemControlsConfig.getMagReverse();
     private Demand demand;
 
-    private boolean isCounterOn = false;
+    public int ammo = 0;
+    public boolean triggered = false;
 
     Magazine() {
         MOTOR = MotorConfigs.sparks.get("magazine");
@@ -29,15 +32,15 @@ public class Magazine extends Subsystem {
         INTAKE_COUNTER = new CANifier(14);
     }
 
-    public void spinMagazineForward(){
+    public void spinMagazineForward() {
         demand = Demand.ON;
     }
 
-    public void spinMagazineIntake(){
+    public void spinMagazineIntake() {
         demand = Demand.INTAKE;
     }
 
-    public void spinMagazineReverse(){
+    public void spinMagazineReverse() {
         demand = Demand.REV;
     }
 
@@ -45,12 +48,17 @@ public class Magazine extends Subsystem {
         demand = Demand.OFF;
     }
 
-    @Override
-    public void outputTelemetry() {
+    public boolean isCounterBlocked() {
+        return INTAKE_COUNTER.getGeneralInput(CANifier.GeneralPin.SDA);
     }
 
     @Override
-    public void teleopControls() {
+    public void outputTelemetry() {
+        SmartDashboard.putBoolean("Ball Detected", isCounterBlocked());
+    }
+
+    @Override
+    public void teleopControls() { // todo use da methods
         START_STOP_BUTTON.whenPressed(() -> {
             demand = demand == Demand.ON ? Demand.OFF : Demand.ON;
         });
@@ -76,13 +84,24 @@ public class Magazine extends Subsystem {
 
     @Override
     protected void readPeriodicInputs() {
-        isCounterOn = INTAKE_COUNTER.getGeneralInput(CANifier.GeneralPin.SDA);
+        if (isCounterBlocked() == true) {
+            if (ammo < 5 && !triggered) { // block only runs once
+                ammo++;
+            }
+            if (ammo == 5) { // if there is more than 5 balls
+                demand = Demand.REV; // spit it out
+            } else {
+                demand = Demand.ON; // take it in
+            }
+            triggered = true;
+        } else triggered = false;
+        demand = Demand.OFF; // default to not move anything
     }
 
     @Override
     protected void writePeriodicOutputs() {
         MOTOR.set(ControlMode.DUTY_CYCLE, demand.percent);
-        if(demand == Demand.ON) {
+        if (demand == Demand.ON) {
 //            KICKER.set(ControlMode.DUTY_CYCLE, demand.percent);
         } else {
             // KICKER.set(ControlMode.DUTY_CYCLE, Demand.OFF.percent);
