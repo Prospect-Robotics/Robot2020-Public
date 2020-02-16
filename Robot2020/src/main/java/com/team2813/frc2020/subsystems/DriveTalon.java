@@ -102,7 +102,6 @@ public class DriveTalon extends Subsystem {
     private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.017468, 0.002352, 0.000161); // gains in revolutions
 
     DriveTalon() {
-
         ShuffleboardData.driveModeChooser.addOption("Open Loop", DriveMode.OPEN_LOOP);
         ShuffleboardData.driveModeChooser.addOption("Velocity", DriveMode.VELOCITY);
         ShuffleboardData.teleopDriveTypeChooser.addOption("Arcade", TeleopDriveType.ARCADE);
@@ -127,7 +126,9 @@ public class DriveTalon extends Subsystem {
     }
 
     private void teleopDrive(TeleopDriveType driveType) {
+        limelight.setLights(false);
         if (AUTO_BUTTON.get()) {
+            limelight.setLights(true);
             driveDemand = curvatureDrive.getDemand(0, 0, limelight.getSteer(), true);
         } else if (driveType == TeleopDriveType.ARCADE) {
             driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());;

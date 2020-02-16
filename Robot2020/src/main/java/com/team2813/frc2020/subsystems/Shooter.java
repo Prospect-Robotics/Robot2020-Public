@@ -1,11 +1,16 @@
 package com.team2813.frc2020.subsystems;
 
+import com.revrobotics.AlternateEncoderType;
+import com.revrobotics.CANAnalog;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANSparkMax;
 import com.team2813.lib.actions.*;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.motors.TalonFXWrapper;
 import com.team2813.lib.motors.interfaces.ControlMode;
+import com.team2813.lib.motors.interfaces.LimitDirection;
 import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,13 +29,16 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     private static final Button HOOD_BUTTON = SubsystemControlsConfig.getHoodButton();
     private static final Button SHOOTER_BUTTON = SubsystemControlsConfig.getShooterButton();
+    private static final Button HOOD_INITIATION_BUTTON = SubsystemControlsConfig.getHoodInitiation();
+    private static final Button HOOD_TRENCH_BUTTON = SubsystemControlsConfig.getHoodTrench();
     private final SparkMaxWrapper HOOD;
     private final TalonFXWrapper FLYWHEEL;
     protected final SparkMaxWrapper KICKER;
+    protected final CANEncoder encoder;
     private static final int MIN_ANGLE = 35;
     private static final int MAX_ANGLE = 70;
     private static final double MAX_ENCODER = 41;
-    private static Position currentPosition = Position.INITIATION;
+    private static Position currentPosition = Position.MIN;
     private Demand demand = Demand.OFF;
     private KickerDemand kickerDemand = KickerDemand.OFF;
     private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(0.266,0.112, 0.0189);
@@ -45,9 +53,19 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         HOOD = (SparkMaxWrapper) getMotor();
         FLYWHEEL = (TalonFXWrapper) MotorConfigs.talons.get("T5E1");
         KICKER = MotorConfigs.sparks.get("kicker");
-        HOOD.getPIDController().setFeedbackDevice(((SparkMaxWrapper) getMotor()).getAlternateEncoder());
+        encoder = HOOD.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
+        HOOD.getPIDController().setFeedbackDevice(HOOD.getEncoder());
+        HOOD.setSoftLimit(LimitDirection.REVERSE, 0);
+        HOOD.setSoftLimit(LimitDirection.FORWARD, MAX_ENCODER);
+        HOOD.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+        HOOD.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
     }
 
+    @Override
+    synchronized void setPosition(Position position) {
+        currentPosition = position;
+        super.setPosition(position);
+    }
 
     @Override
     void setNextPosition(boolean clockwise) {
@@ -96,9 +114,10 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     @Override
     public void outputTelemetry() {
-
         SmartDashboard.putNumber("Shooter Velocity (RPM)", FLYWHEEL.getVelocity());
-        SmartDashboard.putNumber("Hood Position (Rev", HOOD.getEncoderPosition());
+        SmartDashboard.putNumber("Hood Encoder", encoder.getPosition());
+        SmartDashboard.putNumber("Hood NEO Encoder", HOOD.getEncoderPosition());
+        SmartDashboard.putString("Hood Demand", currentPosition.getName());
     }
 
     @Override
@@ -111,6 +130,13 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
             });
         }
         SHOOTER_BUTTON.whenPressedReleased(this::startSpinningFlywheel, this::stopSpinningFlywheel);
+
+        // operator
+        HOOD_INITIATION_BUTTON.whenPressed(() -> setPosition(Position.INITIATION));
+        HOOD_TRENCH_BUTTON.whenPressed(() -> setPosition(Position.TRENCH));
+        if(HOOD_INITIATION_BUTTON.get() && HOOD_TRENCH_BUTTON.get()) {
+            setPosition(Position.MIN);
+        }
     }
 
     @Override
@@ -237,17 +263,23 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 //                return ONE;
 //            }
 //        },;
-        MIN(0),
-        MAX(MAX_ENCODER),
-        INITIATION(0);
+        MIN("Min", 0),
+        MAX("Max", MAX_ENCODER),
+        INITIATION("Initiation", 37.1),
+        TRENCH("Trench", 10);
 
 
+        private String name;
         private double position;
 
-        Position(double position) {
+        Position(String name, double position) {
+            this.name = name;
             this.position = position;
         }
 
+        public String getName() {
+            return name;
+        }
 
         @Override
         public double getPos() {
@@ -282,7 +314,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     }
 
     enum Demand {
-        ON(2000), OFF(0.0);
+        ON(2500), OFF(0.0);
 
         double velocity;
 

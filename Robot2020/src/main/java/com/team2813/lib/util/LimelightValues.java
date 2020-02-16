@@ -1,4 +1,5 @@
 package com.team2813.lib.util;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -17,8 +18,11 @@ public class LimelightValues {
     private NetworkTableEntry tvert = table.getEntry("tvert");
     private NetworkTableEntry getPipe = table.getEntry("getpipe");
     private NetworkTableEntry camtranEntry = table.getEntry("camtran");
+    private NetworkTableEntry ledMode = table.getEntry("ledMode");
 
-    public void update(){ table = NetworkTableInstance.getDefault().getTable("limelight"); }
+    public void update() {
+        table = NetworkTableInstance.getDefault().getTable("limelight");
+    }
 
     public NetworkTable getTable() {
         return table;
@@ -70,5 +74,9 @@ public class LimelightValues {
 
     public NetworkTableEntry getCamtranEntry() {
         return camtranEntry;
+    }
+
+    public NetworkTableEntry getLedMode() {
+        return ledMode;
     }
 }
