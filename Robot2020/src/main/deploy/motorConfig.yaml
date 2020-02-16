@@ -13,9 +13,12 @@ talons:
         type: BRUSHLESS
         inverted: FOLLOW_LEADER
     pidControllers:
-      - p: .1
+#      - p: .33
+      - p: 0.0041
         i: 0
         d: 0
+#        d: 5.79
+#        d: 4
         f: 0
         maxVelocity: 18000
         maxAcceleration: 45000
@@ -35,9 +38,12 @@ talons:
         type: BRUSHLESS
         inverted: FOLLOW_LEADER
     pidControllers:
-      - p: .1
+#      - p: .33
+      - p: 0.00041
         i: 0
         d: 0
+#        d: 5.79
+#        d: 4
         f: 0
         maxVelocity: 18000
         maxAcceleration: 45000
@@ -119,6 +125,7 @@ sparks:
         maxIntegralAccumulator: 0
         integralZone: 0
         allowableClosedLoopError: 0
+sparks:
   magazine:
     deviceNumber: 9
     motorControllerType: SPARK_MAX

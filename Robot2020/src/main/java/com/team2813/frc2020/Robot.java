@@ -56,9 +56,12 @@ public class Robot extends TimedRobot {
         try {
             CrashTracker.logRobotInit();
             MotorConfigs.read();
+            System.out.println("Motor Config Successful");
             Subsystems.initializeSubsystems();
-            autonomous = new Autonomous();
-            AutoRoutine.addRoutines();
+            System.out.println("Subsystem Initialization Successful");
+			System.out.println("Auto Constructed");
+            Autonomous.addRoutines();
+            System.out.println("AutoRoutine Initialization Successful");
             ShuffleboardData.init();
 
             DriveDemand.circumference = Math.PI * WHEEL_DIAMETER;
@@ -118,6 +121,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         isAuto = true;
+        autonomous = new Autonomous();
         try {
             CrashTracker.logAutoInit();
 //            Compressor compressor = new Compressor(); // FIXME: 11/02/2019 this shouldn't need to be here
@@ -125,7 +129,7 @@ public class Robot extends TimedRobot {
             for (Subsystem subsystem : allSubsystems) {
                 subsystem.zeroSensors();
             }
-            autonomous.run(); //TODO 1/7/20 work on decision logic for auto routine
+            autonomous.run();
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;

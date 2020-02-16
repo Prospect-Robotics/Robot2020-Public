@@ -38,7 +38,7 @@ public class SeriesAction extends Action {
 	}
 
 	@Override
-	void execute(double timestamp) {
+    protected void execute(double timestamp) {
 		currentAction.execute(timestamp);
 		if (currentAction.isFinished(timestamp)) {
 			currentAction.end(timestamp);
@@ -49,7 +49,7 @@ public class SeriesAction extends Action {
 	}
 
 	@Override
-	public boolean isFinished(double timestamp) {
+	protected boolean isFinished(double timestamp) {
 		return currentAction == null;
 	}
 
@@ -59,7 +59,7 @@ public class SeriesAction extends Action {
 	}
 
 	@Override
-	public boolean getRemoveOnDisabled() {
+	protected boolean getRemoveOnDisabled() {
 		if(currentAction == null) return false;
 		else return currentAction.getRemoveOnDisabled();
 	}

@@ -7,8 +7,9 @@ import java.util.List;
 
 /**
  * allows RamseteAuto to only have ot process one trajectory as a WHOLE and simplifies chaining together multiple trajectories;
+ *
  * @author Samuel Li
-  */
+ */
 public class RamseteTrajectory {
     private List<Trajectory> trajectories = new ArrayList<>();
     private List<Boolean> reversed = new ArrayList<>();
@@ -32,13 +33,16 @@ public class RamseteTrajectory {
 
             if (dt < time + trajectory.getTotalTimeSeconds()) {
                 if (trajectory instanceof PauseTrajectory) // if it is a pause
-                    return new TrajectorySample(true);
+                    return new TrajectorySample().setPause(true);
+                if (trajectory instanceof RotateTrajectory)
+                    return new TrajectorySample(trajectory).setRotate(true, ((RotateTrajectory) trajectory).getDegrees());
 
-                return new TrajectorySample(trajectory.sample(dt - time), reversed.get(i));
+                return new TrajectorySample(trajectory, trajectory.sample(
+                        dt - time), reversed.get(i));
             } else
                 time += trajectory.getTotalTimeSeconds();
         }
-        return new TrajectorySample(trajectories.get(0).sample(dt), reversed.get(0));
+        return new TrajectorySample(new Trajectory(List.of(new Trajectory.State())), trajectories.get(0).sample(dt), reversed.get(0));
     }
 
     public List<Trajectory> getTrajectories() {

@@ -28,14 +28,14 @@ public abstract class Action {
 	 * runs the Action
 	 * @param timestamp
 	 */
-	abstract void execute(double timestamp);
+	protected abstract void execute(double timestamp);
 
 	/**
 	 * Returns whether or not the code has finished execution.
 	 *
 	 * @return true if finished, false otherwise
 	 */
-	abstract boolean isFinished(double timestamp);
+	protected abstract boolean isFinished(double timestamp);
 
 	/**
 	 * Run code once when the action is started, for set up
@@ -52,5 +52,5 @@ public abstract class Action {
 	 *
 	 * @return Always returns false
 	 */
-	public boolean getRemoveOnDisabled() {return false;}
+	protected boolean getRemoveOnDisabled() {return false;}
 }
