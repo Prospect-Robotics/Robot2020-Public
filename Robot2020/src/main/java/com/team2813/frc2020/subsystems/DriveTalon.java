@@ -77,7 +77,7 @@ public class DriveTalon extends Subsystem {
     private double TRACK_WIDTH = 26;
     public static final double GEAR_RATIO = (60.0 / 10.0) * (28.0 / 20.0);
     public DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(TRACK_WIDTH));
-    private Limelight limelight = new Limelight();
+    public Limelight limelight = new Limelight();
 
     // Odometry
     private static DifferentialDriveOdometry odometry;

@@ -66,6 +66,7 @@ public class Robot extends TimedRobot {
                 LOOPER.addLoop(subsystem);
                 subsystem.zeroSensors();
             }
+            DRIVE.limelight.setLights(false);
         } catch (IOException e) {
             System.out.println("Something went wrong while reading config files!");
             CrashTracker.logThrowableCrash(e);
@@ -140,7 +141,7 @@ public class Robot extends TimedRobot {
             CrashTracker.logTeleopInit();
             LOOPER.setMode(RobotMode.ENABLED);
             LOOPER.start();
-
+            DRIVE.limelight.setLights(false);
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             try {

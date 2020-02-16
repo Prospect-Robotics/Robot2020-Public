@@ -1,7 +1,6 @@
 package com.team2813.frc2020.subsystems;
 
 import com.revrobotics.AlternateEncoderType;
-import com.revrobotics.CANAnalog;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.team2813.lib.actions.*;
@@ -16,7 +15,6 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
-import static com.team2813.frc2020.subsystems.Subsystems.MAGAZINE;
 
 /**
  * Class for the shooter on the robot.
@@ -37,11 +35,11 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     protected final CANEncoder encoder;
     private static final int MIN_ANGLE = 35;
     private static final int MAX_ANGLE = 70;
-    private static final double MAX_ENCODER = 41;
-    private static Position currentPosition = Position.MIN;
+    private static final double MAX_ENCODER = 46.5;
+    protected static Position currentPosition = Position.MIN;
     private Demand demand = Demand.OFF;
     private KickerDemand kickerDemand = KickerDemand.OFF;
-    private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(0.266,0.112, 0.0189);
+    private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(0.266, 0.112, 0.0189);
 
     private Action startAction;
 
@@ -94,8 +92,14 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     }
 
     public void startSpinningFlywheel() {
-        demand = Demand.ON;
+        if (currentPosition == Position.INITIATION)
+            demand = Demand.INITIATION;
+        else demand = Demand.TRENCH;
         setKicker(KickerDemand.ON);
+    }
+
+    public void reverseFlywheel() {
+        demand = Demand.REV;
     }
 
     public void stopSpinningFlywheel() {
@@ -134,13 +138,14 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         // operator
         HOOD_INITIATION_BUTTON.whenPressed(() -> setPosition(Position.INITIATION));
         HOOD_TRENCH_BUTTON.whenPressed(() -> setPosition(Position.TRENCH));
-        if(HOOD_INITIATION_BUTTON.get() && HOOD_TRENCH_BUTTON.get()) {
+        if (HOOD_INITIATION_BUTTON.get() && HOOD_TRENCH_BUTTON.get()) {
             setPosition(Position.MIN);
         }
     }
 
     @Override
-    public void onEnabledLoop(double timestamp) {}
+    public void onEnabledLoop(double timestamp) {
+    }
 
     @Override
     public void writePeriodicOutputs() {
@@ -149,124 +154,20 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         if (!manualMode) {
 //            setPosition(degreesToRevs(distanceToAngle(distance)));
         }
-        if(demand == Demand.ON) {
+        if (demand != Demand.OFF) {
             //TODO Temporarily/Permenantly removed feedforward
             FLYWHEEL.set(ControlMode.VELOCITY, demand.velocity, shooterFeedforward.calculate(demand.velocity));
-        }else{
+        } else {
             FLYWHEEL.set(ControlMode.DUTY_CYCLE, 0);
         }
         KICKER.set(ControlMode.DUTY_CYCLE, kickerDemand.percent);
     }
 
     public enum Position implements Subsystem1d.Position<Shooter.Position> {
-//        ONE(revsToDegrees(35.0)) {
-//            @Override
-//            public Position getNextClockwise() {
-//                return TWO;
-//            }
-//
-//            @Override
-//            public Position getNextCounter() {
-//                return EIGHT;
-//            }
-//        }, TWO(revsToDegrees(39.375)) {
-//            @Override
-//            public Position getNextClockwise() {
-//                return THREE;
-//            }
-//
-//            @Override
-//            public Position getNextCounter() {
-//                return ONE;
-//            }
-//        }, THREE(revsToDegrees(43.75)) {
-//            @Override
-//            public Position getNextClockwise() {
-//                return FOUR;
-//            }
-//
-//            @Override
-//            public Position getNextCounter() {
-//                return TWO;
-//            }
-//        }, FOUR(revsToDegrees(52.5)) {
-//            @Override
-//            public Position getNextClockwise() {
-//                return FIVE;
-//            }
-//
-//            @Override
-//            public Position getNextCounter() {
-//                return THREE;
-//            }
-//        }, FIVE(revsToDegrees(56.875)) {
-//            @Override
-//            public Position getNextClockwise() {
-//                return SIX;
-//            }
-//
-//            @Override
-//            public Position getNextCounter() {
-//                return FOUR;
-//            }
-//        }, SIX(revsToDegrees(61.25)) {
-//            @Override
-//            public Position getNextClockwise() {
-//                return SEVEN;
-//            }
-//
-//            @Override
-//            public Position getNextCounter() {
-//                return FIVE;
-//            }
-//
-//        }, SEVEN(revsToDegrees(65.625)) {
-//            @Override
-//            public Position getNextClockwise() {
-//                return SIX;
-//            }
-//
-//            @Override
-//            public Position getNextCounter() {
-//                return EIGHT;
-//            }
-//
-//        }, EIGHT(revsToDegrees(70)) {
-//            @Override
-//            public Position getNextClockwise() {
-//                return ONE;
-//            }
-//
-//            @Override
-//            public Position getNextCounter() {
-//                return SEVEN;
-//            }
-//        };
-//        ONE(revsToDegrees(35.0)) {
-//            @Override
-//            public Position getNextClockwise() {
-//                return TWO;
-//            }
-//
-//            @Override
-//            public Position getNextCounter() {
-//                return TWO;
-//            }
-//        }, TWO(revsToDegrees(39.375)) {
-//            @Override
-//            public Position getNextClockwise() {
-//                return ONE;
-//            }
-//
-//            @Override
-//            public Position getNextCounter() {
-//                return ONE;
-//            }
-//        },;
         MIN("Min", 0),
         MAX("Max", MAX_ENCODER),
         INITIATION("Initiation", 37.1),
-        TRENCH("Trench", 10);
+        TRENCH("Trench", 38.4);
 
 
         private String name;
@@ -314,7 +215,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     }
 
     enum Demand {
-        ON(2500), OFF(0.0);
+        INITIATION(2500), TRENCH(4500), OFF(0.0), REV(-1000);
 
         double velocity;
 

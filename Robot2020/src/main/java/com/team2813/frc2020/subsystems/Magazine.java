@@ -1,7 +1,6 @@
 package com.team2813.frc2020.subsystems;
 
 import com.ctre.phoenix.CANifier;
-import com.ctre.phoenix.ParamEnum;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.motors.SparkMaxWrapper;
@@ -33,7 +32,9 @@ public class Magazine extends Subsystem {
     }
 
     public void spinMagazineForward() {
-        demand = Demand.ON;
+        if (SHOOTER.currentPosition == Shooter.Position.INITIATION)
+            demand = Demand.INITIATION;
+        else demand = Demand.TRENCH;
         SHOOTER.setKicker(Shooter.KickerDemand.ON);
         INTAKE.setIntake(Intake.Demand.IN);
     }
@@ -47,12 +48,14 @@ public class Magazine extends Subsystem {
     public void spinMagazineReverse() {
         demand = Demand.REV;
         SHOOTER.setKicker(Shooter.KickerDemand.REV);
+        SHOOTER.reverseFlywheel();
     }
 
     public void stopMagazine() {
         demand = Demand.OFF;
         SHOOTER.setKicker(Shooter.KickerDemand.OFF);
         INTAKE.setIntake(Intake.Demand.OFF);
+        SHOOTER.stopSpinningFlywheel();
     }
 
     public boolean isCounterBlocked() {
@@ -112,7 +115,7 @@ public class Magazine extends Subsystem {
     }
 
     enum Demand {
-        ON(0.42), OFF(0.0), REV(-0.3), INTAKE(0.2);
+        TRENCH(0.1), INITIATION(0.3), OFF(0.0), REV(-0.3), INTAKE(0.2);
 
         double percent;
 

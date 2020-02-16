@@ -107,6 +107,7 @@ public class Climber extends Subsystem1d<Climber.Position> {
             CLIMBER_BUTTON.whenPressed(this::autoRetractClimb);
             if (Math.abs(CLIMBER_AXIS.get()) >= 0.2) {
                 isVelocity = true;
+                stop = false;
                 disengageBrake();
             } else {
                 isVelocity = false;

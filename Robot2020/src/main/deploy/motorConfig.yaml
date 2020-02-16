@@ -96,14 +96,13 @@ sparks:
     pidControllers:
         - p: 0.1
           i: 0.00005
-#          d: 0.00001
+          d: 0.00001
           f: 0
           maxVelocity: 1000
           maxAcceleration: 1000
           maxIntegralAccumulator: 0
           integralZone: 0
           allowableClosedLoopError: 0
-
   climber:
     deviceNumber: 11
     type: BRUSHLESS
