@@ -5,7 +5,7 @@ import com.revrobotics.ControlType;
 public enum ControlMode {
     DUTY_CYCLE(com.ctre.phoenix.motorcontrol.ControlMode.PercentOutput, ControlType.kDutyCycle),
     VELOCITY(com.ctre.phoenix.motorcontrol.ControlMode.Velocity, ControlType.kVelocity),
-    MOTION_MAGIC(com.ctre.phoenix.motorcontrol.ControlMode.MotionMagic, ControlType.kSmartMotion);
+    MOTION_MAGIC(com.ctre.phoenix.motorcontrol.ControlMode.MotionMagic, ControlType.kPosition);
 
     private com.ctre.phoenix.motorcontrol.ControlMode talonMode;
     private ControlType sparkMode;

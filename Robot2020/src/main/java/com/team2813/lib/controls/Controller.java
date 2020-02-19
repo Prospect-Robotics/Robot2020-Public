@@ -36,4 +36,6 @@ public class Controller extends Joystick {
 	public Button button(int buttonNumber) {
 		return new Button(this, buttonNumber);
 	}
+
+	public POV pov() { return new POV(this); }
 }

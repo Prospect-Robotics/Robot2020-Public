@@ -34,7 +34,7 @@ public class MotorConfigs {
         motorConfigs.getTalons().forEach(((s, talonConfig) -> talons.put(s, initializeTalon(talonConfig))));
 
         // TODO: 1/18/2020 Restore When Needed 
-//        motorConfigs.getSparks().forEach(((s, sparkConfig) -> sparks.put(s, initializeSpark(sparkConfig))));
+        motorConfigs.getSparks().forEach(((s, sparkConfig) -> sparks.put(s, initializeSpark(sparkConfig))));
 //        motorConfigs.getVictors().forEach(((s, victorConfig) -> victors.put(s, initializeVictor(victorConfig))));
 
         System.out.println("Successful!");
@@ -111,6 +111,7 @@ public class MotorConfigs {
             // TODO deal with units issue
             talon.setMotionMagicAcceleration((int) pidController.getMaxAcceleration()); // FIXME see above
             // TODO: 1/3/2020 figure out min velocity with Talons / remove from PID controller so as not to have that attribute
+            talon.controller.configAllowableClosedloopError(slotID, (int) pidController.getAllowableClosedLoopError());
         }
 
 
@@ -199,10 +200,11 @@ public class MotorConfigs {
             spark.setInverted(SparkMaxWrapper.InvertType.NORMAL.inverted);
 
         for (FollowerConfig followerConfig : config.getFollowers()) {
-            System.out.println(
-                    "\tCreating follower w/ id of " + followerConfig.getId() + " on " + config.getSubsystemName()
-            );
-            new SparkMaxWrapper(followerConfig.getId(), followerConfig.getType().getValue(), spark);
+            System.out.println("\tCreating follower w/ id of " + followerConfig.getId() + " on " + config.getSubsystemName() + "and inverted: " + followerConfig.getInverted().inverted);
+            SparkMaxWrapper follower = new SparkMaxWrapper(followerConfig.getId(), followerConfig.getType().getValue(), spark, followerConfig.getInverted().inverted);
+            follower.setPeakCurrentLimit(config.getPeakCurrentLimit());
+            spark.setPeakCurrentLimit(config.getPeakCurrentLimit());
+            spark.setSecondaryCurrentLimit(config.getContinuousCurrentLimitAmps());// TODO check this is actually continuous limit
         }
 
         return spark;

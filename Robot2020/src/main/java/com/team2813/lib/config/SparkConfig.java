@@ -19,7 +19,7 @@ public class SparkConfig extends MotorConfig {
     private int closedLoopRampRate = 0;
     private int openLoopRampRate = 0;
     private boolean invertSensorPhase = true;
-    private PeriodicFrame statusFrame; // cannot serialize into PeriodicFrame (see getStatusFrame)
+    private PeriodicFrame statusFrame = PeriodicFrame.STATUS_2; // cannot serialize into PeriodicFrame (see getStatusFrame)
     private int statusFramePeriod = 5;
     private List<FollowerConfig> followers = new ArrayList<>();
     private List<PIDControllerConfig> pidControllers = new ArrayList<>();

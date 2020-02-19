@@ -36,12 +36,10 @@ public class Button {
 	 * @param functionWhenReleased
 	 */
 	public void whenPressedReleased(Runnable functionWhenPressed, Runnable functionWhenReleased) {
-		boolean running = false;
 		if (getPressed()) {
 			functionWhenPressed.run();
-			running = true;
 		}
-		if (getReleased() && running) {
+		if (getReleased()) {
 			functionWhenReleased.run();
 		}
 	}

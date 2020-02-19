@@ -14,7 +14,7 @@ import static com.team2813.lib.logging.LogLevel.DEBUG;
 abstract class Subsystem1d<P extends Subsystem1d.Position> extends Subsystem {
 
     private Motor motor;
-    PeriodicIO periodicIO = new PeriodicIO();
+    protected PeriodicIO periodicIO = new PeriodicIO();
     private boolean zeroed = false;
 //	Mode mode = Mode.HOLDING;
 
@@ -40,6 +40,21 @@ abstract class Subsystem1d<P extends Subsystem1d.Position> extends Subsystem {
 //			new Exception("Subsystem construction failed", e).printStackTrace();
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onEnabledStart(double timestamp) {
+
+    }
+
+    @Override
+    public void onEnabledLoop(double timestamp) {
+
+    }
+
+    @Override
+    public void onEnabledStop(double timestamp) {
+
     }
 
     @Override
@@ -115,7 +130,7 @@ abstract class Subsystem1d<P extends Subsystem1d.Position> extends Subsystem {
         }
     }
 
-    private synchronized void setPosition(double encoderPosition) {
+    synchronized void setPosition(double encoderPosition) {
         System.out.println(motor.getSubsystemName() + "Setting Position to " + encoderPosition);
         periodicIO.demand = encoderPosition;
         periodicIO.openLoop = false;
