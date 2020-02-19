@@ -16,7 +16,7 @@ public class Axis implements ControlInput {
 	 * of the axis
 	 *
 	 * @param controller   The Joystick object that has the axis
-	 * @param axisNumber The qxis number
+	 * @param axisNumber The axis number
 	 */
 	public Axis(Controller controller, int axisNumber) {
 		this.controller = controller;

@@ -18,6 +18,8 @@ public class LimelightValues {
     private NetworkTableEntry getPipe = table.getEntry("getpipe");
     private NetworkTableEntry camtranEntry = table.getEntry("camtran");
 
+    public void update(){ table = NetworkTableInstance.getDefault().getTable("limelight"); }
+
     public NetworkTable getTable() {
         return table;
     }

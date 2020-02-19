@@ -55,6 +55,8 @@ public class DriveTalon extends Subsystem {
     private static final Axis CURVATURE_REVERSE = SubsystemControlsConfig.getDriveReverse();
     private static final Button PIVOT_BUTTON = SubsystemControlsConfig.getPivotButton();
     private static final Button AUTO_BUTTON = SubsystemControlsConfig.getAutoButton();
+    private static final Button HOOD_BUTTON = SubsystemControlsConfig.getHoodButton();
+    private static final Button SHOOTER_BUTTON = SubsystemControlsConfig.getShooterButton();
     private ControlInput arcade_x;
     private ControlInput arcade_y;
 
@@ -136,7 +138,7 @@ public class DriveTalon extends Subsystem {
             ;
         } else {
             double steer = CURVATURE_STEER.get();
-            if (PIVOT_BUTTON.get()) steer *= .4; // cap it so it's not too sensitive
+            if (PIVOT_BUTTON.get()) steer *= .8; // cap it so it's not too sensitive
             driveDemand = curvatureDrive.getDemand(CURVATURE_FORWARD.get(), CURVATURE_REVERSE.get(), steer, PIVOT_BUTTON.get());
         }
 
