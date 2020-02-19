@@ -43,7 +43,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     Shooter() {
         super(MotorConfigs.sparks.get("hood"));
         HOOD = (SparkMaxWrapper) getMotor();
-        FLYWHEEL = (TalonFXWrapper) MotorConfigs.talons.get("T5E1");
+        FLYWHEEL = (TalonFXWrapper) MotorConfigs.talons.get("shooter");
         KICKER = MotorConfigs.sparks.get("kicker");
         HOOD.getPIDController().setFeedbackDevice(((SparkMaxWrapper) getMotor()).getAlternateEncoder());
     }

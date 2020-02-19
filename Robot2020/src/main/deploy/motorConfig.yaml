@@ -50,7 +50,7 @@ talons:
         maxIntegralAccumulator: 0
         integralZone: 0
         allowableClosedLoopError: 100
-  T5E1:
+  shooter:
     deviceNumber: 5
     motorControllerType: TALON_FX
     type: BRUSHED
