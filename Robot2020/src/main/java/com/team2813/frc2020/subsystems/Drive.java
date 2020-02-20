@@ -33,7 +33,7 @@ import edu.wpi.first.wpilibj.util.Units;
  * @author Grady Whelan
  * @author Samuel Li
  */
-public class DriveTalon extends Subsystem {
+public class Drive extends Subsystem {
 
     // Physical Constants
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(6.25);
@@ -103,7 +103,7 @@ public class DriveTalon extends Subsystem {
 
     private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.181, 2.34, 0.25); // gains in meters
 
-    DriveTalon() {
+    Drive() {
         ShuffleboardData.driveModeChooser.addOption("Open Loop", DriveMode.OPEN_LOOP);
         ShuffleboardData.driveModeChooser.addOption("Velocity", DriveMode.VELOCITY);
         ShuffleboardData.teleopDriveTypeChooser.addOption("Arcade", TeleopDriveType.ARCADE);
