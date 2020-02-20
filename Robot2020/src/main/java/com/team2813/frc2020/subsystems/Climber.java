@@ -107,6 +107,7 @@ public class Climber extends Subsystem1d<Climber.Position> {
             CLIMBER_BUTTON.whenPressed(this::autoRetractClimb);
             if (Math.abs(CLIMBER_AXIS.get()) >= 0.2) {
                 isVelocity = true;
+                stop = false;
                 disengageBrake();
             } else {
                 isVelocity = false;
@@ -141,14 +142,14 @@ public class Climber extends Subsystem1d<Climber.Position> {
     public void writePeriodicOutputs() {
         if (stop) {
             getMotor().set(ControlMode.DUTY_CYCLE, 0.0);
+        } else if (!isBrakeEngaged() && isClimbing) {
+            super.writePeriodicOutputs();
         } else if (!isBrakeEngaged() && isVelocity) {
             periodicIO.demand += velocityFactor;
             periodicIO.demand = Math.max(-78, Math.min(0, periodicIO.demand));//to cap between top and bottom
             super.writePeriodicOutputs();
 
 //            getMotor().set(ControlMode.VELOCITY, RAISE_VELOCITY*velocityFactor);
-        } else if (!isBrakeEngaged() && isClimbing) {
-            super.writePeriodicOutputs();
         } else {
             getMotor().set(ControlMode.DUTY_CYCLE, 0.0);
         }

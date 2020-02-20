@@ -23,8 +23,8 @@ talons:
         maxAcceleration: 45000
         maxIntegralAccumulator: 0
         integralZone: 0
-        allowableClosedLoopError: 100
-  driveRight: #Talon
+        allowableClosedLoopError: 0
+  driveRight:
     deviceNumber: 3
     motorControllerType: TALON_FX
     type: BRUSHLESS
@@ -47,8 +47,8 @@ talons:
         maxAcceleration: 45000
         maxIntegralAccumulator: 0
         integralZone: 0
-        allowableClosedLoopError: 100
-  shooter:
+        allowableClosedLoopError: 0
+  T5E1:
     deviceNumber: 5
     motorControllerType: TALON_FX
     type: BRUSHED
@@ -97,6 +97,16 @@ sparks:
     invertSensorPhase: true
     statusFrame: STATUS_2
     inverted: NONINVERTED
+    pidControllers:
+        - p: 0.1
+          i: 0.00005
+          d: 0.00001
+          f: 0
+          maxVelocity: 1000
+          maxAcceleration: 1000
+          maxIntegralAccumulator: 0
+          integralZone: 0
+          allowableClosedLoopError: 0
   climber:
     deviceNumber: 11
     type: BRUSHLESS

@@ -78,7 +78,7 @@ public class DriveTalon extends Subsystem {
     private double TRACK_WIDTH = 26;
     public static final double GEAR_RATIO = (62.0 / 8.0) * (28.0 / 20.0);
     public DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(TRACK_WIDTH));
-    private Limelight limelight = new Limelight();
+    public Limelight limelight = new Limelight();
 
     // Odometry
     private static DifferentialDriveOdometry odometry;
@@ -96,7 +96,7 @@ public class DriveTalon extends Subsystem {
     public double getMaxVelocity(){return MAX_VELOCITY;}
 
     VelocityDriveTalon velocityDrive = new VelocityDriveTalon(MAX_VELOCITY);
-    CurvatureDrive curvatureDrive = new CurvatureDrive(TELEOP_DEAD_ZONE);
+    public CurvatureDrive curvatureDrive = new CurvatureDrive(TELEOP_DEAD_ZONE);
     ArcadeDrive arcadeDrive = curvatureDrive.getArcadeDrive();
     DriveDemand driveDemand = new DriveDemand(0, 0);
     public DriveDemand getDriveDemand(){return driveDemand;}
@@ -104,7 +104,6 @@ public class DriveTalon extends Subsystem {
     private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.181, 2.34, 0.25); // gains in meters
 
     DriveTalon() {
-
         ShuffleboardData.driveModeChooser.addOption("Open Loop", DriveMode.OPEN_LOOP);
         ShuffleboardData.driveModeChooser.addOption("Velocity", DriveMode.VELOCITY);
         ShuffleboardData.teleopDriveTypeChooser.addOption("Arcade", TeleopDriveType.ARCADE);
@@ -129,7 +128,9 @@ public class DriveTalon extends Subsystem {
     }
 
     private void teleopDrive(TeleopDriveType driveType) {
+        limelight.setLights(false);
         if (AUTO_BUTTON.get()) {
+            limelight.setLights(true);
             driveDemand = curvatureDrive.getDemand(0, 0, limelight.getSteer(), true);
         } else if (driveType == TeleopDriveType.ARCADE) {
             driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());
@@ -221,9 +222,10 @@ public class DriveTalon extends Subsystem {
     @Override
     public synchronized void writePeriodicOutputs() {
         if (driveMode == DriveMode.VELOCITY || Robot.isAuto) {
-            System.out.println(driveDemand);
+//            System.out.println(driveDemand);
             DriveDemand demand = Units2813.dtDemandToMotorDemand(driveDemand); // local variable for telemetry reasons
 
+            System.out.println(driveDemand);
             LEFT.set(ControlMode.VELOCITY, demand.getLeft(), feedforward.calculate(driveDemand.getLeft()) / 12);
             RIGHT.set(ControlMode.VELOCITY, demand.getRight(), feedforward.calculate(driveDemand.getRight()) / 12);
         } else {
