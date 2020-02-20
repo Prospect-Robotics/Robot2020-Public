@@ -101,9 +101,7 @@ public class DriveTalon extends Subsystem {
     DriveDemand driveDemand = new DriveDemand(0, 0);
     public DriveDemand getDriveDemand(){return driveDemand;}
 
-    //    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.316, 0.0596, 0.0038); // gains in inches
-//    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.016094, 0.003035, 0.000193); // gains in revolutions
-    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.345, 2.32, 0.196); // gains in meters
+    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.181, 2.34, 0.25); // gains in meters
 
     DriveTalon() {
 
