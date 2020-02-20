@@ -98,8 +98,8 @@ public class DriveTalon extends Subsystem {
     ArcadeDrive arcadeDrive = curvatureDrive.getArcadeDrive();
     DriveDemand driveDemand = new DriveDemand(0, 0);
 
-//    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(.343, .0462, .00316); // gains in inches
-    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.017468, 0.002352, 0.000161); // gains in revolutions
+    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.181, 2.34, 0.25); // gains in meters
+//    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.363, )
 
     DriveTalon() {
 
@@ -214,8 +214,8 @@ public class DriveTalon extends Subsystem {
         if (driveMode == DriveMode.VELOCITY || Robot.isAuto) {
             DriveDemand demand = Units2813.dtDemandToMotorDemand(driveDemand); // local variable for telemetry reasons
 
-            LEFT.set(ControlMode.VELOCITY, demand.getLeft(), feedforward.calculate(demand.getLeft()) / 12);
-            RIGHT.set(ControlMode.VELOCITY, demand.getRight(), feedforward.calculate(demand.getRight()) / 12);
+            LEFT.set(ControlMode.VELOCITY, demand.getLeft(), feedforward.calculate(driveDemand.getLeft()) / 12);
+            RIGHT.set(ControlMode.VELOCITY, demand.getRight(), feedforward.calculate(driveDemand.getRight()) / 12);
         } else {
             LEFT.set(driveMode.controlMode, driveDemand.getLeft());
             RIGHT.set(driveMode.controlMode, driveDemand.getRight());

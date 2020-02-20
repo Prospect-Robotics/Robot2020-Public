@@ -13,7 +13,7 @@ talons:
         type: BRUSHLESS
         inverted: FOLLOW_LEADER
     pidControllers:
-      - p: .1
+      - p: .000314
         i: 0
         d: 0
         f: 0
@@ -35,7 +35,7 @@ talons:
         type: BRUSHLESS
         inverted: FOLLOW_LEADER
     pidControllers:
-      - p: .1
+      - p: .000314
         i: 0
         d: 0
         f: 0
