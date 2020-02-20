@@ -1,17 +1,20 @@
 package com.team2813.frc2020.auto;
 
+import com.team2813.frc2020.subsystems.Shooter;
+import com.team2813.frc2020.subsystems.Subsystems;
 import com.team2813.frc2020.util.ShuffleboardData;
-import com.team2813.lib.actions.Action;
-import com.team2813.lib.actions.SeriesAction;
-import com.team2813.lib.actions.WaitAction;
+import com.team2813.lib.actions.*;
 import com.team2813.lib.auto.AutoTrajectory;
 import com.team2813.lib.auto.GeneratedTrajectory;
 import com.team2813.lib.auto.PauseTrajectory;
 import com.team2813.lib.auto.RotateTrajectory;
 import com.team2813.lib.auto.RamseteTrajectory;
+import com.team2813.lib.drive.DriveDemand;
 
 
 import java.util.List;
+
+import static com.team2813.frc2020.subsystems.Subsystems.*;
 
 public enum AutoRoutine {
     FIVE_BALL_ENEMY("5 Ball Enemy", List.of(
@@ -61,7 +64,33 @@ public enum AutoRoutine {
     ), new SeriesAction(new WaitAction(1))),
     TEST_REVERSE("test reverse", List.of(
             new GeneratedTrajectory("test reverse", true)
-    ), new SeriesAction(new WaitAction(1)));
+    ), new SeriesAction(new WaitAction(1))),
+    SCRIMMAGE_MID("Scrimmage Mid", List.of(new PauseTrajectory(60)),
+            new SeriesAction(
+                    new LockAction(() -> {
+                        System.out.println("HI");
+                        double steer = DRIVE.limelight.getSteer();
+                        System.out.println(steer);
+                        DRIVE.setDemand(DRIVE.curvatureDrive.getDemand(0, 0, steer, true));
+                        return steer == 0;
+                    }, true),
+                    new FunctionAction(() -> SHOOTER.setPosition(Shooter.Position.INITIATION), true),
+                    new FunctionAction(() -> System.out.println("SET HOOD"), true),
+                    new FunctionAction(() -> SHOOTER.stopSpinningFlywheel(), true),
+                    new WaitAction(1),
+                    new FunctionAction(MAGAZINE::spinMagazineForward, true),
+                    new WaitAction(2),
+                    new FunctionAction(SHOOTER::stopSpinningFlywheel, true),
+                    new FunctionAction(MAGAZINE::stopMagazine, true),
+                    new FunctionAction(() -> DRIVE.setDemand(new DriveDemand(-.3, -.3)), true),
+                    new WaitAction(1),
+                    new FunctionAction(() -> DRIVE.setDemand(new DriveDemand(0, 0)), true)
+            )),
+    BRUH("bruh", List.of(new PauseTrajectory(60)),
+            new SeriesAction(
+                    new FunctionAction(() -> DRIVE.setDemand(new DriveDemand(-.3, -.3)), true),
+                    new WaitAction(1),
+                    new FunctionAction(() -> DRIVE.setDemand(new DriveDemand(0, 0)), true)));
 
 
     public String name;

@@ -100,7 +100,6 @@ public class RamseteAuto {
             TrajectorySample sample = trajectory.sample(i);
             if (!sample.isPause() && !sample.isRotate()) {
                 Pose2d pose = sample.getState().poseMeters;
-                System.out.println(pose);
                 if (sample.isReversed())
                     return new Pose2d(pose.getTranslation(), pose.getRotation().rotateBy(Rotation2d.fromDegrees(180)));
                 else return pose;

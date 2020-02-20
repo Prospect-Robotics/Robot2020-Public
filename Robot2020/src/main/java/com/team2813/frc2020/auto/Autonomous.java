@@ -31,7 +31,7 @@ public class Autonomous {
         ramseteAuto = new RamseteAuto(Subsystems.DRIVE.kinematics, routine.trajectory);
 
         Subsystems.DRIVE.initAutonomous(ramseteAuto.initialPose());
-//        Subsystems.LOOPER.addAction(routine.action);
+        Subsystems.LOOPER.addAction(routine.action);
     }
 
     public static void addRoutines() {

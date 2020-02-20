@@ -96,7 +96,7 @@ public class DriveTalon extends Subsystem {
     public double getMaxVelocity(){return MAX_VELOCITY;}
 
     VelocityDriveTalon velocityDrive = new VelocityDriveTalon(MAX_VELOCITY);
-    CurvatureDrive curvatureDrive = new CurvatureDrive(TELEOP_DEAD_ZONE);
+    public CurvatureDrive curvatureDrive = new CurvatureDrive(TELEOP_DEAD_ZONE);
     ArcadeDrive arcadeDrive = curvatureDrive.getArcadeDrive();
     DriveDemand driveDemand = new DriveDemand(0, 0);
     public DriveDemand getDriveDemand(){return driveDemand;}
@@ -224,9 +224,10 @@ public class DriveTalon extends Subsystem {
     @Override
     public synchronized void writePeriodicOutputs() {
         if (driveMode == DriveMode.VELOCITY || Robot.isAuto) {
-            System.out.println(driveDemand);
+//            System.out.println(driveDemand);
             DriveDemand demand = Units2813.dtDemandToMotorDemand(driveDemand); // local variable for telemetry reasons
 
+            System.out.println(driveDemand);
             LEFT.set(ControlMode.VELOCITY, demand.getLeft(), feedforward.calculate(driveDemand.getLeft()) / 12);
             RIGHT.set(ControlMode.VELOCITY, demand.getRight(), feedforward.calculate(driveDemand.getRight()) / 12);
         } else {

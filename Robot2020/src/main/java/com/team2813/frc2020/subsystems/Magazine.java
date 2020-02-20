@@ -32,7 +32,7 @@ public class Magazine extends Subsystem {
     }
 
     public void spinMagazineForward() {
-        if (SHOOTER.currentPosition == Shooter.Position.INITIATION)
+        if (Shooter.currentPosition == Shooter.Position.INITIATION)
             demand = Demand.INITIATION;
         else demand = Demand.TRENCH;
         SHOOTER.setKicker(Shooter.KickerDemand.ON);
@@ -49,6 +49,7 @@ public class Magazine extends Subsystem {
         demand = Demand.REV;
         SHOOTER.setKicker(Shooter.KickerDemand.REV);
         SHOOTER.reverseFlywheel();
+        System.out.println("Rev");
     }
 
     public void stopMagazine() {
@@ -56,6 +57,7 @@ public class Magazine extends Subsystem {
         SHOOTER.setKicker(Shooter.KickerDemand.OFF);
         INTAKE.setIntake(Intake.Demand.OFF);
         SHOOTER.stopSpinningFlywheel();
+        System.out.println("Off");
     }
 
     public boolean isCounterBlocked() {
@@ -66,6 +68,7 @@ public class Magazine extends Subsystem {
     public void outputTelemetry() {
         SmartDashboard.putBoolean("Ball Detected", ballDetected);
         SmartDashboard.putNumber("Ammo", ammo);
+        SmartDashboard.putNumber("Magazine Demand", demand.percent);
     }
 
     @Override
@@ -103,15 +106,16 @@ public class Magazine extends Subsystem {
 
     @Override
     protected void writePeriodicOutputs() {
-        if(!isCounterBlocked() || demand != Demand.OFF) {
-            MOTOR.set(ControlMode.DUTY_CYCLE, demand.percent);
-        } else if (INTAKE.demand == Intake.Demand.IN){
+//        if(!isCounterBlocked() || demand != Demand.OFF) {
+        MOTOR.set(ControlMode.DUTY_CYCLE, demand.percent);
+//        }
+//        else if (INTAKE.demand == Intake.Demand.IN){
 //            if (ammo > 5) { // if there is more than 5 balls
 //                spinMagazineReverse(); // spit it out
 //            } else {
 //            if (ballDetected) spinMagazineIntake(); // take it in
 //            }
-        }
+//        }
     }
 
     enum Demand {
