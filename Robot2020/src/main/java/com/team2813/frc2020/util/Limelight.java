@@ -4,9 +4,9 @@ import com.team2813.lib.util.LimelightValues;
 
 public class Limelight {
     private LimelightValues values = new LimelightValues();
-    private final double kP = .56;
+    private final double kP = .6;
     private static final double CORRECTION_MAX_STEER_SPEED = 1;
-    private static final double MIN_CORRECTION_STEER = 0.05;
+    private static final double MIN_CORRECTION_STEER = 0.08;
 
     public double getSteer() {
         if (Math.abs(values.getTx()) > 0.35) {

@@ -125,8 +125,6 @@ public class Robot extends TimedRobot {
         DRIVE.limelight.setLights(true);
         try {
             CrashTracker.logAutoInit();
-//            Compressor compressor = new Compressor(); // FIXME: 11/02/2019 this shouldn't need to be here
-//            compressor.start();
             for (Subsystem subsystem : allSubsystems) {
                 subsystem.zeroSensors();
             }

@@ -41,15 +41,18 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     private KickerDemand kickerDemand = KickerDemand.OFF;
     private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(0.266, 0.112, 0.0189);
 
+    private double FLYWHEEL_UPDUCTION = 3.0 / 2;
+
     private Action startAction;
 
     //TODO May be removed
     private boolean manualMode = true;
+    private boolean controlLock = false;
 
     Shooter() {
         super(MotorConfigs.sparks.get("hood"));
         HOOD = (SparkMaxWrapper) getMotor();
-        FLYWHEEL = (TalonFXWrapper) MotorConfigs.talons.get("shooter");
+        FLYWHEEL = (TalonFXWrapper) MotorConfigs.talons.get("T5E1");
         KICKER = MotorConfigs.sparks.get("kicker");
         encoder = HOOD.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
         HOOD.getPIDController().setFeedbackDevice(HOOD.getEncoder());
@@ -91,20 +94,37 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         kickerDemand = demand;
     }
 
+    public void startSpinningFlywheel(boolean controlLock) {
+        if (controlLock == this.controlLock) {
+            if (currentPosition == Position.INITIATION)
+                demand = Demand.INITIATION;
+            else demand = Demand.TRENCH;
+            setKicker(KickerDemand.ON);
+        }
+    }
+
     public void startSpinningFlywheel() {
-        if (currentPosition == Position.INITIATION)
-            demand = Demand.INITIATION;
-        else demand = Demand.TRENCH;
-        setKicker(KickerDemand.ON);
+        startSpinningFlywheel(false);
+    }
+
+    public void reverseFlywheel(boolean controlLock) {
+        if (controlLock == this.controlLock)
+            demand = Demand.REV;
     }
 
     public void reverseFlywheel() {
-        demand = Demand.REV;
+        reverseFlywheel(false);
+    }
+
+    public void stopSpinningFlywheel(boolean controlLock) {
+        if (controlLock == this.controlLock) {
+            demand = Demand.OFF;
+            setKicker(KickerDemand.OFF);
+        }
     }
 
     public void stopSpinningFlywheel() {
-        demand = Demand.OFF;
-        setKicker(KickerDemand.OFF);
+        stopSpinningFlywheel(false);
     }
 
     public boolean isFlywheelReady() {
@@ -118,7 +138,8 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     @Override
     public void outputTelemetry() {
-        SmartDashboard.putNumber("Shooter Velocity (RPM)", FLYWHEEL.getVelocity());
+        SmartDashboard.putNumber("Kicker Velocity (RPM)", KICKER.getVelocity());
+        SmartDashboard.putNumber("Shooter Velocity (RPM)", FLYWHEEL.getVelocity() * FLYWHEEL_UPDUCTION);
         SmartDashboard.putNumber("Hood Encoder", encoder.getPosition());
         SmartDashboard.putNumber("Hood NEO Encoder", HOOD.getEncoderPosition());
         SmartDashboard.putString("Hood Demand", currentPosition.getName());
@@ -133,7 +154,13 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
             });
         }
-        SHOOTER_BUTTON.whenPressedReleased(this::startSpinningFlywheel, this::stopSpinningFlywheel);
+        SHOOTER_BUTTON.whenPressedReleased(() -> {
+            controlLock = true;
+            startSpinningFlywheel(true);
+        }, () -> {
+            stopSpinningFlywheel(true);
+            controlLock = false;
+        });
 
         // operator
         HOOD_INITIATION_BUTTON.whenPressed(() -> setPosition(Position.INITIATION));
@@ -156,11 +183,16 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         }
         if (demand != Demand.OFF) {
             //TODO Temporarily/Permenantly removed feedforward
-            FLYWHEEL.set(ControlMode.VELOCITY, demand.velocity, shooterFeedforward.calculate(demand.velocity));
+            double velocity = demand.velocity / FLYWHEEL_UPDUCTION;
+            FLYWHEEL.set(ControlMode.VELOCITY, velocity, shooterFeedforward.calculate(velocity));
         } else {
             FLYWHEEL.set(ControlMode.DUTY_CYCLE, 0);
         }
-        KICKER.set(ControlMode.DUTY_CYCLE, kickerDemand.percent);
+        if (kickerDemand != KickerDemand.OFF) {
+            KICKER.set(ControlMode.VELOCITY, kickerDemand.velocity);
+        } else {
+            KICKER.set(ControlMode.DUTY_CYCLE, 0);
+        }
     }
 
     public enum Position implements Subsystem1d.Position<Shooter.Position> {
@@ -215,7 +247,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     }
 
     enum Demand {
-        INITIATION(2500), TRENCH(4500), OFF(0.0), REV(-1000);
+        INITIATION(3750), TRENCH(7350), OFF(0.0), REV(-1500);
 
         double velocity;
 
@@ -225,12 +257,12 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     }
 
     enum KickerDemand {
-        ON(0.8), OFF(0.0), REV(-0.2);
+        ON(5500), OFF(0.0), REV(-1200);
 
-        double percent;
+        double velocity;
 
-        KickerDemand(double percent) {
-            this.percent = percent;
+        KickerDemand(double velocity) {
+            this.velocity = velocity;
         }
     }
 

@@ -162,5 +162,7 @@ sparks:
     inverted: NONINVERTED
     statusFrame: STATUS_2
     peakCurrentLimit: 30
+    pidControllers:
+      - p: 0.006
 victors:
 ...

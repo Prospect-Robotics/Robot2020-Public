@@ -225,7 +225,7 @@ public class Drive extends Subsystem {
 //            System.out.println(driveDemand);
             DriveDemand demand = Units2813.dtDemandToMotorDemand(driveDemand); // local variable for telemetry reasons
 
-            System.out.println(driveDemand);
+//            System.out.println(driveDemand);
             LEFT.set(ControlMode.VELOCITY, demand.getLeft(), feedforward.calculate(driveDemand.getLeft()) / 12);
             RIGHT.set(ControlMode.VELOCITY, demand.getRight(), feedforward.calculate(driveDemand.getRight()) / 12);
         } else {
