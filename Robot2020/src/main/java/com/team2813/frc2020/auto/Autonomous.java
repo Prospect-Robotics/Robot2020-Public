@@ -8,6 +8,7 @@ import com.team2813.lib.actions.SeriesAction;
 import com.team2813.lib.auto.GeneratedTrajectory;
 import com.team2813.lib.auto.RamseteAuto;
 import com.team2813.lib.auto.RamseteTrajectory;
+import com.team2813.lib.drive.DriveDemand;
 
 import java.util.List;
 
@@ -20,10 +21,15 @@ public class Autonomous {
 
     private RamseteAuto ramseteAuto;
     private RamseteTrajectory trajectory;
+    private DriveDemand prevDemand = new DriveDemand(0, 0);
 
     // this will be run periodically (usually to follow the path)
     public void periodic() {
-        Subsystems.DRIVE.setDemand(ramseteAuto.getDemand(Subsystems.DRIVE.robotPosition));
+        DriveDemand demand = ramseteAuto.getDemand(Subsystems.DRIVE.robotPosition);
+        if (!demand.equals(prevDemand)) {
+            Subsystems.DRIVE.setDemand(demand);
+        }
+        prevDemand = demand;
     }
 
     public void run() {

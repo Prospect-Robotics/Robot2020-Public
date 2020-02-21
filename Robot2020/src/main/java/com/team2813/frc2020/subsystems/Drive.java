@@ -95,7 +95,7 @@ public class Drive extends Subsystem {
     private static final double MAX_VELOCITY = 4.3677; // max velocity of velocity drive in meters per second
     public double getMaxVelocity(){return MAX_VELOCITY;}
 
-    VelocityDriveTalon velocityDrive = new VelocityDriveTalon(MAX_VELOCITY);
+    public VelocityDriveTalon velocityDrive = new VelocityDriveTalon(MAX_VELOCITY);
     public CurvatureDrive curvatureDrive = new CurvatureDrive(TELEOP_DEAD_ZONE);
     ArcadeDrive arcadeDrive = curvatureDrive.getArcadeDrive();
     DriveDemand driveDemand = new DriveDemand(0, 0);
@@ -196,12 +196,12 @@ public class Drive extends Subsystem {
     @Override
     public void onEnabledStart(double timestamp) {
         // TODO: 01/18/2020 verify true and false
-        setBrakeMode(false);
+        setBrakeMode(true);
     }
 
     @Override
     public void onDisabledStart(double timestamp) {
-        setBrakeMode(true);
+        setBrakeMode(false);
     }
 
     @Override
@@ -222,10 +222,9 @@ public class Drive extends Subsystem {
     @Override
     public synchronized void writePeriodicOutputs() {
         if (driveMode == DriveMode.VELOCITY || Robot.isAuto) {
-//            System.out.println(driveDemand);
             DriveDemand demand = Units2813.dtDemandToMotorDemand(driveDemand); // local variable for telemetry reasons
 
-            System.out.println(driveDemand);
+//            System.out.println(driveDemand);
             LEFT.set(ControlMode.VELOCITY, demand.getLeft(), feedforward.calculate(driveDemand.getLeft()) / 12);
             RIGHT.set(ControlMode.VELOCITY, demand.getRight(), feedforward.calculate(driveDemand.getRight()) / 12);
         } else {
@@ -244,12 +243,14 @@ public class Drive extends Subsystem {
     }
 
     public synchronized void setBrakeMode(boolean brake) {
-        NeutralMode mode = brake ? NeutralMode.Brake : NeutralMode.Coast;
+        NeutralMode mode = !brake ? NeutralMode.Brake : NeutralMode.Coast;
         RIGHT.setNeutralMode(mode);
         LEFT.setNeutralMode(mode);
+        System.out.println("Setting Brake Mode:" + brake);
     }
 
     public void initAutonomous(Pose2d initialPose) {
+        System.out.println("Autonomous Initial Pose: " + initialPose.toString());
         pigeon.setHeading(initialPose.getRotation().getDegrees());
         odometry.resetPosition(initialPose, initialPose.getRotation());
     }

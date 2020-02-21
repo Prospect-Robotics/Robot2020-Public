@@ -24,7 +24,6 @@ public class LockAction extends Action{
 
     @Override
     public void start(double timestamp) {
-
     }
 
     @Override

@@ -123,6 +123,7 @@ public class Robot extends TimedRobot {
         isAuto = true;
         autonomous = new Autonomous();
         DRIVE.limelight.setLights(true);
+        LOOPER.setMode(RobotMode.ENABLED);
         try {
             CrashTracker.logAutoInit();
 //            Compressor compressor = new Compressor(); // FIXME: 11/02/2019 this shouldn't need to be here

@@ -44,4 +44,8 @@ public class DriveDemand {
     public String toString() {
         return "(" + left + ", " + right + ")";
     }
+
+    public boolean equals(DriveDemand obj) {
+        return obj.left == left && obj.right == right;
+    }
 }

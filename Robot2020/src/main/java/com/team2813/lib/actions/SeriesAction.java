@@ -43,15 +43,16 @@ public class SeriesAction extends Action {
 		if (currentAction.isFinished(timestamp)) {
 			currentAction.end(timestamp);
 			currentAction = actions.poll();
-			if (currentAction == null) return;
+			if (currentAction == null) {
+				return;
+			};
 			currentAction.start(timestamp);
 		}
 	}
 
 	@Override
 	protected boolean isFinished(double timestamp) {
-		return currentAction == null;
-	}
+		return currentAction == null; }
 
 	@Override
 	public void end(double timestamp) {
