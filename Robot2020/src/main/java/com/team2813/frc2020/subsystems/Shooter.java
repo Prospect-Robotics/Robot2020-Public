@@ -3,6 +3,7 @@ package com.team2813.frc2020.subsystems;
 import com.revrobotics.AlternateEncoderType;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.team2813.frc2020.util.Limelight;
 import com.team2813.lib.actions.*;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
@@ -14,6 +15,7 @@ import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import static com.team2813.frc2020.subsystems.Subsystems.DRIVE;
 import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
 
 /**
@@ -29,6 +31,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     private static final Button SHOOTER_BUTTON = SubsystemControlsConfig.getShooterButton();
     private static final Button HOOD_INITIATION_BUTTON = SubsystemControlsConfig.getHoodInitiation();
     private static final Button HOOD_TRENCH_BUTTON = SubsystemControlsConfig.getHoodTrench();
+    private static final Button AUTO_BUTTON = SubsystemControlsConfig.getAutoButton();
     private final SparkMaxWrapper HOOD;
     private final TalonFXWrapper FLYWHEEL;
     protected final SparkMaxWrapper KICKER;
@@ -40,6 +43,8 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     private Demand demand = Demand.OFF;
     private KickerDemand kickerDemand = KickerDemand.OFF;
     private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(0.266, 0.112, 0.0189);
+
+    private Limelight limelight = Limelight.getInstance();
 
     private double FLYWHEEL_UPDUCTION = 3.0 / 2;
 
@@ -143,6 +148,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         SmartDashboard.putNumber("Hood Encoder", encoder.getPosition());
         SmartDashboard.putNumber("Hood NEO Encoder", HOOD.getEncoderPosition());
         SmartDashboard.putString("Hood Demand", currentPosition.getName());
+        SmartDashboard.putNumber("Target Distance", limelight.getDistance());
     }
 
     @Override
@@ -154,6 +160,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
             });
         }
+
         SHOOTER_BUTTON.whenPressedReleased(() -> {
             controlLock = true;
             startSpinningFlywheel(true);
@@ -161,6 +168,8 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
             stopSpinningFlywheel(true);
             controlLock = false;
         });
+
+        AUTO_BUTTON.whenPressed(limelight::resetDistance);
 
         // operator
         HOOD_INITIATION_BUTTON.whenPressed(() -> setPosition(Position.INITIATION));

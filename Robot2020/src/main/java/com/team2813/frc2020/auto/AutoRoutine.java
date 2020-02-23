@@ -2,6 +2,7 @@ package com.team2813.frc2020.auto;
 
 import com.team2813.frc2020.subsystems.Shooter;
 import com.team2813.frc2020.subsystems.Subsystems;
+import com.team2813.frc2020.util.Limelight;
 import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.lib.actions.*;
 import com.team2813.lib.auto.AutoTrajectory;
@@ -69,7 +70,7 @@ public enum AutoRoutine {
             new SeriesAction(
                     new LockAction(() -> {
                         System.out.println("HI");
-                        double steer = DRIVE.limelight.getSteer();
+                        double steer = Limelight.getInstance().getSteer();
                         System.out.println(steer);
                         DRIVE.setDemand(DRIVE.curvatureDrive.getDemand(0, 0, steer, true));
                         return steer == 0;

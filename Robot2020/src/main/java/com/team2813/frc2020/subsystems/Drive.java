@@ -78,7 +78,7 @@ public class Drive extends Subsystem {
     private double TRACK_WIDTH = 26;
     public static final double GEAR_RATIO = (62.0 / 8.0) * (28.0 / 20.0);
     public DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(TRACK_WIDTH));
-    public Limelight limelight = new Limelight();
+    private Limelight limelight = Limelight.getInstance();
 
     // Odometry
     private static DifferentialDriveOdometry odometry;

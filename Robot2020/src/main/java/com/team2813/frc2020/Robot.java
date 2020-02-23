@@ -12,6 +12,7 @@ import com.team2813.frc2020.auto.AutoRoutine;
 import com.team2813.frc2020.auto.Autonomous;
 import com.team2813.frc2020.subsystems.Subsystem;
 import com.team2813.frc2020.subsystems.Subsystems;
+import com.team2813.frc2020.util.Limelight;
 import com.team2813.frc2020.util.RobotTest;
 import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.lib.config.MotorConfigs;
@@ -45,6 +46,7 @@ public class Robot extends TimedRobot {
     public static Autonomous autonomous;
 
     private CANifier caNifier = new CANifier(0);
+    private Limelight limelight = Limelight.getInstance();
     public static boolean isAuto = false;
 
     /**
@@ -69,7 +71,7 @@ public class Robot extends TimedRobot {
                 LOOPER.addLoop(subsystem);
                 subsystem.zeroSensors();
             }
-            DRIVE.limelight.setLights(false);
+            limelight.setLights(false);
         } catch (IOException e) {
             System.out.println("Something went wrong while reading config files!");
             CrashTracker.logThrowableCrash(e);
@@ -122,7 +124,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         isAuto = true;
         autonomous = new Autonomous();
-        DRIVE.limelight.setLights(true);
+        limelight.setLights(true);
         try {
             CrashTracker.logAutoInit();
             for (Subsystem subsystem : allSubsystems) {
@@ -144,7 +146,7 @@ public class Robot extends TimedRobot {
             CrashTracker.logTeleopInit();
             LOOPER.setMode(RobotMode.ENABLED);
             LOOPER.start();
-            DRIVE.limelight.setLights(false);
+            limelight.setLights(false);
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             try {
