@@ -52,16 +52,16 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     private Action startAction;
 
-    //TODO May be removed
-    private boolean manualMode = true;
     private boolean controlLock = false;
 
     Shooter() {
         super(MotorConfigs.sparks.get("hood"));
+
         HOOD = (SparkMaxWrapper) getMotor();
         FLYWHEEL = (TalonFXWrapper) MotorConfigs.talons.get("T5E1");
         KICKER = MotorConfigs.sparks.get("kicker");
         encoder = HOOD.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
+
         HOOD.getPIDController().setFeedbackDevice(HOOD.getAlternateEncoder());
         HOOD.setSoftLimit(LimitDirection.REVERSE, MAX_ENCODER);
         HOOD.setSoftLimit(LimitDirection.FORWARD, 0);
@@ -85,16 +85,6 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     void setNextPosition(Position position) {
         currentPosition = position;
         setPosition(currentPosition);
-    }
-
-    public void unloadPayload() {
-        startAction = new SeriesAction(
-                new LockFunctionAction(this::startSpinningFlywheel, this::isFlywheelReady, true)
-                //TODO Uncomment this ,new FunctionAction(Subsystems.MAGAZINE::spinMagazineForward);
-                , new LockAction(this::hasFinishButtonBeenPressed, true)
-                , new FunctionAction(this::stopSpinningFlywheel, true)
-        );
-        LOOPER.addAction(startAction);
     }
 
     public void setKicker(KickerDemand demand) {
@@ -134,11 +124,21 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         stopSpinningFlywheel(false);
     }
 
-    public boolean isFlywheelReady() {
-        //TODO update threshold
-        return FLYWHEEL.getVelocity() > /*Threshold*/ 0.9;
+    public void unloadPayload() {
+        startAction = new SeriesAction(
+                new LockFunctionAction(this::startSpinningFlywheel, this::isFlywheelReady, true)
+                //TODO Uncomment this ,new FunctionAction(Subsystems.MAGAZINE::spinMagazineForward);
+                , new LockAction(this::hasFinishButtonBeenPressed, true)
+                , new FunctionAction(this::stopSpinningFlywheel, true)
+        );
+        LOOPER.addAction(startAction);
     }
 
+    public boolean isFlywheelReady() {
+        return FLYWHEEL.getVelocity() * FLYWHEEL_UPDUCTION > demand.velocity;
+    }
+
+    //TODO Change this to when Mag empty
     public boolean hasFinishButtonBeenPressed() {
         return SHOOTER_BUTTON.get();
     }
@@ -155,14 +155,6 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     @Override
     public void teleopControls() {
-        if (manualMode) {
-            HOOD_BUTTON.whenPressed(() -> {
-
-                setNextPosition(true);
-
-            });
-        }
-
         SHOOTER_BUTTON.whenPressedReleased(() -> {
             controlLock = true;
             startSpinningFlywheel(true);
@@ -187,9 +179,6 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     /* https://www.desmos.com/calculator/g4b5gohz4a see red graph
        -0.0000008514567632688y^5+0.0000361146y^{4}-0.000432028y^{3}+0.00126728y^{2}+0.00961345y-1.00157
      */
-    public double calculatePosition(double y) {
-        return (-0.0000008514567632688 * Math.pow(y, 5)) + (0.0000361146 * Math.pow(y, 4)) - (0.000432028 * Math.pow(y, 3)) + (0.00126728 * Math.pow(y, 2)) + (0.00961345 * y) - 1.00157;
-    }
 
     @Override
     public void onEnabledLoop(double timestamp) {
@@ -199,8 +188,10 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     public synchronized void readPeriodicInputs() {
         super.readPeriodicInputs();
 
-        // set lights if spooled
-        if (FLYWHEEL.getVelocity() * FLYWHEEL_UPDUCTION > demand.velocity && demand != Demand.OFF)
+        limelight = Limelight.getInstance();
+
+        // Set lights if spooled
+        if (isFlywheelReady() && demand != Demand.OFF)
             Robot.lightshow.setLight(Lightshow.Light.READY_TO_SHOOT, false);
         else if (demand != Demand.OFF)
             Robot.lightshow.setLight(Lightshow.Light.READY_TO_SHOOT, true);
@@ -210,22 +201,17 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     @Override
     public void writePeriodicOutputs() {
         super.writePeriodicOutputs();
-        double distance = 2.49 / Math.atan(new LimelightValues().getTy().getDouble(0));
-        if (!manualMode) {
-//            setPosition(degreesToRevs(distanceToAngle(distance)));
-        }
+
         if (demand != Demand.OFF) {
-            //TODO Temporarily/Permenantly removed feedforward
             double velocity = demand.velocity / FLYWHEEL_UPDUCTION;
             FLYWHEEL.set(ControlMode.VELOCITY, velocity, shooterFeedforward.calculate(velocity));
-        } else {
+        } else
             FLYWHEEL.set(ControlMode.DUTY_CYCLE, 0);
-        }
-        if (kickerDemand != KickerDemand.OFF) {
+
+        if (kickerDemand != KickerDemand.OFF)
             KICKER.set(ControlMode.VELOCITY, kickerDemand.velocity);
-        } else {
+        else
             KICKER.set(ControlMode.DUTY_CYCLE, 0);
-        }
     }
 
     public enum Position implements Subsystem1d.Position<Shooter.Position> {
@@ -267,7 +253,6 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
             return MIN;
         }
 
-        //TODO MAX Changed to TWO, should the returned to MAX
         @Override
         public Position getMax() {
             return MAX;
@@ -307,8 +292,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         return degrees * MAX_ENCODER / (MAX_ANGLE - MIN_ANGLE);
     }
 
-    private static double distanceToAngle(double meters) {
-        //TODO Get equation from Sid S.
-        return meters;
+    public double calculatePosition(double y) {
+        return (-0.0000008514567632688 * Math.pow(y, 5)) + (0.0000361146 * Math.pow(y, 4)) - (0.000432028 * Math.pow(y, 3)) + (0.00126728 * Math.pow(y, 2)) + (0.00961345 * y) - 1.00157;
     }
 }
