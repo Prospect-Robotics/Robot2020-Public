@@ -71,9 +71,9 @@ talons:
         type: BRUSHLESS
         inverted: OPPOSE_LEADER
     pidControllers:
-      - p: 0.35
+      - p: 0.3
         i: 0
-        d: 5
+        d: 3
         f: 0
         maxVelocity: 18000
         maxAcceleration: 45000

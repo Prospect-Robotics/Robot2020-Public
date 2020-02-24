@@ -3,6 +3,8 @@ package com.team2813.frc2020.subsystems;
 import com.revrobotics.AlternateEncoderType;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.team2813.frc2020.Robot;
+import com.team2813.frc2020.util.Lightshow;
 import com.team2813.frc2020.util.Limelight;
 import com.team2813.lib.actions.*;
 import com.team2813.lib.config.MotorConfigs;
@@ -38,7 +40,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     protected final CANEncoder encoder;
     private static final int MIN_ANGLE = 35;
     private static final int MAX_ANGLE = 70;
-    private static final double MAX_ENCODER = 46.5;
+    private static final double MAX_ENCODER = -1.1;
     protected static Position currentPosition = Position.MIN;
     private Demand demand = Demand.OFF;
     private KickerDemand kickerDemand = KickerDemand.OFF;
@@ -60,9 +62,9 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         FLYWHEEL = (TalonFXWrapper) MotorConfigs.talons.get("T5E1");
         KICKER = MotorConfigs.sparks.get("kicker");
         encoder = HOOD.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
-        HOOD.getPIDController().setFeedbackDevice(HOOD.getEncoder());
-        HOOD.setSoftLimit(LimitDirection.REVERSE, 0);
-        HOOD.setSoftLimit(LimitDirection.FORWARD, MAX_ENCODER);
+        HOOD.getPIDController().setFeedbackDevice(HOOD.getAlternateEncoder());
+        HOOD.setSoftLimit(LimitDirection.REVERSE, MAX_ENCODER);
+        HOOD.setSoftLimit(LimitDirection.FORWARD, 0);
         HOOD.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
         HOOD.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
     }
@@ -148,7 +150,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         SmartDashboard.putNumber("Hood Encoder", encoder.getPosition());
         SmartDashboard.putNumber("Hood NEO Encoder", HOOD.getEncoderPosition());
         SmartDashboard.putString("Hood Demand", currentPosition.getName());
-        SmartDashboard.putNumber("Target Distance", limelight.getDistance());
+        SmartDashboard.putNumber("Limelight Vertical Angle", limelight.getVertAngle());
     }
 
     @Override
@@ -169,7 +171,10 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
             controlLock = false;
         });
 
-        AUTO_BUTTON.whenPressed(limelight::resetDistance);
+        if (AUTO_BUTTON.getPressed()) {
+            if (limelight.targetFound())
+                setPosition(calculatePosition(limelight.getVertAngle()));
+        }
 
         // operator
         HOOD_INITIATION_BUTTON.whenPressed(() -> setPosition(Position.INITIATION));
@@ -179,8 +184,27 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         }
     }
 
+    /* https://www.desmos.com/calculator/g4b5gohz4a see red graph
+       -0.0000008514567632688y^5+0.0000361146y^{4}-0.000432028y^{3}+0.00126728y^{2}+0.00961345y-1.00157
+     */
+    public double calculatePosition(double y) {
+        return (-0.0000008514567632688 * Math.pow(y, 5)) + (0.0000361146 * Math.pow(y, 4)) - (0.000432028 * Math.pow(y, 3)) + (0.00126728 * Math.pow(y, 2)) + (0.00961345 * y) - 1.00157;
+    }
+
     @Override
     public void onEnabledLoop(double timestamp) {
+    }
+
+    @Override
+    public synchronized void readPeriodicInputs() {
+        super.readPeriodicInputs();
+
+        // set lights if spooled
+        if (FLYWHEEL.getVelocity() * FLYWHEEL_UPDUCTION > demand.velocity && demand != Demand.OFF)
+            Robot.lightshow.setLight(Lightshow.Light.READY_TO_SHOOT, false);
+        else if (demand != Demand.OFF)
+            Robot.lightshow.setLight(Lightshow.Light.READY_TO_SHOOT, true);
+        else Robot.lightshow.resetLight();
     }
 
     @Override
@@ -256,7 +280,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     }
 
     enum Demand {
-        INITIATION(3750), TRENCH(7350), OFF(0.0), REV(-1500);
+        INITIATION(3750), TRENCH(6350), OFF(0.0), REV(-1500);
 
         double velocity;
 
