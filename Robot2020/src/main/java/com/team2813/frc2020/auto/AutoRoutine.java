@@ -3,6 +3,7 @@ package com.team2813.frc2020.auto;
 import com.team2813.frc2020.subsystems.Magazine;
 import com.team2813.frc2020.subsystems.Shooter;
 import com.team2813.frc2020.subsystems.Subsystems;
+import com.team2813.frc2020.util.AutoAimAction;
 import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.lib.actions.*;
 import com.team2813.lib.auto.AutoTrajectory;
@@ -92,23 +93,10 @@ public enum AutoRoutine {
                     new FunctionAction(() -> DRIVE.setDemand(new DriveDemand(-.3, -.3)), true),
                     new WaitAction(1),
                     new FunctionAction(() -> DRIVE.setDemand(new DriveDemand(0, 0)), true))),
-    SERIES_TEST("Series Test", List.of(
+    SERIES_TEST("Auto Aim Test", List.of(
             new PauseTrajectory(150)
     ), new SeriesAction(
-            new FunctionAction(()->SHOOTER.setPosition(Shooter.Position.INITIATION), true),
-            new FunctionAction(SHOOTER::startSpinningFlywheel, true),
-            new WaitAction(1),
-            new LockAction(() -> {
-                double steer = DRIVE.limelight.getSteer();
-                System.out.println("Steer: " + steer);
-                DRIVE.setDemand(DRIVE.velocityDrive.getVelocity(DRIVE.curvatureDrive.getDemand(0, 0, steer, true)));
-                return steer == 0;
-            }, true),
-            new FunctionAction(MAGAZINE::spinMagazineForward,true),
-            new WaitAction(1),
-            new FunctionAction(SHOOTER::stopSpinningFlywheel, true),
-            new FunctionAction(MAGAZINE::stopMagazine, true),
-            new FunctionAction(() -> SHOOTER.setPosition(Shooter.Position.MIN), true)
+            new AutoAimAction()
     ));
 
 

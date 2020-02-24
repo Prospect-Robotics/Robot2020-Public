@@ -41,7 +41,6 @@ public class Autonomous {
     }
 
     public static void addRoutines() {
-        int x = 1;
         for (AutoRoutine routine : AutoRoutine.values()) {
             ShuffleboardData.routineChooser.addOption(routine.name, routine);
         }
