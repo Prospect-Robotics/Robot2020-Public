@@ -131,7 +131,7 @@ abstract class Subsystem1d<P extends Subsystem1d.Position> extends Subsystem {
     }
 
     synchronized void setPosition(double encoderPosition) {
-        System.out.println(motor.getSubsystemName() + "Setting Position to " + encoderPosition);
+//        System.out.println(motor.getSubsystemName() + "Setting Position to " + encoderPosition);
         periodicIO.demand = encoderPosition;
         periodicIO.openLoop = false;
 //		mode = Mode.MOVING;

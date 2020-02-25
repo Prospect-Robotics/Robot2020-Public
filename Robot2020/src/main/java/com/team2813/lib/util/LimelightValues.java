@@ -36,8 +36,8 @@ public class LimelightValues {
         return tx.getDouble(0);
     }
 
-    public NetworkTableEntry getTy() {
-        return ty;
+    public double getTy() {
+        return ty.getDouble(0);
     }
 
     public NetworkTableEntry getTa() {

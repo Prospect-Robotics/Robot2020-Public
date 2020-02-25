@@ -24,6 +24,7 @@ public class Lightshow {
             } else {
                 setLight(255, 255, 255);
             }
+            toggle = !toggle;
         } else if (toggle) {
             setLight(light);
         }

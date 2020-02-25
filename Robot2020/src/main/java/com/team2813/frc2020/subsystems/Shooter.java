@@ -40,7 +40,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     protected final CANEncoder encoder;
     private static final int MIN_ANGLE = 35;
     private static final int MAX_ANGLE = 70;
-    private static final double MAX_ENCODER = -1.1;
+    private static final double MAX_ENCODER = -1.2;
     protected static Position currentPosition = Position.MIN;
     private Demand demand = Demand.OFF;
     private KickerDemand kickerDemand = KickerDemand.OFF;
@@ -148,8 +148,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         SmartDashboard.putNumber("Kicker Velocity (RPM)", KICKER.getVelocity());
         SmartDashboard.putNumber("Shooter Velocity (RPM)", FLYWHEEL.getVelocity() * FLYWHEEL_UPDUCTION);
         SmartDashboard.putNumber("Hood Encoder", encoder.getPosition());
-        SmartDashboard.putNumber("Hood NEO Encoder", HOOD.getEncoderPosition());
-        SmartDashboard.putString("Hood Demand", currentPosition.getName());
+        SmartDashboard.putNumber("Hood Demand", periodicIO.demand);
         SmartDashboard.putNumber("Limelight Vertical Angle", limelight.getVertAngle());
     }
 
@@ -163,9 +162,13 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
             controlLock = false;
         });
 
-        if (AUTO_BUTTON.getPressed()) {
-            if (limelight.targetFound())
-                setPosition(calculatePosition(limelight.getVertAngle()));
+        if (AUTO_BUTTON.get()) {
+            // [-4.9, 21.9]
+            double vertAngle = limelight.getVertAngle();
+            if (vertAngle >= -4.9 && vertAngle <= 21.9) {
+                double calculatedPosition = calculatePosition(limelight.getVertAngle());
+                setPosition(calculatedPosition);
+            }
         }
 
         // operator
@@ -187,8 +190,6 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     @Override
     public synchronized void readPeriodicInputs() {
         super.readPeriodicInputs();
-
-        limelight = Limelight.getInstance();
 
         // Set lights if spooled
         if (isFlywheelReady() && demand != Demand.OFF)
@@ -217,8 +218,8 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     public enum Position implements Subsystem1d.Position<Shooter.Position> {
         MIN("Min", 0),
         MAX("Max", MAX_ENCODER),
-        INITIATION("Initiation", 37.1),
-        TRENCH("Trench", 38.4);
+        INITIATION("Initiation", -.4),
+        TRENCH("Trench", -.6);
 
 
         private String name;
