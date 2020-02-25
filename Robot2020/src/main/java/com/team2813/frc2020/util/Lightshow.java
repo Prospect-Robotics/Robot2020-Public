@@ -33,7 +33,7 @@ public class Lightshow {
     public Lightshow(CANifier canifier) {
         this.canifier = canifier;
         setLight(Light.DEFAULT);
-        loop.startPeriodic(.1);
+        loop.startPeriodic(.4);
     }
 
     public void setLight(int r, int g, int b) {
@@ -48,8 +48,10 @@ public class Lightshow {
     }
 
     public void setLight(Light light, boolean flash) {
-        this.light = light;
-        setLight(light.r, light.g, light.b, flash);
+        if (light != this.light) {
+            this.light = light;
+            setLight(light.r, light.g, light.b, flash);
+        }
     }
 
     public void setLight(Light light) {
@@ -61,8 +63,8 @@ public class Lightshow {
         this.setLight(light);
     }
 
-    public void resetLight() {
-        if (defaultLight != light)
+    public void resetLight(Light light) {
+        if (defaultLight != this.light && this.light == light)
             this.setLight(defaultLight);
     }
 
@@ -79,7 +81,8 @@ public class Lightshow {
         BEING_GAY(255, 105, 180),
         INTAKE_DONW(255, 165, 0),
         INTAKE_UP(128, 0, 128),
-        CLIMBING(255, 215, 0);
+        CLIMBING(255, 215, 0),
+        AUTO_AIM(255, 215, 0);
 
         int r;
         int g;

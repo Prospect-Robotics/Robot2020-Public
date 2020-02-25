@@ -13,11 +13,9 @@ import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.motors.TalonFXWrapper;
 import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.motors.interfaces.LimitDirection;
-import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import static com.team2813.frc2020.subsystems.Subsystems.DRIVE;
 import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
 
 /**
@@ -94,8 +92,8 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     public void startSpinningFlywheel(boolean controlLock) {
         if (controlLock == this.controlLock) {
             if (currentPosition == Position.INITIATION)
-                demand = Demand.INITIATION;
-            else demand = Demand.TRENCH;
+                demand = Demand.LOW_RANGE;
+            else demand = Demand.HIGH_RANGE;
             setKicker(KickerDemand.ON);
         }
     }
@@ -196,7 +194,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
             Robot.lightshow.setLight(Lightshow.Light.READY_TO_SHOOT, false);
         else if (demand != Demand.OFF)
             Robot.lightshow.setLight(Lightshow.Light.READY_TO_SHOOT, true);
-        else Robot.lightshow.resetLight();
+        else Robot.lightshow.resetLight(Lightshow.Light.READY_TO_SHOOT);
     }
 
     @Override
@@ -266,7 +264,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     }
 
     enum Demand {
-        INITIATION(3750), TRENCH(6350), OFF(0.0), REV(-1500);
+        LOW_RANGE(3750), MID_RANGE(5000), HIGH_RANGE(6100), OFF(0.0), REV(-1500);
 
         double velocity;
 

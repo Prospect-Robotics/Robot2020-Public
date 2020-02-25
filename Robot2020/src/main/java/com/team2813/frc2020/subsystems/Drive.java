@@ -2,6 +2,7 @@ package com.team2813.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.team2813.frc2020.Robot;
+import com.team2813.frc2020.util.Lightshow;
 import com.team2813.frc2020.util.Limelight;
 import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.frc2020.util.Units2813;
@@ -164,6 +165,7 @@ public class Drive extends Subsystem {
 
     @Override
     public void teleopControls() {
+        AUTO_BUTTON.whenPressedReleased(() -> Robot.lightshow.setLight(Lightshow.Light.AUTO_AIM), () -> Robot.lightshow.resetLight(Lightshow.Light.AUTO_AIM));
         driveMode = ShuffleboardData.driveModeChooser.getSelected();
         if (driveMode == null) driveMode = DriveMode.OPEN_LOOP;
         teleopDrive(teleopDriveType);

@@ -119,7 +119,7 @@ public class Magazine extends Subsystem {
     }
 
     enum Demand {
-        TRENCH(0.18), INITIATION(0.3), OFF(0.0), REV(-0.3), INTAKE(0.2);
+        TRENCH(0.18), INITIATION(0.21), OFF(0.0), REV(-0.3), INTAKE(0.2);
 
         double percent;
 
