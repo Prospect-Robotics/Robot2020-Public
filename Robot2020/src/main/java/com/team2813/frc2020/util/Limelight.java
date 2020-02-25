@@ -16,6 +16,10 @@ public class Limelight {
         return (values.getTx() / 27) * kP * CORRECTION_MAX_STEER_SPEED;
     }
 
+    public void setLights(boolean enable) {
+        values.getLedMode().setNumber(enable ? 0 : 1);
+    }
+
     public LimelightValues getValues() {
         return values;
     }

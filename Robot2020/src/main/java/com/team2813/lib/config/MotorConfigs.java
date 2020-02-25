@@ -110,6 +110,7 @@ public class MotorConfigs {
             // talon uses encoder ticks
             // TODO deal with units issue
             talon.setMotionMagicAcceleration((int) pidController.getMaxAcceleration()); // FIXME see above
+            talon.controller.configAllowableClosedloopError(slotID, (int) pidController.getAllowableClosedLoopError());
             // TODO: 1/3/2020 figure out min velocity with Talons / remove from PID controller so as not to have that attribute
             talon.controller.configAllowableClosedloopError(slotID, (int) pidController.getAllowableClosedLoopError());
         }

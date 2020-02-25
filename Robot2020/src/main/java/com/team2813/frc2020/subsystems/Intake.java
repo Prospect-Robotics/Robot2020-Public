@@ -14,7 +14,7 @@ public class Intake extends Subsystem {
     private final Button PISTONS_BUTTON = SubsystemControlsConfig.getIntakePistons();
     private final Button INTAKE_IN_BUTTON = SubsystemControlsConfig.getIntakeIn();
     private final Button INTAKE_OUT_BUTTON = SubsystemControlsConfig.getIntakeOut();
-    private Demand demand = Demand.OFF;
+    protected Demand demand = Demand.OFF;
 
     Intake() {
         INTAKE_MOTOR = MotorConfigs.sparks.get("intake");
@@ -72,7 +72,7 @@ public class Intake extends Subsystem {
         INTAKE_MOTOR.set(demand.percent);
     }
 
-    public enum Demand {
+    protected enum Demand {
         IN(0.7), OFF(0.0), OUT(-0.7);
 
         double percent;
