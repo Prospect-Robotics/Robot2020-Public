@@ -13,6 +13,7 @@ import java.util.List;
 public class RamseteTrajectory {
     private List<Trajectory> trajectories = new ArrayList<>();
     private List<Boolean> reversed = new ArrayList<>();
+    private Trajectory currentTrajectory;
 
     public RamseteTrajectory(Trajectory trajectory, boolean reversed) {
         trajectories.add(trajectory);
@@ -30,7 +31,7 @@ public class RamseteTrajectory {
         double time = 0;
         for (int i = 0; i < trajectories.size(); i++) {
             Trajectory trajectory = trajectories.get(i);
-
+            currentTrajectory = trajectories.get(i);
             if (dt < time + trajectory.getTotalTimeSeconds()) {
                 if (trajectory instanceof PauseTrajectory) // if it is a pause
                     return new TrajectorySample().setPause(true);
@@ -43,6 +44,10 @@ public class RamseteTrajectory {
                 time += trajectory.getTotalTimeSeconds();
         }
         return new TrajectorySample(new Trajectory(List.of(new Trajectory.State())), trajectories.get(0).sample(dt), reversed.get(0));
+    }
+
+    public Trajectory getCurrentTrajectory() {
+        return currentTrajectory;
     }
 
     public List<Trajectory> getTrajectories() {

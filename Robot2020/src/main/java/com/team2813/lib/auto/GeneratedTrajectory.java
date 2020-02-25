@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 
-public class GeneratedTrajectory implements AutoTrajectory{
+public class GeneratedTrajectory implements AutoTrajectory {
     private boolean reversed;
 
     private Trajectory trajectory;
