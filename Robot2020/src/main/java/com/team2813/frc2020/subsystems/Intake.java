@@ -15,6 +15,7 @@ public class Intake extends Subsystem {
     private final Button INTAKE_IN_BUTTON = SubsystemControlsConfig.getIntakeIn();
     private final Button INTAKE_OUT_BUTTON = SubsystemControlsConfig.getIntakeOut();
     protected Demand demand = Demand.OFF;
+    private boolean isAuto;
 
     Intake() {
         INTAKE_MOTOR = MotorConfigs.sparks.get("intake");
@@ -65,6 +66,12 @@ public class Intake extends Subsystem {
     @Override
     public void onDisabledStop(double timestamp) {
 
+    }
+
+    public void autoIntake(boolean on) {
+        setDeployed(on);
+        isAuto = on;
+        demand = on ? Demand.IN : Demand.OFF;
     }
 
     @Override
