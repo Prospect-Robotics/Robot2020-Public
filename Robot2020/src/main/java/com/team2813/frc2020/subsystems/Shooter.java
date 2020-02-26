@@ -62,10 +62,11 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         encoder = HOOD.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
 
         HOOD.getPIDController().setFeedbackDevice(HOOD.getAlternateEncoder());
+
         HOOD.setSoftLimit(LimitDirection.REVERSE, MAX_ENCODER);
         HOOD.setSoftLimit(LimitDirection.FORWARD, 0);
-        HOOD.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
         HOOD.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+        HOOD.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
     }
 
     @Override
@@ -147,6 +148,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         SmartDashboard.putNumber("Hood Encoder", encoder.getPosition());
         SmartDashboard.putNumber("Hood Demand", periodicIO.demand);
         SmartDashboard.putNumber("Limelight Vertical Angle", limelight.getVertAngle());
+        SmartDashboard.putNumber("Shooter Flywheel Demand", desiredDemand.velocity);
     }
 
     @Override
@@ -200,6 +202,12 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         else if (demand != Demand.OFF)
             Robot.lightshow.setLight(Lightshow.Light.READY_TO_SHOOT, true);
         else Robot.lightshow.resetLight(Lightshow.Light.READY_TO_SHOOT);
+    }
+
+    @Override
+    public synchronized void zeroSensors() {
+        super.zeroSensors();
+        encoder.setPosition(0);
     }
 
     @Override
