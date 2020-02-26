@@ -25,7 +25,10 @@ public enum AutoRoutine {
             new GeneratedTrajectory("go back", false, 3),
             new GeneratedTrajectory("return", false, 4),
             new PauseTrajectory(1, 5) // shoot 2 balls
-    ), new SeriesAction(new AutoAimAction()/* shoot ball, intake, shoot ball*/)),
+    ), new SeriesAction(
+            new AutoAimAction(),
+            new LockAction(trajectory.isCurrentTrajectory(1))/* shoot ball, intake, shoot ball*/
+    )),
     TEST_ROUTINE("Test", List.of(
             new PauseTrajectory(0.5, 0),
             new GeneratedTrajectory("test", false, 1),
@@ -77,10 +80,10 @@ public enum AutoRoutine {
     public RamseteTrajectory trajectory;
     public Action action;
 
-    AutoRoutine(String name, List<AutoTrajectory> trajectory, Action action) {
+    AutoRoutine(String name, AutoRoutineActions routineAction) {
         this.name = name;
-        this.trajectory = new RamseteTrajectory(trajectory);
-        this.action = action;
+        this.trajectory = routineAction.getTrajectory();
+        this.action = routineAction.getAction();
     }
 
 
