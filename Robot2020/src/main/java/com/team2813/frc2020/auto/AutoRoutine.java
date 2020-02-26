@@ -26,8 +26,7 @@ public enum AutoRoutine {
             new GeneratedTrajectory("return", false, 4),
             new PauseTrajectory(1, 5) // shoot 2 balls
     ), new SeriesAction(
-            new AutoAimAction(),
-            new LockAction(trajectory.isCurrentTrajectory(1))/* shoot ball, intake, shoot ball*/
+            new AutoAimAction()/* shoot ball, intake, shoot ball*/
     )),
     TEST_ROUTINE("Test", List.of(
             new PauseTrajectory(0.5, 0),
