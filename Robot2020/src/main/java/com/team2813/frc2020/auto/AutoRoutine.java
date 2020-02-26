@@ -33,7 +33,7 @@ public enum AutoRoutine {
             new GeneratedTrajectory("test", false, 1),
             new RotateTrajectory(180, 2),
             new GeneratedTrajectory("another test path", false, 3)
-    ), new SeriesAction(new WaitAction(1))),
+    ), )new SeriesAction(new WaitAction(1)),
     THREE_BALL("3-ball", List.of(
             new PauseTrajectory(1, 0), //shoot 3-balls
             new GeneratedTrajectory("3-ball prepare", false, 1),
