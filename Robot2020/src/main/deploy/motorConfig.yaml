@@ -102,10 +102,14 @@ sparks:
       #          i: 0.00005
       #          d: 0.00001
       #          f: 0
-      - p: 1.8
-        i: 0.0005
+      - p: 7
+        i: 0
         d: 0
         f: 0
+#      - p: 1.8
+#        i: 0.0005
+#        d: 0
+#        f: 0
         maxVelocity: 1000
         maxAcceleration: 1000
         maxIntegralAccumulator: 0

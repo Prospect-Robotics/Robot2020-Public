@@ -40,6 +40,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     private static final int MAX_ANGLE = 70;
     private static final double MAX_ENCODER = -1.2;
     protected static Position currentPosition = Position.MIN;
+    private Demand desiredDemand = Demand.LOW_RANGE;
     private Demand demand = Demand.OFF;
     private KickerDemand kickerDemand = KickerDemand.OFF;
     private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(0.266, 0.112, 0.0189);
@@ -91,9 +92,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     public void startSpinningFlywheel(boolean controlLock) {
         if (controlLock == this.controlLock) {
-            if (currentPosition == Position.INITIATION)
-                demand = Demand.LOW_RANGE;
-            else demand = Demand.HIGH_RANGE;
+            demand = desiredDemand;
             setKicker(KickerDemand.ON);
         }
     }
@@ -163,9 +162,15 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         if (AUTO_BUTTON.get()) {
             // [-4.9, 21.9]
             double vertAngle = limelight.getVertAngle();
-            if (vertAngle >= -4.9 && vertAngle <= 21.9) {
-                double calculatedPosition = calculatePosition(limelight.getVertAngle());
-                setPosition(calculatedPosition);
+            if (vertAngle >= -4.9) {
+                setPosition(calculateLowPosition(limelight.getVertAngle()));
+                desiredDemand = Demand.LOW_RANGE;
+            } else if (vertAngle >= -9.5 && vertAngle <= -4.9) {
+                setPosition(calculateMidPosition(limelight.getVertAngle()));
+                desiredDemand = Demand.MID_RANGE;
+            } else if (vertAngle >= -11.3 && vertAngle <= -9.5) {
+                setPosition(calculateHighPosition(limelight.getVertAngle()));
+                desiredDemand = Demand.HIGH_RANGE;
             }
         }
 
@@ -291,7 +296,15 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         return degrees * MAX_ENCODER / (MAX_ANGLE - MIN_ANGLE);
     }
 
-    public double calculatePosition(double y) {
+    public double calculateLowPosition(double y) {
         return (-0.0000008514567632688 * Math.pow(y, 5)) + (0.0000361146 * Math.pow(y, 4)) - (0.000432028 * Math.pow(y, 3)) + (0.00126728 * Math.pow(y, 2)) + (0.00961345 * y) - 1.00157;
+    }
+
+    public double calculateMidPosition(double y) {
+        return (-0.00315274 * Math.pow(y,2)) - (0.0695706 * y) - 1.46903;
+    }
+
+    public double calculateHighPosition(double y) {
+        return (-1.95046 * Math.pow(y,2)) - (43.0127 * y) - 237.929;
     }
 }
