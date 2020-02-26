@@ -49,6 +49,13 @@ public class RamseteTrajectory {
     public Trajectory getCurrentTrajectory() {
         return currentTrajectory;
     }
+    public boolean isCurrentTrajectory(AutoTrajectory autoTrajectory) {
+        try {
+            return ((AutoTrajectory) currentTrajectory).getIndex() == autoTrajectory.getIndex();
+        } catch (ClassCastException e) {
+            return false;
+        }
+    }
 
     public List<Trajectory> getTrajectories() {
         return this.trajectories;
