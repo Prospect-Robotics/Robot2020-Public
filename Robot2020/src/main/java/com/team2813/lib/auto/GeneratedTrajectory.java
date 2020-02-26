@@ -10,11 +10,13 @@ import java.nio.file.Paths;
 
 public class GeneratedTrajectory implements AutoTrajectory {
     private boolean reversed;
+    private final int INDEX;
 
     private Trajectory trajectory;
 
-    public GeneratedTrajectory(String pathName, boolean reversed) {
+    public GeneratedTrajectory(String pathName, boolean reversed, int index) {
         this.reversed = reversed;
+        INDEX = index;
 
         try {
             trajectory = TrajectoryUtil.fromPathweaverJson(Paths.get(Filesystem.getDeployDirectory().getAbsolutePath(), "paths", pathName + ".wpilib.json"));
@@ -25,6 +27,11 @@ public class GeneratedTrajectory implements AutoTrajectory {
 
     public boolean isReversed() {
         return reversed;
+    }
+
+    @Override
+    public int getIndex() {
+        return INDEX;
     }
 
     public Trajectory getTrajectory() {

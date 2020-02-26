@@ -13,7 +13,6 @@ import com.team2813.lib.auto.RotateTrajectory;
 import com.team2813.lib.auto.RamseteTrajectory;
 import com.team2813.lib.drive.DriveDemand;
 
-
 import java.util.List;
 
 import static com.team2813.frc2020.subsystems.Subsystems.*;
@@ -26,7 +25,7 @@ public enum AutoRoutine {
             new GeneratedTrajectory("go back", false),
             new GeneratedTrajectory("return", false),
             new PauseTrajectory(1) // shoot 2 balls
-    ), new SeriesAction(new WaitAction(1)/* shoot ball, intake, shoot ball*/)),
+    ), new SeriesAction(new AutoAimAction()/* shoot ball, intake, shoot ball*/)),
     TEST_ROUTINE("Test", List.of(
             new PauseTrajectory(0.5),
             new GeneratedTrajectory("test", false),

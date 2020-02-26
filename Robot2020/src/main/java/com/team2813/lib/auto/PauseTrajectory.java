@@ -6,14 +6,17 @@ import java.util.List;
 
 public class PauseTrajectory extends Trajectory implements AutoTrajectory {
     private double time;
+    private final int INDEX;
 
-    private PauseTrajectory(List<State> states) { // should never be used
+    private PauseTrajectory(List<State> states, int index) { // should never be used
         super(states);
+        INDEX = index;
     }
 
-    public PauseTrajectory(double time) {
+    public PauseTrajectory(double time, int index) {
         super(List.of(new Trajectory.State()));
         this.time = time;
+        INDEX = index;
     }
 
     @Override
@@ -29,6 +32,11 @@ public class PauseTrajectory extends Trajectory implements AutoTrajectory {
     @Override
     public boolean isReversed() {
         return false;
+    }
+
+    @Override
+    public int getIndex() {
+        return INDEX;
     }
 
     public boolean isPause() {
