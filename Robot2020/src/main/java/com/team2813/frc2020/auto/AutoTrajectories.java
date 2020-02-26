@@ -1,13 +1,10 @@
 package com.team2813.frc2020.auto;
 
-import com.team2813.lib.actions.SeriesAction;
-import com.team2813.lib.actions.WaitAction;
 import com.team2813.lib.auto.*;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
 
 import java.util.List;
 
-public enum AutoRoutineTrajectories {
+public enum AutoTrajectories {
     FIVE_BALL_ENEMY(List.of(
             new PauseTrajectory(1, 0), // shoot 3 balls
             new GeneratedTrajectory("2-ball", true, 1),
@@ -64,7 +61,7 @@ public enum AutoRoutineTrajectories {
 
     private RamseteTrajectory trajectory;
 
-    AutoRoutineTrajectories(List<AutoTrajectory> trajectory) {
+    AutoTrajectories(List<AutoTrajectory> trajectory) {
         this.trajectory = new RamseteTrajectory(trajectory);
     }
 
