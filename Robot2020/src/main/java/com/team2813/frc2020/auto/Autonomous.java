@@ -33,15 +33,15 @@ public class Autonomous {
     }
 
     public void run() {
-        AutoRoutine routine = ShuffleboardData.routineChooser.getSelected();
-        ramseteAuto = new RamseteAuto(Subsystems.DRIVE.kinematics, routine.trajectory);
+        AutoRoutineActions routine = ShuffleboardData.routineChooser.getSelected();
+        ramseteAuto = new RamseteAuto(Subsystems.DRIVE.kinematics, routine.getTrajectory());
 
         Subsystems.DRIVE.initAutonomous(ramseteAuto.initialPose());
-        Subsystems.LOOPER.addAction(routine.action);
+        Subsystems.LOOPER.addAction(routine.getAction());
     }
 
     public static void addRoutines() {
-        for (AutoRoutine routine : AutoRoutine.values()) {
+        for (AutoRoutineActions routine : AutoRoutineActions.values()) {
             ShuffleboardData.routineChooser.addOption(routine.name, routine);
         }
     }
