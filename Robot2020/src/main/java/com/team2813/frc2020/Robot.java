@@ -8,7 +8,6 @@
 package com.team2813.frc2020;
 
 import com.ctre.phoenix.CANifier;
-import com.team2813.frc2020.auto.AutoRoutine;
 import com.team2813.frc2020.auto.Autonomous;
 import com.team2813.frc2020.subsystems.Subsystem;
 import com.team2813.frc2020.subsystems.Subsystems;
@@ -19,7 +18,6 @@ import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.util.CrashTracker;
 import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.io.IOException;

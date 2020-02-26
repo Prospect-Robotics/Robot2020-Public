@@ -1,6 +1,5 @@
 package com.team2813.frc2020.util;
 
-import com.team2813.frc2020.auto.AutoRoutine;
 import com.team2813.frc2020.auto.AutoRoutineActions;
 import com.team2813.frc2020.subsystems.Drive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;

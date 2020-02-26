@@ -8,6 +8,7 @@ import com.team2813.lib.actions.WaitAction;
 import com.team2813.lib.auto.RamseteTrajectory;
 
 public enum AutoRoutineActions {
+
     FIVE_BALL_ENEMY("5 Ball Enemy",
             new SeriesAction(
                     new AutoAimAction()/* shoot ball, intake, shoot ball*/
@@ -33,7 +34,8 @@ public enum AutoRoutineActions {
     SERIES_TEST("Auto Aim Test",
             new SeriesAction(
                     new AutoAimAction()
-            ),AutoRoutineTrajectories.SERIES_TEST);
+            ),
+            AutoRoutineTrajectories.SERIES_TEST);
     private Action action;
     private RamseteTrajectory trajectory;
     public String name;
