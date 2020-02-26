@@ -129,7 +129,7 @@ public class Drive extends Subsystem {
     }
 
     private void teleopDrive(TeleopDriveType driveType) {
-        limelight.setLights(false);
+        //limelight.setLights(false);
         if (AUTO_BUTTON.get()) {
             limelight.setLights(true);
             driveDemand = curvatureDrive.getDemand(0, 0, limelight.getSteer(), true);
