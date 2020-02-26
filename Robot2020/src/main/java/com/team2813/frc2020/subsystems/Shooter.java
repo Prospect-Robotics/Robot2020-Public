@@ -71,6 +71,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     @Override
     public synchronized void setPosition(Position position) {
         currentPosition = position;
+
         super.setPosition(position);
     }
 
