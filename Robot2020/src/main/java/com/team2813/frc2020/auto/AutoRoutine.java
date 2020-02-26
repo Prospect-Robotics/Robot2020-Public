@@ -2,12 +2,11 @@ package com.team2813.frc2020.auto;
 
 import com.team2813.frc2020.util.AutoAimAction;
 import com.team2813.lib.actions.Action;
-import com.team2813.lib.actions.LockAction;
 import com.team2813.lib.actions.SeriesAction;
 import com.team2813.lib.actions.WaitAction;
 import com.team2813.lib.auto.RamseteTrajectory;
 
-public enum AutoRoutineActions {
+public enum AutoRoutine {
 
     FIVE_BALL_ENEMY("5 Ball Enemy",
             new SeriesAction(
@@ -40,7 +39,7 @@ public enum AutoRoutineActions {
     private RamseteTrajectory trajectory;
     public String name;
 
-    AutoRoutineActions(String name, Action action, AutoRoutineTrajectories trajectory) {
+    AutoRoutine(String name, Action action, AutoRoutineTrajectories trajectory) {
         this.action = action;
         this.trajectory = trajectory.getTrajectory();
         this.name = name;
