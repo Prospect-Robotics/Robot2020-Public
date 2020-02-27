@@ -2,6 +2,7 @@ package com.team2813.frc2020.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.team2813.frc2020.Robot;
+import com.team2813.frc2020.util.Lightshow;
 import com.team2813.frc2020.util.Limelight;
 import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.frc2020.util.Units2813;
@@ -78,7 +79,7 @@ public class Drive extends Subsystem {
     private double TRACK_WIDTH = 26;
     public static final double GEAR_RATIO = (62.0 / 8.0) * (28.0 / 20.0);
     public DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(TRACK_WIDTH));
-    public Limelight limelight = new Limelight();
+    private Limelight limelight = Limelight.getInstance();
 
     // Odometry
     private static DifferentialDriveOdometry odometry;
@@ -128,7 +129,7 @@ public class Drive extends Subsystem {
     }
 
     private void teleopDrive(TeleopDriveType driveType) {
-        limelight.setLights(false);
+        //limelight.setLights(false);
         if (AUTO_BUTTON.get()) {
             limelight.setLights(true);
             driveDemand = curvatureDrive.getDemand(0, 0, limelight.getSteer(), true);
@@ -164,6 +165,7 @@ public class Drive extends Subsystem {
 
     @Override
     public void teleopControls() {
+        AUTO_BUTTON.whenPressedReleased(() -> Robot.lightshow.setLight(Lightshow.Light.AUTO_AIM), () -> Robot.lightshow.resetLight(Lightshow.Light.AUTO_AIM));
         driveMode = ShuffleboardData.driveModeChooser.getSelected();
         if (driveMode == null) driveMode = DriveMode.OPEN_LOOP;
         teleopDrive(teleopDriveType);

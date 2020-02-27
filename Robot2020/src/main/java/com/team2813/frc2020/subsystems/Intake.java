@@ -1,10 +1,13 @@
 package com.team2813.frc2020.subsystems;
 
+import com.team2813.frc2020.util.Limelight;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.solenoid.PistonSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import static com.team2813.frc2020.subsystems.Subsystems.INTAKE;
 
 public class Intake extends Subsystem {
 
@@ -20,6 +23,8 @@ public class Intake extends Subsystem {
     Intake() {
         INTAKE_MOTOR = MotorConfigs.sparks.get("intake");
     }
+
+    private Limelight limelight = Limelight.getInstance();
 
     private static PistonSolenoid PISTONS = new PistonSolenoid(1, 2);
 
@@ -44,6 +49,7 @@ public class Intake extends Subsystem {
 
         // operator
         PISTONS_BUTTON.whenPressed(() -> setDeployed(!deployed));
+        double vertAngle = limelight.getVertAngle();
         INTAKE_IN_BUTTON.whenPressedReleased(() -> setIntake(Demand.IN), () -> setIntake(Demand.OFF));
         INTAKE_OUT_BUTTON.whenPressedReleased(() -> setIntake(Demand.OUT), () -> setIntake(Demand.OFF));
     }

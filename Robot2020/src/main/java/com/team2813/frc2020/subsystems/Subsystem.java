@@ -1,6 +1,7 @@
 package com.team2813.frc2020.subsystems;
 
 import com.team2813.frc2020.loops.Loop;
+import com.team2813.frc2020.util.Limelight;
 
 import static com.team2813.frc2020.subsystems.Subsystems.DRIVE;
 
@@ -17,7 +18,13 @@ import static com.team2813.frc2020.subsystems.Subsystems.DRIVE;
  */
 public abstract class Subsystem implements Loop {
 
+    private Limelight limelight = Limelight.getInstance();
+
     public void writeToLog() {
+    }
+
+    protected Limelight getLimelight() {
+        return limelight;
     }
 
     /**

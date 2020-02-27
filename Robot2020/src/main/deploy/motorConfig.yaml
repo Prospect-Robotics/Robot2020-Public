@@ -16,8 +16,8 @@ talons:
       - p: .000314
         i: 0
         d: 0
-#        d: 5.79
-#        d: 4
+        #        d: 5.79
+        #        d: 4
         f: 0
         maxVelocity: 18000
         maxAcceleration: 45000
@@ -40,8 +40,8 @@ talons:
       - p: .000314
         i: 0
         d: 0
-#        d: 5.79
-#        d: 4
+        #        d: 5.79
+        #        d: 4
         f: 0
         maxVelocity: 18000
         maxAcceleration: 45000
@@ -71,9 +71,9 @@ talons:
         type: BRUSHLESS
         inverted: OPPOSE_LEADER
     pidControllers:
-      - p: 0.35
+      - p: 0.3
         i: 0
-        d: 5
+        d: 3
         f: 0
         maxVelocity: 18000
         maxAcceleration: 45000
@@ -94,19 +94,27 @@ sparks:
     motionCruiseVelocity: 0
     closedLoopRampRate: 0
     openLoopRampRate: 0
-    invertSensorPhase: true
+    invertSensorPhase: false
     statusFrame: STATUS_2
-    inverted: NONINVERTED
+    inverted: INVERTED
     pidControllers:
-        - p: 0.1
-          i: 0.00005
-          d: 0.00001
-          f: 0
-          maxVelocity: 1000
-          maxAcceleration: 1000
-          maxIntegralAccumulator: 0
-          integralZone: 0
-          allowableClosedLoopError: 0
+      #        - p: 0.1
+      #          i: 0.00005
+      #          d: 0.00001
+      #          f: 0
+      - p: 7
+        i: 0
+        d: 0
+        f: 0
+#      - p: 1.8
+#        i: 0.0005
+#        d: 0
+#        f: 0
+        maxVelocity: 1000
+        maxAcceleration: 1000
+        maxIntegralAccumulator: 0
+        integralZone: 0
+        allowableClosedLoopError: 0
   climber:
     deviceNumber: 11
     type: BRUSHLESS
@@ -162,5 +170,7 @@ sparks:
     inverted: NONINVERTED
     statusFrame: STATUS_2
     peakCurrentLimit: 30
+    pidControllers:
+      - p: 0.006
 victors:
 ...
