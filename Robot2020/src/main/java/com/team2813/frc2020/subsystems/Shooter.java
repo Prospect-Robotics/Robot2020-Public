@@ -170,23 +170,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         });
 
         if (AUTO_BUTTON.get()) {
-            // [-4.9, 21.9]
-            // -4.9 LOW_MID_THRESHOLD
-            // -9.5 MID_FAR_THRESHOLD
-            // -11.3 MAX_THRESHOLD
-            double vertAngle = getLimelight().getVertAngle();
-            if (vertAngle >= LOW_MID_THRESHOLD) {
-                setPosition(calculateLowPosition(getLimelight().getVertAngle()));
-                desiredDemand = Demand.LOW_RANGE;
-            } else if (vertAngle >= MID_FAR_THRESHOLD && vertAngle <= LOW_MID_THRESHOLD) {
-                setPosition(calculateMidPosition(getLimelight().getVertAngle()));
-                desiredDemand = Demand.MID_RANGE;
-            } else if (vertAngle >= MAX_THRESHOLD && vertAngle <= MID_FAR_THRESHOLD) {
-                setPosition(calculateHighPosition(getLimelight().getVertAngle()));
-                desiredDemand = Demand.HIGH_RANGE;
-            }
-
-
+            adjustHood();
         }
 
         isFullyRevvedUp = FLYWHEEL.getVelocity() >= desiredDemand.velocity;
@@ -196,6 +180,24 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         HOOD_TRENCH_BUTTON.whenPressed(() -> setPosition(Position.TRENCH));
         if (HOOD_INITIATION_BUTTON.get() && HOOD_TRENCH_BUTTON.get()) {
             setPosition(Position.MIN);
+        }
+    }
+
+    public void adjustHood() {
+        // [-4.9, 21.9]
+        // -4.9 LOW_MID_THRESHOLD
+        // -9.5 MID_FAR_THRESHOLD
+        // -11.3 MAX_THRESHOLD
+        double vertAngle = getLimelight().getVertAngle();
+        if (vertAngle >= LOW_MID_THRESHOLD) {
+            setPosition(calculateLowPosition(getLimelight().getVertAngle()));
+            desiredDemand = Demand.LOW_RANGE;
+        } else if (vertAngle >= MID_FAR_THRESHOLD && vertAngle <= LOW_MID_THRESHOLD) {
+            setPosition(calculateMidPosition(getLimelight().getVertAngle()));
+            desiredDemand = Demand.MID_RANGE;
+        } else if (vertAngle >= MAX_THRESHOLD && vertAngle <= MID_FAR_THRESHOLD) {
+            setPosition(calculateHighPosition(getLimelight().getVertAngle()));
+            desiredDemand = Demand.HIGH_RANGE;
         }
     }
 

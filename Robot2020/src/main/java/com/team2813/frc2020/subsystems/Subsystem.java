@@ -23,7 +23,7 @@ public abstract class Subsystem implements Loop {
     public void writeToLog() {
     }
 
-    protected Limelight getLimelight() {
+    public Limelight getLimelight() {
         return limelight;
     }
 
