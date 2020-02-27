@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
+import static com.team2813.frc2020.subsystems.Subsystems.MAGAZINE;
 
 /**
  * Class for the shooter on the robot.
@@ -44,10 +45,12 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     private Demand demand = Demand.OFF;
     private KickerDemand kickerDemand = KickerDemand.OFF;
     private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(0.266, 0.112, 0.0189);
-
-    private Limelight limelight = Limelight.getInstance();
+    static final double LOW_MID_THRESHOLD = -4.9;
+    static final double MID_FAR_THRESHOLD = -9.5;
+    static final double MAX_THRESHOLD = -11.3;
 
     private double FLYWHEEL_UPDUCTION = 3.0 / 2;
+    private boolean isFullyRevvedUp;
 
     private Action startAction;
 
@@ -137,6 +140,10 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         return FLYWHEEL.getVelocity() * FLYWHEEL_UPDUCTION > demand.velocity;
     }
 
+    boolean isFullyRevvedUp() {
+        return isFullyRevvedUp;
+    }
+
     //TODO Change this to when Mag empty
     public boolean hasFinishButtonBeenPressed() {
         return SHOOTER_BUTTON.get();
@@ -148,7 +155,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         SmartDashboard.putNumber("Shooter Velocity (RPM)", FLYWHEEL.getVelocity() * FLYWHEEL_UPDUCTION);
         SmartDashboard.putNumber("Hood Encoder", encoder.getPosition());
         SmartDashboard.putNumber("Hood Demand", periodicIO.demand);
-        SmartDashboard.putNumber("Limelight Vertical Angle", limelight.getVertAngle());
+        SmartDashboard.putNumber("Limelight Vertical Angle", getLimelight().getVertAngle());
         SmartDashboard.putNumber("Shooter Flywheel Demand", desiredDemand.velocity);
     }
 
@@ -164,18 +171,25 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
         if (AUTO_BUTTON.get()) {
             // [-4.9, 21.9]
-            double vertAngle = limelight.getVertAngle();
-            if (vertAngle >= -4.9) {
-                setPosition(calculateLowPosition(limelight.getVertAngle()));
+            // -4.9 LOW_MID_THRESHOLD
+            // -9.5 MID_FAR_THRESHOLD
+            // -11.3 MAX_THRESHOLD
+            double vertAngle = getLimelight().getVertAngle();
+            if (vertAngle >= LOW_MID_THRESHOLD) {
+                setPosition(calculateLowPosition(getLimelight().getVertAngle()));
                 desiredDemand = Demand.LOW_RANGE;
-            } else if (vertAngle >= -9.5 && vertAngle <= -4.9) {
-                setPosition(calculateMidPosition(limelight.getVertAngle()));
+            } else if (vertAngle >= MID_FAR_THRESHOLD && vertAngle <= LOW_MID_THRESHOLD) {
+                setPosition(calculateMidPosition(getLimelight().getVertAngle()));
                 desiredDemand = Demand.MID_RANGE;
-            } else if (vertAngle >= -11.3 && vertAngle <= -9.5) {
-                setPosition(calculateHighPosition(limelight.getVertAngle()));
+            } else if (vertAngle >= MAX_THRESHOLD && vertAngle <= MID_FAR_THRESHOLD) {
+                setPosition(calculateHighPosition(getLimelight().getVertAngle()));
                 desiredDemand = Demand.HIGH_RANGE;
             }
+
+
         }
+
+        isFullyRevvedUp = FLYWHEEL.getVelocity() >= desiredDemand.velocity;
 
         // operator
         HOOD_INITIATION_BUTTON.whenPressed(() -> setPosition(Position.INITIATION));
@@ -310,10 +324,10 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     }
 
     public double calculateMidPosition(double y) {
-        return (-0.00315274 * Math.pow(y,2)) - (0.0695706 * y) - 1.46903;
+        return (-0.00315274 * Math.pow(y, 2)) - (0.0695706 * y) - 1.46903;
     }
 
     public double calculateHighPosition(double y) {
-        return (-1.95046 * Math.pow(y,2)) - (43.0127 * y) - 237.929;
+        return (-1.95046 * Math.pow(y, 2)) - (43.0127 * y) - 237.929;
     }
 }

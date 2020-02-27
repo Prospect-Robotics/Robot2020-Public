@@ -7,6 +7,8 @@ import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.solenoid.PistonSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import static com.team2813.frc2020.subsystems.Subsystems.INTAKE;
+
 public class Intake extends Subsystem {
 
     private SparkMaxWrapper INTAKE_MOTOR;
@@ -47,14 +49,7 @@ public class Intake extends Subsystem {
         // operator
         PISTONS_BUTTON.whenPressed(() -> setDeployed(!deployed));
         double vertAngle = limelight.getVertAngle();
-        INTAKE_IN_BUTTON.whenPressedReleased(() -> {
-            if (vertAngle >= -9.5) {
-                setIntake(Demand.IN);
-            } else if (vertAngle >= -11.3 && vertAngle <= -9.5) {
-                setIntake(Demand.FARIN);
-            }
-
-        }, () -> setIntake(Demand.OFF));
+        INTAKE_IN_BUTTON.whenPressedReleased(() -> setIntake(Demand.IN), () -> setIntake(Demand.OFF));
         INTAKE_OUT_BUTTON.whenPressedReleased(() -> setIntake(Demand.OUT), () -> setIntake(Demand.OFF));
     }
 
@@ -84,7 +79,7 @@ public class Intake extends Subsystem {
     }
 
     protected enum Demand {
-        IN(0.7), FARIN(0.4), OFF(0.0), OUT(-0.7);
+        IN(0.7), OFF(0.0), OUT(-0.7);
 
         double percent;
 
