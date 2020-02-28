@@ -38,7 +38,8 @@ public enum AutoTrajectories {
             new GeneratedTrajectory("3-ball trench", true, 0), // intake 2 balls
             new RotateTrajectory(0, 1),
             new GeneratedTrajectory("8-ball 1", true, 2), // intake 3 balls
-            new GeneratedTrajectory("return 8-ball", false, 3) // intake 3 balls
+            new GeneratedTrajectory("return 8-ball", false, 3), // intake 3 balls
+            new PauseTrajectory(.1, 4)
     )),
     FIVE_BALL_TWO(List.of(
             new PauseTrajectory(1, 0), //turn intake on

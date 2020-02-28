@@ -55,7 +55,8 @@ public enum AutoRoutine {
 //                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
 //                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(6), true),
 //                    new AutoAimAction()
-                    new WaitAction(1)
+                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(4), true),
+                    new AutoAimAction()
             ), AutoTrajectories.EIGHT_BALL),
 
     FIVE_BALL_TWO("5-ball 2",
