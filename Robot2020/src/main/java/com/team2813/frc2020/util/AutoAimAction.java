@@ -11,21 +11,22 @@ import static com.team2813.frc2020.subsystems.Subsystems.*;
 import static com.team2813.frc2020.subsystems.Subsystems.SHOOTER;
 
 public class AutoAimAction extends SeriesAction {
+    private static Limelight limelight = Limelight.getInstance();
+
     public AutoAimAction() {
         super(
                 new FunctionAction(()->SHOOTER.setPosition(Shooter.Position.INITIATION), true),
                 new FunctionAction(SHOOTER::startSpinningFlywheel, true),
-                new WaitAction(1),
+                new WaitAction(0.6),
                 new LockAction(() -> {
-                    double steer = SHOOTER.getLimelight().getSteer();
-                    DRIVE.setDemand(DRIVE.curvatureDrive.getDemand(0, 0, SHOOTER.getLimelight().getSteer(), true));
-                    SHOOTER.getLimelight().setLights(true);
-
+                    double steer = limelight.getSteer();
+                    limelight.setLights(true);
+                    DRIVE.setDemand(DRIVE.velocityDrive.getVelocity(DRIVE.curvatureDrive.getDemand(0, 0, limelight.getSteer(), true)));
                     SHOOTER.adjustHood();
                     return steer == 0;
                 }, true),
                 new FunctionAction(MAGAZINE::spinMagazineForward,true),
-                new WaitAction(1),
+                new WaitAction(3),
                 new FunctionAction(SHOOTER::stopSpinningFlywheel, true),
                 new FunctionAction(MAGAZINE::stopMagazine, true),
                 new FunctionAction(() -> SHOOTER.setPosition(Shooter.Position.MIN), true));

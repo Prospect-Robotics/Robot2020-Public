@@ -115,21 +115,15 @@ public class Drive extends Subsystem {
         LEFT = (TalonFXWrapper) MotorConfigs.talons.get("driveLeft");
         RIGHT = (TalonFXWrapper) MotorConfigs.talons.get("driveRight");
 
-//        LEFT.configEncoder(TalonFXFeedbackDevice.IntegratedSensor, PIDProfile.PRIMARY, 0);
-//        RIGHT.configEncoder(TalonFXFeedbackDevice.IntegratedSensor, PIDProfile.PRIMARY, 0);
-
         DriveDemand.circumference = WHEEL_CIRCUMFERENCE;
 
         pigeon.setYawToCompass();
         pigeon.setHeading(0);
         odometry = new DifferentialDriveOdometry(new Rotation2d(pigeon.getHeading()));
-
-//        velocityDrive.configureMotor(LEFT, MotorConfigs.motorConfigs.getTalons().get("driveLeft"));
-//        velocityDrive.configureMotor(RIGHT, MotorConfigs.motorConfigs.getTalons().get("driveRight"));
     }
 
     private void teleopDrive(TeleopDriveType driveType) {
-        //limelight.setLights(false);
+        limelight.setLights(false);
         if (AUTO_BUTTON.get()) {
             limelight.setLights(true);
             driveDemand = curvatureDrive.getDemand(0, 0, limelight.getSteer(), true);
@@ -143,7 +137,7 @@ public class Drive extends Subsystem {
         }
 
         if (driveMode == DriveMode.VELOCITY) {
-            driveDemand = velocityDrive.getVelocity(driveDemand); // convert from m/s to rpm
+            driveDemand = velocityDrive.getVelocity(driveDemand); // convert from duty cycle to m/s
         }
     }
 
@@ -224,9 +218,7 @@ public class Drive extends Subsystem {
     @Override
     public synchronized void writePeriodicOutputs() {
         if (driveMode == DriveMode.VELOCITY || Robot.isAuto) {
-            DriveDemand demand = Units2813.dtDemandToMotorDemand(driveDemand); // local variable for telemetry reasons
-
-//            System.out.println(driveDemand);
+            DriveDemand demand = Units2813.dtDemandToMotorDemand(driveDemand); // local variable for telemetry reasons also converts m/s to rpm
             LEFT.set(ControlMode.VELOCITY, demand.getLeft(), feedforward.calculate(driveDemand.getLeft()) / 12);
             RIGHT.set(ControlMode.VELOCITY, demand.getRight(), feedforward.calculate(driveDemand.getRight()) / 12);
         } else {

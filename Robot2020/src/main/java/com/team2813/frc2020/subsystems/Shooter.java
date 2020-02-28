@@ -45,6 +45,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     private Demand demand = Demand.OFF;
     private KickerDemand kickerDemand = KickerDemand.OFF;
     private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(0.266, 0.112, 0.0189);
+    private Limelight limelight = Limelight.getInstance();
     static final double LOW_MID_THRESHOLD = -4.9;
     static final double MID_FAR_THRESHOLD = -9.5;
     static final double MAX_THRESHOLD = -11.3;
@@ -104,6 +105,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     public void startSpinningFlywheel() {
         startSpinningFlywheel(false);
+        System.out.println("help me");
     }
 
     public void reverseFlywheel(boolean controlLock) {
@@ -155,7 +157,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         SmartDashboard.putNumber("Shooter Velocity (RPM)", FLYWHEEL.getVelocity() * FLYWHEEL_UPDUCTION);
         SmartDashboard.putNumber("Hood Encoder", encoder.getPosition());
         SmartDashboard.putNumber("Hood Demand", periodicIO.demand);
-        SmartDashboard.putNumber("Limelight Vertical Angle", getLimelight().getVertAngle());
+        SmartDashboard.putNumber("Limelight Vertical Angle", limelight.getVertAngle());
         SmartDashboard.putNumber("Shooter Flywheel Demand", desiredDemand.velocity);
     }
 
@@ -188,15 +190,15 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         // -4.9 LOW_MID_THRESHOLD
         // -9.5 MID_FAR_THRESHOLD
         // -11.3 MAX_THRESHOLD
-        double vertAngle = getLimelight().getVertAngle();
+        double vertAngle = limelight.getVertAngle();
         if (vertAngle >= LOW_MID_THRESHOLD) {
-            setPosition(calculateLowPosition(getLimelight().getVertAngle()));
+            setPosition(calculateLowPosition(limelight.getVertAngle()));
             desiredDemand = Demand.LOW_RANGE;
         } else if (vertAngle >= MID_FAR_THRESHOLD && vertAngle <= LOW_MID_THRESHOLD) {
-            setPosition(calculateMidPosition(getLimelight().getVertAngle()));
+            setPosition(calculateMidPosition(limelight.getVertAngle()));
             desiredDemand = Demand.MID_RANGE;
         } else if (vertAngle >= MAX_THRESHOLD && vertAngle <= MID_FAR_THRESHOLD) {
-            setPosition(calculateHighPosition(getLimelight().getVertAngle()));
+            setPosition(calculateHighPosition(limelight.getVertAngle()));
             desiredDemand = Demand.HIGH_RANGE;
         }
     }

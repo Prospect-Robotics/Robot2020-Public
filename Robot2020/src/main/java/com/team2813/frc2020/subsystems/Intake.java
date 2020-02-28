@@ -8,6 +8,7 @@ import com.team2813.lib.solenoid.PistonSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static com.team2813.frc2020.subsystems.Subsystems.INTAKE;
+import static com.team2813.frc2020.subsystems.Subsystems.MAGAZINE;
 
 public class Intake extends Subsystem {
 
@@ -78,6 +79,8 @@ public class Intake extends Subsystem {
         setDeployed(on);
         isAuto = on;
         demand = on ? Demand.IN : Demand.OFF;
+        if (on) MAGAZINE.spinMagazineIntake();
+        else MAGAZINE.stopMagazine();
     }
 
     @Override
@@ -85,7 +88,7 @@ public class Intake extends Subsystem {
         INTAKE_MOTOR.set(demand.percent);
     }
 
-    protected enum Demand {
+    public enum Demand {
         IN(0.7), OFF(0.0), OUT(-0.7);
 
         double percent;

@@ -85,20 +85,20 @@ public class Magazine extends Subsystem {
             // -4.9 LOW_MID_THRESHOLD
             // -9.5 MID_FAR_THRESHOLD
             // -11.3 MAX_THRESHOLD
-            double vertAngle = getLimelight().getVertAngle();
-            if (vertAngle >= LOW_MID_THRESHOLD) {
-//                setPosition(calculateLowPosition(getLimelight().getVertAngle()));
-//                desiredDemand = Shooter.Demand.LOW_RANGE;
-                demand = Demand.INITIATION;
-            } else if (vertAngle >= MID_FAR_THRESHOLD && vertAngle <= LOW_MID_THRESHOLD) {
-//                setPosition(calculateMidPosition(getLimelight().getVertAngle()));
-//                desiredDemand = Shooter.Demand.MID_RANGE;
-                demand = Demand.TRENCH;
-            } else if (vertAngle >= MAX_THRESHOLD && vertAngle <= MID_FAR_THRESHOLD) {
-//                setPosition(calculateHighPosition(getLimelight().getVertAngle()));
-//                desiredDemand = Shooter.Demand.HIGH_RANGE;
-                demand = Demand.TRENCH;
-            }
+//            double vertAngle = limelight.getVertAngle();
+//            if (vertAngle >= LOW_MID_THRESHOLD) {
+////                setPosition(calculateLowPosition(getLimelight().getVertAngle()));
+////                desiredDemand = Shooter.Demand.LOW_RANGE;
+//                demand = Demand.INITIATION;
+//            } else if (vertAngle >= MID_FAR_THRESHOLD && vertAngle <= LOW_MID_THRESHOLD) {
+////                setPosition(calculateMidPosition(getLimelight().getVertAngle()));
+////                desiredDemand = Shooter.Demand.MID_RANGE;
+//                demand = Demand.TRENCH;
+//            } else if (vertAngle >= MAX_THRESHOLD && vertAngle <= MID_FAR_THRESHOLD) {
+////                setPosition(calculateHighPosition(getLimelight().getVertAngle()));
+////                desiredDemand = Shooter.Demand.HIGH_RANGE;
+//                demand = Demand.TRENCH;
+//            }
         }
     }
 

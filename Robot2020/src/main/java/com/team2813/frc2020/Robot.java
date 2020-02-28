@@ -128,6 +128,7 @@ public class Robot extends TimedRobot {
         autonomous = new Autonomous();
         limelight.setLights(true);
         lightshow.setDefaultLight(Lightshow.Light.AUTONOMOUS);
+        LOOPER.setMode(RobotMode.ENABLED);
         try {
             CrashTracker.logAutoInit();
             for (Subsystem subsystem : allSubsystems) {

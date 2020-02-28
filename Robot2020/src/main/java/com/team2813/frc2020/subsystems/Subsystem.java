@@ -18,13 +18,7 @@ import static com.team2813.frc2020.subsystems.Subsystems.DRIVE;
  */
 public abstract class Subsystem implements Loop {
 
-    private Limelight limelight = Limelight.getInstance();
-
     public void writeToLog() {
-    }
-
-    public Limelight getLimelight() {
-        return limelight;
     }
 
     /**
