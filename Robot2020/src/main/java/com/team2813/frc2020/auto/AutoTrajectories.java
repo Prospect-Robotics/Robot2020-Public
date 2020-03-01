@@ -34,12 +34,19 @@ public enum AutoTrajectories {
             new GeneratedTrajectory("back 3-ball", false, 3),
             new PauseTrajectory(1, 4) // shoot 3 balls
     )),
-    EIGHT_BALL(List.of(
-            new GeneratedTrajectory("3-ball trench", true, 0), // intake 2 balls
-            new RotateTrajectory(0, 1),
-            new GeneratedTrajectory("8-ball 1", true, 2), // intake 3 balls
-            new GeneratedTrajectory("return 8-ball", false, 3), // intake 3 balls
-            new PauseTrajectory(.1, 4)
+    NINE_BALL(List.of(
+            new PauseTrajectory(3.5, 0),
+            new GeneratedTrajectory("3-ball trench", true, 1),
+            new GeneratedTrajectory("back 3-ball", false, 2),
+            new PauseTrajectory(3.5, 3),
+            new GeneratedTrajectory("9-ball 3", true, 4),
+            new GeneratedTrajectory("9-ball get rev 1", true, 5),
+            new GeneratedTrajectory("9-ball get fwd 2", false, 6),
+            new GeneratedTrajectory("9-ball get rev 3", true, 7),
+            new GeneratedTrajectory("9-ball get fwd 4", false, 8),
+            new GeneratedTrajectory("9-ball get rev 5", true, 9),
+            new GeneratedTrajectory("return 9-ball 2", false, 10),
+            new PauseTrajectory(1, 11)
     )),
     FIVE_BALL_TWO(List.of(
             new PauseTrajectory(1, 0), //turn intake on

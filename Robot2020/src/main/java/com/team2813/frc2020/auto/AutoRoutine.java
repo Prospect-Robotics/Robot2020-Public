@@ -47,17 +47,31 @@ public enum AutoRoutine {
                     new AutoAimAction()
             ), AutoTrajectories.SIX_BALL),
 
-    EIGHT_BALL("8-ball",
+    NINE_BALL("9-ball",
             new SeriesAction(
+                    new AutoAimAction(),
+//                    new LockAction(() -> AutoTrajectories.NINE_BALL.getTrajectory().isCurrentTrajectory(1), true),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new LockAction(() -> AutoTrajectories.NINE_BALL.getTrajectory().isCurrentTrajectory(3), true),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
+//                    new LockAction(() -> AutoTrajectories.NINE_BALL.getTrajectory().isCurrentTrajectory(3), true),
+                    new AutoAimAction(),
+//                    new LockAction(() -> AutoTrajectories.NINE_BALL.getTrajectory().isCurrentTrajectory(5), true),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+//                    new LockAction(() -> AutoTrajectories.NINE_BALL.getTrajectory().isCurrentTrajectory(10), true),
+
+                    new LockAction(() -> AutoTrajectories.NINE_BALL.getTrajectory().isCurrentTrajectory(11), true),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
+                    new AutoAimAction()
 //                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(1), true),
 //                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
 //                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(4), true),
 //                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
 //                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(6), true),
 //                    new AutoAimAction()
-                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(4), true),
-                    new AutoAimAction()
-            ), AutoTrajectories.EIGHT_BALL),
+//                    new LockAction(() -> AutoTrajectories.NINE_BALL.getTrajectory().isCurrentTrajectory(4), true),
+//                    new AutoAimAction()
+            ), AutoTrajectories.NINE_BALL),
 
     FIVE_BALL_TWO("5-ball 2",
             new SeriesAction(
