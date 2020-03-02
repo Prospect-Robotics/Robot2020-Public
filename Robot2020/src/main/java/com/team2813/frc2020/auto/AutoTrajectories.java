@@ -34,6 +34,13 @@ public enum AutoTrajectories {
             new GeneratedTrajectory("back 3-ball", false, 3),
             new PauseTrajectory(1, 4) // shoot 3 balls
     )),
+    SIX_BALL_SIDE(List.of(
+            new PauseTrajectory(3.5, 0), // shoot 3 ball turn intake on
+            new GeneratedTrajectory("3-ball trench side", true, 1), // intake 3 balls
+            new PauseTrajectory(.1, 2), //turn intake off
+            new GeneratedTrajectory("back 3-ball side", false, 3),
+            new PauseTrajectory(1, 4) // shoot 3 balls
+    )),
     NINE_BALL(List.of(
             new PauseTrajectory(3.5, 0),
             new GeneratedTrajectory("3-ball trench", true, 1),
@@ -60,7 +67,10 @@ public enum AutoTrajectories {
     )),
     SERIES_TEST(List.of(
             new PauseTrajectory(150, 0)
-    ));
+    )), GO_FORWARD(List.of(
+            new PauseTrajectory(6, 0),
+            new GeneratedTrajectory("go forward", false, 1)
+    ));;
 
 
 

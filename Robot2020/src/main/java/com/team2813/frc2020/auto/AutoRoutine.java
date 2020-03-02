@@ -46,7 +46,20 @@ public enum AutoRoutine {
                     new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.OFF), true),
                     new AutoAimAction()
             ), AutoTrajectories.SIX_BALL),
-
+    SIX_BALL_SIDE("6-ball Side",
+            new SeriesAction(
+                    new AutoAimAction(),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new LockAction(() -> AutoTrajectories.SIX_BALL.getTrajectory().isCurrentTrajectory(2), true),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
+                    new LockAction(() -> AutoTrajectories.SIX_BALL.getTrajectory().isCurrentTrajectory(4), true),
+                    new FunctionAction(MAGAZINE::spinMagazineReverse, true),
+                    new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.IN), true),
+                    new WaitAction(.15),
+                    new FunctionAction(MAGAZINE::stopMagazine, true),
+                    new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.OFF), true),
+                    new AutoAimAction()
+            ), AutoTrajectories.SIX_BALL_SIDE),
     NINE_BALL("9-ball",
             new SeriesAction(
                     new AutoAimAction(),
@@ -89,7 +102,11 @@ public enum AutoRoutine {
             new SeriesAction(
                     new AutoAimAction()
             ),
-            AutoTrajectories.SERIES_TEST);
+            AutoTrajectories.SERIES_TEST),
+    AUTO_AIM_FORWARD("Auto Aim Forward",
+            new SeriesAction(
+                    new AutoAimAction()
+            ), AutoTrajectories.GO_FORWARD);
     
     private Action action;
     private RamseteTrajectory trajectory;

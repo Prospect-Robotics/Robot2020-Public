@@ -219,8 +219,8 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         if (isFlywheelReady() && demand != Demand.OFF)
             Robot.lightshow.setLight(Lightshow.Light.READY_TO_SHOOT, false);
         else if (demand != Demand.OFF)
-            Robot.lightshow.setLight(Lightshow.Light.READY_TO_SHOOT, true);
-        else Robot.lightshow.resetLight(Lightshow.Light.READY_TO_SHOOT);
+            Robot.lightshow.setLight(Lightshow.Light.NOT_READY_TO_SHOOT);
+        else Robot.lightshow.resetLight(Lightshow.Light.READY_TO_SHOOT, Lightshow.Light.NOT_READY_TO_SHOOT);
     }
 
     @Override

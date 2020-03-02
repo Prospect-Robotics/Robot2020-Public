@@ -63,9 +63,10 @@ public class Lightshow {
         this.setLight(light);
     }
 
-    public void resetLight(Light light) {
-        if (defaultLight != this.light && this.light == light)
-            this.setLight(defaultLight);
+    public void resetLight(Light... lights) {
+        for (Light light : lights)
+            if (defaultLight != light && this.light == light)
+                this.setLight(defaultLight);
     }
 
     public Light getLight() {
@@ -78,6 +79,7 @@ public class Lightshow {
         DISABLED(255, 0, 0),
         AUTONOMOUS(0, 0, 128),
         READY_TO_SHOOT(0, 0, 255),
+        NOT_READY_TO_SHOOT(255, 0, 255),
         BEING_GAY(255, 105, 180),
         INTAKE_DONW(255, 165, 0),
         INTAKE_UP(128, 0, 128),
