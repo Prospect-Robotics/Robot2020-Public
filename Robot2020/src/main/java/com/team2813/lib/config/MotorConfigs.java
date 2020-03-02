@@ -143,6 +143,7 @@ public class MotorConfigs {
                     follower.setInverted(InvertType.OpposeMaster);
                     break;
             }
+            talon.slaves.add(follower);
         }
         return talon;
     }

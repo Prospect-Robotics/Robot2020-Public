@@ -172,6 +172,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         });
 
         if (AUTO_BUTTON.get()) {
+            Limelight.getInstance().setLights(true);
             adjustHood();
         }
 
@@ -201,6 +202,8 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
             setPosition(calculateHighPosition(limelight.getVertAngle()));
             desiredDemand = Demand.HIGH_RANGE;
         }
+        if (desiredDemand != demand && demand != Demand.OFF)
+            demand = desiredDemand;
     }
 
     /* https://www.desmos.com/calculator/g4b5gohz4a see red graph

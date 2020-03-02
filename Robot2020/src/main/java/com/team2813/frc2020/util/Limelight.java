@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Limelight {
     private LimelightValues values = new LimelightValues();
-    private final double kP = 0.47;//was 0.56
+    private final double kP = 0.5;//was 0.56
     private static final double CORRECTION_MAX_STEER_SPEED = 1;
     private static final double MIN_CORRECTION_STEER = 0.05;
     private static final double MOUNT_ANGLE = 15; // in degrees
