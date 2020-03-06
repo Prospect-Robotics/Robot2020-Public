@@ -13,19 +13,19 @@ public enum AutoTrajectories {
             new GeneratedTrajectory("return", false, 4),
             new PauseTrajectory(1, 5) // shoot 2 balls
     )),
+    FIVE_BALL_ENEMY_SIDE(List.of(
+            new PauseTrajectory(1, 0), // shoot 3 balls
+            new GeneratedTrajectory("2-ball side", true, 1),
+            new PauseTrajectory(1, 2), // intake 2 balls, turn intake off
+            new GeneratedTrajectory("go back", false, 3),
+            new GeneratedTrajectory("return", false, 4),
+            new PauseTrajectory(1, 5) // shoot 2 balls
+    )),
     TEST_ROUTINE(List.of(
             new PauseTrajectory(0.5, 0),
             new GeneratedTrajectory("test", false, 1),
             new RotateTrajectory(180, 2),
             new GeneratedTrajectory("another test path", false, 3)
-    )),
-    THREE_BALL(List.of(
-            new PauseTrajectory(1, 0), //shoot 3-balls
-            new GeneratedTrajectory("3-ball prepare", false, 1),
-            new PauseTrajectory(1, 2), //turn intake on
-            new GeneratedTrajectory("3-ball", true, 3), //intake 3 balls
-            new GeneratedTrajectory("2-ball 2", true, 4), //intake 2 balls
-            new PauseTrajectory(1, 5) //turn intake off
     )),
     SIX_BALL(List.of(
             new PauseTrajectory(3.5, 0), // shoot 3 ball turn intake on
