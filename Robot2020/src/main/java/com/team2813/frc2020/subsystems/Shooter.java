@@ -202,6 +202,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
             setPosition(calculateHighPosition(limelight.getVertAngle()));
             desiredDemand = Demand.HIGH_RANGE;
         }
+        desiredDemand = Demand.LOW_RANGE;
         if (desiredDemand != demand && demand != Demand.OFF)
             demand = desiredDemand;
     }
