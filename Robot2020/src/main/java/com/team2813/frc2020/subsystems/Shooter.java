@@ -171,6 +171,8 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
             controlLock = false;
         });
 
+        AUTO_BUTTON.whenPressed(limelight
+                ::resetSteer);
         if (AUTO_BUTTON.get()) {
             Limelight.getInstance().setLights(true);
             adjustHood();
@@ -202,7 +204,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
             setPosition(calculateHighPosition(limelight.getVertAngle()));
             desiredDemand = Demand.HIGH_RANGE;
         }
-        desiredDemand = Demand.LOW_RANGE;
+        desiredDemand = Demand.MID_RANGE;
         if (desiredDemand != demand && demand != Demand.OFF)
             demand = desiredDemand;
     }
@@ -233,11 +235,15 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         encoder.setPosition(0);
     }
 
+    public double getVelocity() {
+        return FLYWHEEL.getVelocity() * FLYWHEEL_UPDUCTION;
+    }
+
     @Override
     public void writePeriodicOutputs() {
         super.writePeriodicOutputs();
 
-        if (demand != Demand.OFF) {
+        if (demand != Demand.OFF && (Math.abs(getVelocity()) < Math.abs(demand.expected)) || (Math.abs(getVelocity() - demand.expected) < 300)) {
             double velocity = demand.velocity / FLYWHEEL_UPDUCTION;
             FLYWHEEL.set(ControlMode.VELOCITY, velocity, shooterFeedforward.calculate(velocity));
         } else {
@@ -301,12 +307,14 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     }
 
     enum Demand {
-        LOW_RANGE(3750), MID_RANGE(5000), HIGH_RANGE(6100), OFF(0.0), REV(-1500);
+        LOW_RANGE(3750, 4530), MID_RANGE(5000, 5500), HIGH_RANGE(6100, 6100), OFF(0.0, 0), REV(-1500, -1500);
 
         double velocity;
+        double expected;
 
-        Demand(double velocity) {
+        Demand(double velocity, double expected) {
             this.velocity = velocity;
+            this.expected = expected;
         }
     }
 
