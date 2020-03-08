@@ -17,8 +17,8 @@ public class Limelight {
     private static final double TARGET_HEIGHT = 98.25; // in inches
 
     private Limelight() {
-
         steerController.setTolerance(.3);
+        setStream(2);
     }
 
     private static Limelight instance = new Limelight();
@@ -54,5 +54,9 @@ public class Limelight {
 
     public LimelightValues getValues() {
         return values;
+    }
+
+    public void setStream(int stream) {
+        values.getStream().setNumber(stream);
     }
 }
