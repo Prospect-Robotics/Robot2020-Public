@@ -41,7 +41,7 @@ public class Climber extends Subsystem1d<Climber.Position> {
         super(MotorConfigs.sparks.get("climber"));
 //        CLIMBER = MotorConfigs.sparks.get("climber");
         BRAKE = new PistonSolenoid(0);
-        getMotor().setSoftLimit(LimitDirection.REVERSE, -78.0);
+        getMotor().setSoftLimit(LimitDirection.REVERSE, -79.75);
         getMotor().setSoftLimit(LimitDirection.FORWARD, 0.0);
         ((SparkMaxWrapper) getMotor()).enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
         ((SparkMaxWrapper) getMotor()).enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
