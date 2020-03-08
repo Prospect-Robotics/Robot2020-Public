@@ -20,18 +20,20 @@ public enum AutoRoutine {
                     new LockAction(() -> AutoTrajectories.FIVE_BALL_ENEMY.getTrajectory().isCurrentTrajectory(5), true),
                     new AutoAimAction()/* shoot ball, intake, shoot ball*/
             ), AutoTrajectories.FIVE_BALL_ENEMY),
+    FIVE_BALL_ENEMY_SIDE("5 ball Enemy Side",
+            new SeriesAction(
+                    new AutoAimAction(),
+                    new LockAction(() -> AutoTrajectories.FIVE_BALL_ENEMY.getTrajectory().isCurrentTrajectory(2), true),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new WaitAction(1),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
+                    new LockAction(() -> AutoTrajectories.FIVE_BALL_ENEMY.getTrajectory().isCurrentTrajectory(5), true),
+                    new AutoAimAction()/* shoot ball, intake, shoot ball*/
+            ), AutoTrajectories.FIVE_BALL_ENEMY_SIDE),
     TEST_ROUTINE("Test",
             new SeriesAction(
                     new WaitAction(1)
             ), AutoTrajectories.TEST_ROUTINE),
-    THREE_BALL("3-ball",
-            new SeriesAction(
-                    new AutoAimAction(),
-                    new LockAction(() -> AutoTrajectories.THREE_BALL.getTrajectory().isCurrentTrajectory(2), true),
-                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
-                    new LockAction(() -> AutoTrajectories.THREE_BALL.getTrajectory().isCurrentTrajectory(5), true),
-                    new FunctionAction(() -> INTAKE.autoIntake(false), true)
-            ), AutoTrajectories.THREE_BALL),
     SIX_BALL("6-ball",
             new SeriesAction(
                     new AutoAimAction(),
@@ -106,7 +108,36 @@ public enum AutoRoutine {
     AUTO_AIM_FORWARD("Auto Aim Forward",
             new SeriesAction(
                     new AutoAimAction()
-            ), AutoTrajectories.GO_FORWARD);
+            ), AutoTrajectories.GO_FORWARD),
+    EIGHT_BALL("Eight Ball",
+            new SeriesAction(
+                    new AutoAimAction(),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(2), true),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
+                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(4), true),
+                    new FunctionAction(MAGAZINE::spinMagazineReverse, true),
+                    new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.IN), true),
+                    new WaitAction(.15),
+                    new FunctionAction(MAGAZINE::stopMagazine, true),
+                    new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.OFF), true),
+                    new AutoAimAction()
+            ), AutoTrajectories.EIGHT_BALL),
+    EIGHT_BALL_SIDE("Eight Ball Side",
+            new SeriesAction(
+                    new AutoAimAction(),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new LockAction(() -> AutoTrajectories.EIGHT_BALL_SIDE.getTrajectory().isCurrentTrajectory(2), true),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
+                    new LockAction(() -> AutoTrajectories.EIGHT_BALL_SIDE.getTrajectory().isCurrentTrajectory(4), true),
+                    new FunctionAction(MAGAZINE::spinMagazineReverse, true),
+                    new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.IN), true),
+                    new WaitAction(.15),
+                    new FunctionAction(MAGAZINE::stopMagazine, true),
+                    new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.OFF), true),
+                    new AutoAimAction()
+            ), AutoTrajectories.EIGHT_BALL_SIDE)
+    ;
     
     private Action action;
     private RamseteTrajectory trajectory;

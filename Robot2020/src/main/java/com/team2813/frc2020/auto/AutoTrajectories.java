@@ -13,19 +13,19 @@ public enum AutoTrajectories {
             new GeneratedTrajectory("return", false, 4),
             new PauseTrajectory(1, 5) // shoot 2 balls
     )),
+    FIVE_BALL_ENEMY_SIDE(List.of(
+            new PauseTrajectory(1, 0), // shoot 3 balls
+            new GeneratedTrajectory("2-ball side", true, 1),
+            new PauseTrajectory(1, 2), // intake 2 balls, turn intake off
+            new GeneratedTrajectory("go back", false, 3),
+            new GeneratedTrajectory("return", false, 4),
+            new PauseTrajectory(1, 5) // shoot 2 balls
+    )),
     TEST_ROUTINE(List.of(
             new PauseTrajectory(0.5, 0),
             new GeneratedTrajectory("test", false, 1),
             new RotateTrajectory(180, 2),
             new GeneratedTrajectory("another test path", false, 3)
-    )),
-    THREE_BALL(List.of(
-            new PauseTrajectory(1, 0), //shoot 3-balls
-            new GeneratedTrajectory("3-ball prepare", false, 1),
-            new PauseTrajectory(1, 2), //turn intake on
-            new GeneratedTrajectory("3-ball", true, 3), //intake 3 balls
-            new GeneratedTrajectory("2-ball 2", true, 4), //intake 2 balls
-            new PauseTrajectory(1, 5) //turn intake off
     )),
     SIX_BALL(List.of(
             new PauseTrajectory(3.5, 0), // shoot 3 ball turn intake on
@@ -36,9 +36,9 @@ public enum AutoTrajectories {
     )),
     SIX_BALL_SIDE(List.of(
             new PauseTrajectory(3.5, 0), // shoot 3 ball turn intake on
-            new GeneratedTrajectory("3-ball trench side", true, 1), // intake 3 balls
+            new GeneratedTrajectory("rev 3-ball trench side", true, 1), // intake 3 balls
             new PauseTrajectory(.1, 2), //turn intake off
-            new GeneratedTrajectory("back 3-ball side", false, 3),
+            new GeneratedTrajectory("fwd 3-ball side return", false, 3),
             new PauseTrajectory(1, 4) // shoot 3 balls
     )),
     NINE_BALL(List.of(
@@ -70,7 +70,24 @@ public enum AutoTrajectories {
     )), GO_FORWARD(List.of(
             new PauseTrajectory(6, 0),
             new GeneratedTrajectory("go forward", false, 1)
-    ));;
+    )),
+    EIGHT_BALL(List.of(
+            new PauseTrajectory(3.5, 0), // shoot 3 ball turn intake on
+            new GeneratedTrajectory("3-ball trench", true, 1), // intake 3 balls
+//            new PauseTrajectory(.1, 2),
+            new GeneratedTrajectory("rev trench to sg", true, 2),
+            new GeneratedTrajectory("rev 2-ball shield generator", true, 3),
+            new GeneratedTrajectory("fwd shield generator to initiation", false, 4),
+            new PauseTrajectory(1, 5)
+    )),
+    EIGHT_BALL_SIDE(List.of(
+            new PauseTrajectory(3.5, 0),
+            new GeneratedTrajectory("rev 3-ball trench side", true, 1),
+            new GeneratedTrajectory("rev trench to sg", true, 2),
+            new GeneratedTrajectory("rev 2-ball shield generator", true, 3),
+            new GeneratedTrajectory("fwd shield generator to initiation", false, 4),
+            new PauseTrajectory(1, 5)
+    ));
 
 
 
