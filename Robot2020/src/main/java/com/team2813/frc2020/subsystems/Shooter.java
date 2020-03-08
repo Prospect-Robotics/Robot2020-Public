@@ -239,8 +239,9 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         if (demand != Demand.OFF) {
             double velocity = demand.velocity / FLYWHEEL_UPDUCTION;
             FLYWHEEL.set(ControlMode.VELOCITY, velocity, shooterFeedforward.calculate(velocity));
-        } else
+        } else {
             FLYWHEEL.set(ControlMode.DUTY_CYCLE, 0);
+        }
 
         if (kickerDemand != KickerDemand.OFF)
             KICKER.set(ControlMode.VELOCITY, kickerDemand.velocity);

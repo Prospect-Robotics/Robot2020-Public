@@ -1,9 +1,13 @@
 package com.team2813.frc2020.util;
 
 import com.team2813.lib.util.LimelightValues;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpiutil.math.MathUtil;
 
 public class Limelight {
+    private PIDController steerController = new PIDController(0.5, 0, 0);
+
     private LimelightValues values = new LimelightValues();
     private final double kP = 0.5;//was 0.56
     private static final double CORRECTION_MAX_STEER_SPEED = 1;
@@ -12,7 +16,10 @@ public class Limelight {
     private static final double MOUNT_HEIGHT = 35; // in inches
     private static final double TARGET_HEIGHT = 98.25; // in inches
 
-    private Limelight() {}
+    private Limelight() {
+
+        steerController.setTolerance(.3);
+    }
 
     private static Limelight instance = new Limelight();
 
@@ -20,7 +27,12 @@ public class Limelight {
         return instance;
     }
 
+    public void resetSteer() {
+        steerController.reset();
+    }
+
     public double getSteer() {
+        System.out.println(MathUtil.clamp(steerController.calculate(values.getTx()), -CORRECTION_MAX_STEER_SPEED, CORRECTION_MAX_STEER_SPEED));
         if (Math.abs(values.getTx()) > 0.35) {
             double sign = Math.abs(values.getTx()) / values.getTx();
             return (((values.getTx()) / 27) * kP * CORRECTION_MAX_STEER_SPEED + (sign * MIN_CORRECTION_STEER));

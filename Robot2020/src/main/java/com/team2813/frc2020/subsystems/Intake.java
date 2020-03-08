@@ -12,6 +12,7 @@ import static com.team2813.frc2020.subsystems.Subsystems.MAGAZINE;
 public class Intake extends Subsystem {
 
     private SparkMaxWrapper INTAKE_MOTOR;
+    private final Button INTAKE_PISTONS = SubsystemControlsConfig.getIntakePistons();
     private final Button INTAKE_DEPLOY_BUTTON = SubsystemControlsConfig.getIntakeDeployButton();
     private final Button INTAKE_SPIN_BUTTON = SubsystemControlsConfig.getIntakeSpinButton();
     private final Button INTAKE_IN_BUTTON = SubsystemControlsConfig.getIntakeIn();
@@ -47,6 +48,7 @@ public class Intake extends Subsystem {
         });
 
         // operator
+        INTAKE_PISTONS.whenPressed(PISTONS::toggle);
         INTAKE_IN_BUTTON.whenPressedReleased(() -> setIntake(Demand.IN), () -> setIntake(Demand.OFF));
         INTAKE_OUT_BUTTON.whenPressedReleased(() -> setIntake(Demand.OUT), () -> setIntake(Demand.OFF));
     }
