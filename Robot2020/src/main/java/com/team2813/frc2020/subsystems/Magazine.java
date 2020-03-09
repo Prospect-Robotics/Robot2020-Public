@@ -8,7 +8,6 @@ import com.team2813.lib.motors.interfaces.ControlMode;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import static com.team2813.frc2020.subsystems.Shooter.*;
 import static com.team2813.frc2020.subsystems.Subsystems.INTAKE;
 import static com.team2813.frc2020.subsystems.Subsystems.SHOOTER;
 
@@ -34,9 +33,9 @@ public class Magazine extends Subsystem {
     }
 
     public void spinMagazineForward() {
-        if (Shooter.currentPosition == Shooter.Position.INITIATION)
-            demand = Demand.INITIATION;
-        else demand = Demand.TRENCH;
+        if (SHOOTER.demand == Shooter.Demand.LOW_RANGE)
+            demand = Demand.LOW_RANGE;
+        else demand = Demand.FAR_RANGE;
         SHOOTER.setKicker(Shooter.KickerDemand.ON);
         INTAKE.setIntake(Intake.Demand.IN);
     }
@@ -143,7 +142,7 @@ public class Magazine extends Subsystem {
     }
 
     enum Demand {
-        TRENCH(0.18), INITIATION(1), OFF(0.0), REV(-0.3), INTAKE(0.2);
+        LOW_RANGE(1), FAR_RANGE(.7), OFF(0.0), REV(-0.3), INTAKE(0.2);
 
         double percent;
 
