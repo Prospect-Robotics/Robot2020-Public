@@ -38,11 +38,11 @@ class SubsystemControlsConfig {
 	private static Button intakeIn = operatorJoystick.button(5);
 	private static Button intakeOut = operatorJoystick.button(6);
 	private static Button shooterButton = operatorJoystick.button(4);
+	private static Button hoodZeroButton = operatorJoystick.button(9);
+	private static Button hoodKillButton = operatorJoystick.button(10);
 	private static Button climberButton = operatorJoystick.button(11);
 	private static Axis climberElevator = operatorJoystick.axis(1);
 	private static Button climberDisable = operatorJoystick.button(1);
-	private static Button hoodInitiation = operatorJoystick.button(9);
-	private static Button hoodTrench = operatorJoystick.button(10);
 	private static Button magForward = operatorJoystick.button(7);
 	private static Button magReverse = operatorJoystick.button(8);
 
@@ -126,11 +126,11 @@ class SubsystemControlsConfig {
 		return climberDisable;
 	}
 
-	public static Button getHoodInitiation() {
-		return hoodInitiation;
+	public static Button getHoodZeroButton() {
+		return hoodZeroButton;
 	}
 
-	public static Button getHoodTrench() {
-		return hoodTrench;
+	public static Button getHoodKillButton() {
+		return hoodKillButton;
 	}
 }

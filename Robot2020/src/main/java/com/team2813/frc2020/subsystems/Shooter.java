@@ -29,9 +29,9 @@ import static com.team2813.frc2020.subsystems.Subsystems.MAGAZINE;
 public class Shooter extends Subsystem1d<Shooter.Position> {
 
     private static final Button SHOOTER_BUTTON = SubsystemControlsConfig.getShooterButton();
-    private static final Button HOOD_INITIATION_BUTTON = SubsystemControlsConfig.getHoodInitiation();
-    private static final Button HOOD_TRENCH_BUTTON = SubsystemControlsConfig.getHoodTrench();
     private static final Button AUTO_BUTTON = SubsystemControlsConfig.getAutoButton();
+    private static final Button HOOD_ZERO_BUTTON = SubsystemControlsConfig.getHoodZeroButton();
+    private static final Button HOOD_KILL_BUTTON = SubsystemControlsConfig.getHoodKillButton();
     private final SparkMaxWrapper HOOD;
     private final TalonFXWrapper FLYWHEEL;
     protected final SparkMaxWrapper KICKER;
@@ -50,9 +50,8 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     private double FLYWHEEL_UPDUCTION = 3.0 / 2;
     private boolean isFullyRevvedUp;
 
-    private Action startAction;
-
     private boolean controlLock = false;
+    private boolean murderedHood = false;
 
     Shooter() {
         super(MotorConfigs.sparks.get("hood"));
@@ -125,27 +124,12 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         stopSpinningFlywheel(false);
     }
 
-    public void unloadPayload() {
-        startAction = new SeriesAction(
-                new LockFunctionAction(this::startSpinningFlywheel, this::isFlywheelReady, true)
-                //TODO Uncomment this ,new FunctionAction(Subsystems.MAGAZINE::spinMagazineForward);
-                , new LockAction(this::hasFinishButtonBeenPressed, true)
-                , new FunctionAction(this::stopSpinningFlywheel, true)
-        );
-        LOOPER.addAction(startAction);
-    }
-
     public boolean isFlywheelReady() {
         return Math.abs((FLYWHEEL.getVelocity() * FLYWHEEL_UPDUCTION) - demand.expected) < 500;
     }
 
     boolean isFullyRevvedUp() {
         return isFullyRevvedUp;
-    }
-
-    //TODO Change this to when Mag empty
-    public boolean hasFinishButtonBeenPressed() {
-        return SHOOTER_BUTTON.get();
     }
 
     @Override
@@ -175,11 +159,10 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         isFullyRevvedUp = FLYWHEEL.getVelocity() >= desiredDemand.velocity;
 
         // operator
-        HOOD_INITIATION_BUTTON.whenPressed(() -> setPosition(Position.INITIATION));
-        HOOD_TRENCH_BUTTON.whenPressed(() -> setPosition(Position.TRENCH));
-        if (HOOD_INITIATION_BUTTON.get() && HOOD_TRENCH_BUTTON.get()) {
-            setPosition(Position.MIN);
-        }
+        HOOD_ZERO_BUTTON.whenPressed(() -> setPosition(Position.MIN));
+        HOOD_KILL_BUTTON.whenPressed(() -> {
+            murderedHood = !murderedHood;
+        });
     }
 
     public void adjustHood() {
@@ -234,7 +217,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     @Override
     public void writePeriodicOutputs() {
-        super.writePeriodicOutputs();
+        if(murderedHood) super.writePeriodicOutputs();
 
         if (demand != Demand.OFF && (Math.abs(getVelocity()) < Math.abs(demand.expected)) || (Math.abs(getVelocity() - demand.expected) < 300)) {
             double velocity = demand.velocity / FLYWHEEL_UPDUCTION;
@@ -247,6 +230,10 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
             KICKER.set(ControlMode.VELOCITY, kickerDemand.velocity);
         else
             KICKER.set(ControlMode.DUTY_CYCLE, 0);
+
+        if(murderedHood){
+            HOOD.set(ControlMode.DUTY_CYCLE, 0);
+        }
     }
 
     public enum Position implements Subsystem1d.Position<Shooter.Position> {
@@ -326,8 +313,8 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
                 + (0.0000189531*Math.pow(y,4))
                 - (0.000267987*Math.pow(y,3))
                 + (0.00139343*Math.pow(y,2))
-                - (0.0106419*y)
-                +1.06979;
+                + (0.0106419*y)
+                - 1.06979;
     }
 
     public double calculateMidPosition(double y) {
