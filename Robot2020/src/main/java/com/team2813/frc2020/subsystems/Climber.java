@@ -24,7 +24,6 @@ import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
 public class Climber extends Subsystem1d<Climber.Position> {
 
     private static final Axis CLIMBER_AXIS = SubsystemControlsConfig.getClimberElevator();
-    private static final POV CLIMBER_CONTROL = SubsystemControlsConfig.getClimberElevator_();
     private static final Button CLIMBER_BUTTON = SubsystemControlsConfig.getClimberButton();
     private static final Button PISTON_BUTTON = SubsystemControlsConfig.getClimberPiston();
     private static final Button STOP_CLIMBER = SubsystemControlsConfig.getClimberDisable();
