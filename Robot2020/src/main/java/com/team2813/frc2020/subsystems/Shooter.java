@@ -39,7 +39,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     private static final double MAX_ENCODER = -1.2;
     protected static Position currentPosition = Position.MIN;
     private Demand desiredDemand = Demand.LOW_RANGE;
-    private Demand demand = Demand.OFF;
+    public Demand demand = Demand.OFF;
     private KickerDemand kickerDemand = KickerDemand.OFF;
     private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(0.266, 0.112, 0.0189);
     private Limelight limelight = Limelight.getInstance();
@@ -136,7 +136,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     }
 
     public boolean isFlywheelReady() {
-        return FLYWHEEL.getVelocity() * FLYWHEEL_UPDUCTION > demand.velocity;
+        return Math.abs((FLYWHEEL.getVelocity() * FLYWHEEL_UPDUCTION) - demand.expected) < 500;
     }
 
     boolean isFullyRevvedUp() {
