@@ -43,8 +43,8 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     private KickerDemand kickerDemand = KickerDemand.OFF;
     private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(0.266, 0.112, 0.0189);
     private Limelight limelight = Limelight.getInstance();
-    static final double LOW_MID_THRESHOLD = -4.9;
-    static final double MID_FAR_THRESHOLD = -9.5;
+    static final double LOW_MID_THRESHOLD = -4.5;
+    static final double MID_FAR_THRESHOLD = -10.3;
     static final double MAX_THRESHOLD = -11.3;
 
     private double FLYWHEEL_UPDUCTION = 3.0 / 2;
