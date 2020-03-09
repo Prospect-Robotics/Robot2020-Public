@@ -28,7 +28,6 @@ import static com.team2813.frc2020.subsystems.Subsystems.MAGAZINE;
 
 public class Shooter extends Subsystem1d<Shooter.Position> {
 
-    private static final Button HOOD_BUTTON = SubsystemControlsConfig.getHoodButton();
     private static final Button SHOOTER_BUTTON = SubsystemControlsConfig.getShooterButton();
     private static final Button HOOD_INITIATION_BUTTON = SubsystemControlsConfig.getHoodInitiation();
     private static final Button HOOD_TRENCH_BUTTON = SubsystemControlsConfig.getHoodTrench();
@@ -37,8 +36,6 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     private final TalonFXWrapper FLYWHEEL;
     protected final SparkMaxWrapper KICKER;
     protected final CANEncoder encoder;
-    private static final int MIN_ANGLE = 35;
-    private static final int MAX_ANGLE = 70;
     private static final double MAX_ENCODER = -1.2;
     protected static Position currentPosition = Position.MIN;
     private Demand desiredDemand = Demand.LOW_RANGE;
@@ -170,9 +167,6 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
             stopSpinningFlywheel(true);
             controlLock = false;
         });
-
-        AUTO_BUTTON.whenPressed(limelight
-                ::resetSteer);
         if (AUTO_BUTTON.get()) {
             Limelight.getInstance().setLights(true);
             adjustHood();
@@ -328,23 +322,25 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         }
     }
 
-    private static double revsToDegrees(double revs) {
-        return revs * (MAX_ANGLE - MIN_ANGLE) / MAX_ENCODER;
-    }
-
-    private static double degreesToRevs(double degrees) {
-        return degrees * MAX_ENCODER / (MAX_ANGLE - MIN_ANGLE);
-    }
-
     public double calculateLowPosition(double y) {
-        return (-0.0000008514567632688 * Math.pow(y, 5)) + (0.0000361146 * Math.pow(y, 4)) - (0.000432028 * Math.pow(y, 3)) + (0.00126728 * Math.pow(y, 2)) + (0.00961345 * y) - 1.00157;
+        return (-0.00000040621212258987*Math.pow(y,5))
+                + (0.0000189531*Math.pow(y,4))
+                - (0.000267987*Math.pow(y,3))
+                + (0.00139343*Math.pow(y,2))
+                - (0.0106419*y)
+                +1.06979;
     }
 
     public double calculateMidPosition(double y) {
-        return (-0.00315274 * Math.pow(y, 2)) - (0.0695706 * y) - 1.46903;
+        return (0.0036761*Math.pow(y,3))
+                + (0.0886286*Math.pow(y,2))
+                + (0.646713*y)
+                + 0.239859;
     }
 
     public double calculateHighPosition(double y) {
-        return (-1.95046 * Math.pow(y, 2)) - (43.0127 * y) - 237.929;
+        return (-0.00315274*Math.pow(y,2))
+                - (0.0695706*y)
+                - 1.46903;
     }
 }
