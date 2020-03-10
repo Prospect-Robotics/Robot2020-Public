@@ -73,6 +73,8 @@ public class Robot extends TimedRobot {
             }
             limelight.setLights(false);
             lightshow.setDefaultLight(Lightshow.Light.DISABLED);
+
+            DRIVE.setBrakeMode(false);
         } catch (IOException e) {
             System.out.println("Something went wrong while reading config files!");
             CrashTracker.logThrowableCrash(e);

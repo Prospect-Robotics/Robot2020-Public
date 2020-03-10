@@ -27,6 +27,10 @@ public enum AutoTrajectories {
             new RotateTrajectory(180, 2),
             new GeneratedTrajectory("another test path", false, 3)
     )),
+    ONE_METER_TEST(List.of(
+            new PauseTrajectory(1, 0),
+            new GeneratedTrajectory("test", true, 1)
+    )),
     SIX_BALL(List.of(
             new PauseTrajectory(3.5, 0), // shoot 3 ball turn intake on
             new GeneratedTrajectory("3-ball trench", true, 1), // intake 3 balls
@@ -74,11 +78,13 @@ public enum AutoTrajectories {
     EIGHT_BALL(List.of(
             new PauseTrajectory(3.5, 0), // shoot 3 ball turn intake on
             new GeneratedTrajectory("3-ball trench", true, 1), // intake 3 balls
-//            new PauseTrajectory(.1, 2),
-            new GeneratedTrajectory("rev trench to sg", true, 2),
-            new GeneratedTrajectory("rev 2-ball shield generator", true, 3),
-            new GeneratedTrajectory("fwd shield generator to initiation", false, 4),
-            new PauseTrajectory(1, 5)
+            new PauseTrajectory(.1, 2),
+            new RotateTrajectory(180, 3),
+            new GeneratedTrajectory("rev trench to sg", true, 4),
+            new RotateTrajectory(100, 5),
+            new GeneratedTrajectory("rev 2-ball shield generator", true, 6),
+            new GeneratedTrajectory("fwd shield generator to initiation", false, 7),
+            new PauseTrajectory(1, 8)
     )),
     EIGHT_BALL_SIDE(List.of(
             new PauseTrajectory(3.5, 0),

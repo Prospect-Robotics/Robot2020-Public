@@ -5,8 +5,7 @@ import com.team2813.frc2020.util.AutoAimAction;
 import com.team2813.lib.actions.*;
 import com.team2813.lib.auto.RamseteTrajectory;
 
-import static com.team2813.frc2020.subsystems.Subsystems.INTAKE;
-import static com.team2813.frc2020.subsystems.Subsystems.MAGAZINE;
+import static com.team2813.frc2020.subsystems.Subsystems.*;
 
 public enum AutoRoutine {
 
@@ -45,6 +44,7 @@ public enum AutoRoutine {
                     new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.IN), true),
                     new WaitAction(.15),
                     new FunctionAction(MAGAZINE::stopMagazine, true),
+                    new FunctionAction(SHOOTER::startSpinningFlywheel, true),
                     new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.OFF), true),
                     new AutoAimAction()
             ), AutoTrajectories.SIX_BALL),
@@ -54,11 +54,13 @@ public enum AutoRoutine {
                     new FunctionAction(() -> INTAKE.autoIntake(true), true),
                     new LockAction(() -> AutoTrajectories.SIX_BALL.getTrajectory().isCurrentTrajectory(2), true),
                     new FunctionAction(() -> INTAKE.autoIntake(false), true),
+                    new FunctionAction(() -> System.out.println("HIII"), true),
                     new LockAction(() -> AutoTrajectories.SIX_BALL.getTrajectory().isCurrentTrajectory(4), true),
                     new FunctionAction(MAGAZINE::spinMagazineReverse, true),
                     new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.IN), true),
                     new WaitAction(.15),
                     new FunctionAction(MAGAZINE::stopMagazine, true),
+                    new FunctionAction(SHOOTER::startSpinningFlywheel, true),
                     new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.OFF), true),
                     new AutoAimAction()
             ), AutoTrajectories.SIX_BALL_SIDE),
@@ -136,8 +138,11 @@ public enum AutoRoutine {
                     new FunctionAction(MAGAZINE::stopMagazine, true),
                     new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.OFF), true),
                     new AutoAimAction()
-            ), AutoTrajectories.EIGHT_BALL_SIDE)
-    ;
+            ), AutoTrajectories.EIGHT_BALL_SIDE),
+    ONE_METER_TEST("One Meter Test",
+            new FunctionAction(() -> System.out.println("Testing One Meter"), true),
+            AutoTrajectories.ONE_METER_TEST
+    );
     
     private Action action;
     private RamseteTrajectory trajectory;
