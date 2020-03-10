@@ -52,10 +52,9 @@ public enum AutoRoutine {
             new SeriesAction(
                     new AutoAimAction(),
                     new FunctionAction(() -> INTAKE.autoIntake(true), true),
-                    new LockAction(() -> AutoTrajectories.SIX_BALL.getTrajectory().isCurrentTrajectory(2), true),
+                    new LockAction(() -> AutoTrajectories.SIX_BALL_SIDE.getTrajectory().isCurrentTrajectory(2), true),
                     new FunctionAction(() -> INTAKE.autoIntake(false), true),
-                    new FunctionAction(() -> System.out.println("HIII"), true),
-                    new LockAction(() -> AutoTrajectories.SIX_BALL.getTrajectory().isCurrentTrajectory(4), true),
+                    new LockAction(() -> AutoTrajectories.SIX_BALL_SIDE.getTrajectory().isCurrentTrajectory(4), true),
                     new FunctionAction(MAGAZINE::spinMagazineReverse, true),
                     new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.IN), true),
                     new WaitAction(.15),
