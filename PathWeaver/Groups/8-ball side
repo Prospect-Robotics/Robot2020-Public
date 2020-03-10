@@ -1,4 +1,5 @@
 rev 3-ball trench side
 rev trench to sg
+fwd 2-ball shield generator
 rev 2-ball shield generator
-fwd shield generator to initiation
+fwd shield generator to side

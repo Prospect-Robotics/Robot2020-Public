@@ -2,6 +2,7 @@ package com.team2813.frc2020.auto;
 
 import com.team2813.frc2020.subsystems.Intake;
 import com.team2813.frc2020.util.AutoAimAction;
+import com.team2813.frc2020.util.TrajectoryLock;
 import com.team2813.lib.actions.*;
 import com.team2813.lib.auto.RamseteTrajectory;
 
@@ -89,13 +90,17 @@ public enum AutoRoutine {
 //                    new AutoAimAction()
             ), AutoTrajectories.NINE_BALL),
 
-    FIVE_BALL_TWO("5-ball 2",
+    FIVE_BALL("5-ball",
             new SeriesAction(
                     new FunctionAction(() -> INTAKE.autoIntake(true), true),
-                    new LockAction(() -> AutoTrajectories.FIVE_BALL_TWO.getTrajectory().isCurrentTrajectory(3), true),
+                    new TrajectoryLock(AutoTrajectories.FIVE_BALL, 2),
                     new FunctionAction(() -> INTAKE.autoIntake(false), false),
+                    new FunctionAction(MAGAZINE::spinMagazineReverse, true),
+                    new WaitAction(.1),
+                    new FunctionAction(MAGAZINE::stopMagazine, true),
+                    new TrajectoryLock(AutoTrajectories.FIVE_BALL, 3),
                     new AutoAimAction()
-            ), AutoTrajectories.FIVE_BALL_TWO),
+            ), AutoTrajectories.FIVE_BALL),
 
     TEST_REVERSE("test reverse",
             new SeriesAction(new WaitAction(1)
@@ -114,28 +119,40 @@ public enum AutoRoutine {
             new SeriesAction(
                     new AutoAimAction(),
                     new FunctionAction(() -> INTAKE.autoIntake(true), true),
-                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(2), true),
+                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 2),
                     new FunctionAction(() -> INTAKE.autoIntake(false), true),
-                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(4), true),
+                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 4),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 5),
+                    new FunctionAction(MAGAZINE::stopMagazine, true),
+                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 6),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 7),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
                     new FunctionAction(MAGAZINE::spinMagazineReverse, true),
-                    new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.IN), true),
                     new WaitAction(.15),
                     new FunctionAction(MAGAZINE::stopMagazine, true),
-                    new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.OFF), true),
+                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 8),
                     new AutoAimAction()
             ), AutoTrajectories.EIGHT_BALL),
     EIGHT_BALL_SIDE("Eight Ball Side",
             new SeriesAction(
                     new AutoAimAction(),
                     new FunctionAction(() -> INTAKE.autoIntake(true), true),
-                    new LockAction(() -> AutoTrajectories.EIGHT_BALL_SIDE.getTrajectory().isCurrentTrajectory(2), true),
+                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL_SIDE, 2),
                     new FunctionAction(() -> INTAKE.autoIntake(false), true),
-                    new LockAction(() -> AutoTrajectories.EIGHT_BALL_SIDE.getTrajectory().isCurrentTrajectory(4), true),
+                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL_SIDE, 4),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL_SIDE, 5),
+                    new FunctionAction(MAGAZINE::stopMagazine, true),
+                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL_SIDE, 6),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL_SIDE, 7),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
                     new FunctionAction(MAGAZINE::spinMagazineReverse, true),
-                    new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.IN), true),
                     new WaitAction(.15),
                     new FunctionAction(MAGAZINE::stopMagazine, true),
-                    new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.OFF), true),
+                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL_SIDE, 8),
                     new AutoAimAction()
             ), AutoTrajectories.EIGHT_BALL_SIDE),
     ONE_METER_TEST("One Meter Test",

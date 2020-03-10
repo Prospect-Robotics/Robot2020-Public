@@ -59,12 +59,11 @@ public enum AutoTrajectories {
             new GeneratedTrajectory("return 9-ball 2", false, 10),
             new PauseTrajectory(1, 11)
     )),
-    FIVE_BALL_TWO(List.of(
-            new PauseTrajectory(1, 0), //turn intake on
-            new GeneratedTrajectory("2-ball initiation line", true, 1), //intake 2 balls
-            new RotateTrajectory(180, 2),
-            new PauseTrajectory(1, 3), //turn intake off, shoot 5 balls
-            new GeneratedTrajectory("general zone", false, 4)
+    FIVE_BALL(List.of(
+            new GeneratedTrajectory("rev trench 2-ball", true, 0), //intake 2 balls
+            new PauseTrajectory(1, 1),
+            new GeneratedTrajectory("fwd trench 2-ball to shoot", false, 2),
+            new PauseTrajectory(1, 3)
     )),
     TEST_REVERSE(List.of(
             new GeneratedTrajectory("test reverse", true, 0)
@@ -78,21 +77,24 @@ public enum AutoTrajectories {
     EIGHT_BALL(List.of(
             new PauseTrajectory(3.5, 0), // shoot 3 ball turn intake on
             new GeneratedTrajectory("3-ball trench", true, 1), // intake 3 balls
-            new PauseTrajectory(.1, 2),
+            new PauseTrajectory(.5, 2),
             new RotateTrajectory(180, 3),
             new GeneratedTrajectory("rev trench to sg", true, 4),
-            new RotateTrajectory(100, 5),
+            new GeneratedTrajectory("fwd 2-ball shield generator", true, 5),
             new GeneratedTrajectory("rev 2-ball shield generator", true, 6),
             new GeneratedTrajectory("fwd shield generator to initiation", false, 7),
             new PauseTrajectory(1, 8)
     )),
     EIGHT_BALL_SIDE(List.of(
-            new PauseTrajectory(3.5, 0),
-            new GeneratedTrajectory("rev 3-ball trench side", true, 1),
-            new GeneratedTrajectory("rev trench to sg", true, 2),
-            new GeneratedTrajectory("rev 2-ball shield generator", true, 3),
-            new GeneratedTrajectory("fwd shield generator to initiation", false, 4),
-            new PauseTrajectory(1, 5)
+            new PauseTrajectory(3.5, 0), // shoot 3 ball turn intake on
+            new GeneratedTrajectory("rev 3-ball trench side", true, 1), // intake 3 balls
+            new PauseTrajectory(.5, 2),
+            new RotateTrajectory(180, 3),
+            new GeneratedTrajectory("rev trench to sg", true, 4),
+            new GeneratedTrajectory("fwd 2-ball shield generator", true, 5),
+            new GeneratedTrajectory("rev 2-ball shield generator", true, 6),
+            new GeneratedTrajectory("fwd shield generator to side", false, 7),
+            new PauseTrajectory(1, 8)
     ));
 
 
