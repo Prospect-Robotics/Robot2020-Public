@@ -160,9 +160,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
         // operator
         HOOD_ZERO_BUTTON.whenPressed(() -> setPosition(Position.MIN));
-        HOOD_KILL_BUTTON.whenPressed(() -> {
-            murderedHood = !murderedHood;
-        });
+        HOOD_KILL_BUTTON.whenPressed(() -> murderedHood = !murderedHood);
     }
 
     public void adjustHood() {
@@ -217,7 +215,6 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     @Override
     public void writePeriodicOutputs() {
-        if(murderedHood) super.writePeriodicOutputs();
 
         if (demand != Demand.OFF && (Math.abs(getVelocity()) < Math.abs(demand.expected)) || (Math.abs(getVelocity() - demand.expected) < 300)) {
             double velocity = demand.velocity / FLYWHEEL_UPDUCTION;
@@ -231,9 +228,8 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         else
             KICKER.set(ControlMode.DUTY_CYCLE, 0);
 
-        if(murderedHood){
-            HOOD.set(ControlMode.DUTY_CYCLE, 0);
-        }
+        if (murderedHood) HOOD.set(ControlMode.DUTY_CYCLE, 0);
+        else super.writePeriodicOutputs();
     }
 
     public enum Position implements Subsystem1d.Position<Shooter.Position> {
@@ -309,24 +305,24 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     }
 
     public double calculateLowPosition(double y) {
-        return (-0.00000040621212258987*Math.pow(y,5))
-                + (0.0000189531*Math.pow(y,4))
-                - (0.000267987*Math.pow(y,3))
-                + (0.00139343*Math.pow(y,2))
-                + (0.0106419*y)
+        return (-0.00000040621212258987 * Math.pow(y, 5))
+                + (0.0000189531 * Math.pow(y, 4))
+                - (0.000267987 * Math.pow(y, 3))
+                + (0.00139343 * Math.pow(y, 2))
+                + (0.0106419 * y)
                 - 1.06979;
     }
 
     public double calculateMidPosition(double y) {
-        return (0.0036761*Math.pow(y,3))
-                + (0.0886286*Math.pow(y,2))
-                + (0.646713*y)
+        return (0.0036761 * Math.pow(y, 3))
+                + (0.0886286 * Math.pow(y, 2))
+                + (0.646713 * y)
                 + 0.239859;
     }
 
     public double calculateHighPosition(double y) {
-        return (-0.00315274*Math.pow(y,2))
-                - (0.0695706*y)
+        return (-0.00315274 * Math.pow(y, 2))
+                - (0.0695706 * y)
                 - 1.46903;
     }
 }

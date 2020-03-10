@@ -142,7 +142,7 @@ public class Magazine extends Subsystem {
     }
 
     enum Demand {
-        LOW_RANGE(1), FAR_RANGE(.7), OFF(0.0), REV(-0.3), INTAKE(0.2);
+        LOW_RANGE(1), FAR_RANGE(.5), OFF(0.0), REV(-0.3), INTAKE(0.2);
 
         double percent;
 

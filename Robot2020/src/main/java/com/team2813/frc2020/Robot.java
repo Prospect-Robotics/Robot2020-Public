@@ -151,6 +151,7 @@ public class Robot extends TimedRobot {
             LOOPER.setMode(RobotMode.ENABLED);
             LOOPER.start();
             limelight.setLights(false);
+            limelight.setStream(2);
             lightshow.setDefaultLight(Lightshow.Light.ENABLED);
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
