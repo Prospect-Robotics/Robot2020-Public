@@ -6,7 +6,6 @@ import com.revrobotics.CANSparkMax;
 import com.team2813.frc2020.Robot;
 import com.team2813.frc2020.util.Lightshow;
 import com.team2813.frc2020.util.Limelight;
-import com.team2813.lib.actions.*;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.motors.SparkMaxWrapper;
@@ -15,9 +14,6 @@ import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.motors.interfaces.LimitDirection;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
-import static com.team2813.frc2020.subsystems.Subsystems.MAGAZINE;
 
 /**
  * Class for the shooter on the robot.
@@ -283,7 +279,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     }
 
     enum Demand {
-        LOW_RANGE(3750, 4530), MID_RANGE(5000, 5500), HIGH_RANGE(6100, 6100), OFF(0.0, 0), REV(-1500, -1500);
+        LOW_RANGE(3750, 4530), MID_RANGE(5200, 5770), HIGH_RANGE(6100, 6100), OFF(0.0, 0), REV(-1500, -1500);
 
         double velocity;
         double expected;
@@ -310,7 +306,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
                 - (0.000267987 * Math.pow(y, 3))
                 + (0.00139343 * Math.pow(y, 2))
                 + (0.0106419 * y)
-                - 1.06979;
+                - 1;
     }
 
     public double calculateMidPosition(double y) {

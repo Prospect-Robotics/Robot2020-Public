@@ -218,12 +218,17 @@ public class Drive extends Subsystem {
 
     @Override
     public synchronized void writePeriodicOutputs() {
-//        if (driveMode == DriveMode.VELOCITY && !Robot.isAuto && driveDemand.equals(new DriveDemand(0, 0))) {
-//            LEFT.set(ControlMode.DUTY_CYCLE, 0);
-//            RIGHT.set(ControlMode.DUTY_CYCLE, 0);
-//        }
+
         if (driveMode == DriveMode.VELOCITY || Robot.isAuto) {
             DriveDemand demand = Units2813.dtDemandToMotorDemand(driveDemand); // local variable for telemetry reasons also converts m/s to rpm
+
+            if (!Robot.isAuto && Math.abs(Units2813.motorRpmToDtVelocity(LEFT.getVelocity())) > Math.abs(demand.getLeft()))
+                LEFT.setClosedLoopRamp(30);
+            else LEFT.setClosedLoopRamp(0);
+
+            if (!Robot.isAuto && Math.abs(Units2813.motorRpmToDtVelocity(LEFT.getVelocity())) > Math.abs(demand.getLeft()))
+                RIGHT.setClosedLoopRamp(30);
+            else RIGHT.setClosedLoopRamp(0);
             LEFT.set(ControlMode.VELOCITY, demand.getLeft(), feedforward.calculate(driveDemand.getLeft()) / 12);
             RIGHT.set(ControlMode.VELOCITY, demand.getRight(), feedforward.calculate(driveDemand.getRight()) / 12);
         } else {
