@@ -113,26 +113,36 @@ public enum AutoRoutine {
             AutoTrajectories.SERIES_TEST),
     AUTO_AIM_FORWARD("Auto Aim Forward",
             new SeriesAction(
+                    new WaitAction(1),
                     new AutoAimAction()
             ), AutoTrajectories.GO_FORWARD),
     EIGHT_BALL("Eight Ball",
             new SeriesAction(
                     new AutoAimAction(),
                     new FunctionAction(() -> INTAKE.autoIntake(true), true),
-                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 2),
+                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(2), true),
+//                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 2),
                     new FunctionAction(() -> INTAKE.autoIntake(false), true),
-                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 4),
+                    new LockAction(() -> {
+                        System.out.println("In Traj 4");
+                        return AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(4);
+                    }, true),
+//                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 4),
                     new FunctionAction(() -> INTAKE.autoIntake(true), true),
-                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 5),
+                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(5), true),
+//                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 5),
                     new FunctionAction(MAGAZINE::stopMagazine, true),
-                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 6),
-                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
-                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 7),
+//                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(6), true),
+//                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 6),
+//                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(7), true),
+//                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 7),
                     new FunctionAction(() -> INTAKE.autoIntake(false), true),
                     new FunctionAction(MAGAZINE::spinMagazineReverse, true),
                     new WaitAction(.15),
                     new FunctionAction(MAGAZINE::stopMagazine, true),
-                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 8),
+                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(8), true),
+//                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 8),
                     new AutoAimAction()
             ), AutoTrajectories.EIGHT_BALL),
     EIGHT_BALL_SIDE("Eight Ball Side",
