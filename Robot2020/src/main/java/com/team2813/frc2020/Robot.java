@@ -74,7 +74,7 @@ public class Robot extends TimedRobot {
             limelight.setLights(false);
             lightshow.setDefaultLight(Lightshow.Light.DISABLED);
 
-            DRIVE.setBrakeMode(false);
+
         } catch (IOException e) {
             System.out.println("Something went wrong while reading config files!");
             CrashTracker.logThrowableCrash(e);
@@ -115,6 +115,7 @@ public class Robot extends TimedRobot {
             lightshow.setDefaultLight(Lightshow.Light.DISABLED);
             LOOPER.setMode(RobotMode.DISABLED);
             LOOPER.start();
+//            DRIVE.setBrakeMode(false);
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
@@ -131,6 +132,7 @@ public class Robot extends TimedRobot {
         limelight.setLights(true);
         lightshow.setDefaultLight(Lightshow.Light.AUTONOMOUS);
         LOOPER.setMode(RobotMode.ENABLED);
+//        DRIVE.setBrakeMode(true);
         try {
             CrashTracker.logAutoInit();
             for (Subsystem subsystem : allSubsystems) {
@@ -155,6 +157,7 @@ public class Robot extends TimedRobot {
             limelight.setLights(false);
             limelight.setStream(2);
             lightshow.setDefaultLight(Lightshow.Light.ENABLED);
+//            DRIVE.setBrakeMode(true);
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             try {
