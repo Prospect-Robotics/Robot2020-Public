@@ -78,9 +78,9 @@ public enum AutoTrajectories {
             new PauseTrajectory(3.5, 0), // shoot 3 ball turn intake on
             new GeneratedTrajectory("3-ball trench", true, 1), // intake 3 balls
             new PauseTrajectory(.5, 2),
-            new RotateTrajectory(180, 3),
+            new RotateTrajectory(0, 3),
             new GeneratedTrajectory("rev trench to sg", true, 4),
-            new GeneratedTrajectory("fwd 2-ball shield generator", true, 5),
+            new GeneratedTrajectory("fwd 2-ball shield generator", false, 5),
             new GeneratedTrajectory("rev 2-ball shield generator", true, 6),
             new GeneratedTrajectory("fwd shield generator to initiation", false, 7),
             new PauseTrajectory(1, 8)
@@ -91,7 +91,7 @@ public enum AutoTrajectories {
             new PauseTrajectory(.5, 2),
             new RotateTrajectory(180, 3),
             new GeneratedTrajectory("rev trench to sg", true, 4),
-            new GeneratedTrajectory("fwd 2-ball shield generator", true, 5),
+            new GeneratedTrajectory("fwd 2-ball shield generator", false, 5),
             new GeneratedTrajectory("rev 2-ball shield generator", true, 6),
             new GeneratedTrajectory("fwd shield generator to side", false, 7),
             new PauseTrajectory(1, 8)
