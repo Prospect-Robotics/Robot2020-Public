@@ -15,11 +15,7 @@ import java.util.List;
 public class Subsystems {
 
 	public static List<Subsystem> allSubsystems;
-	public static DriveTalon DRIVE;
-	public static Intake INTAKE;
-	public static Magazine MAGAZINE;
-	public static Shooter SHOOTER;
-	public static Climber CLIMBER;
+	public static Drive DRIVE;
 
 	public static final Looper LOOPER = new Looper(RobotMode.DISABLED); //FIXME put looper somewhere else
 
@@ -36,12 +32,8 @@ public class Subsystems {
 	};
 
 	public static void initializeSubsystems() {
-		DRIVE = new DriveTalon();
-		INTAKE = new Intake();
-		MAGAZINE = new Magazine();
-		SHOOTER = new Shooter();
-		CLIMBER = new Climber();
-		allSubsystems = List.of(DRIVE, INTAKE, MAGAZINE, SHOOTER, CLIMBER);
+		DRIVE = new Drive();
+		allSubsystems = List.of(DRIVE);
 		LOOPER.addLoop(new SmartDashboardLoop());
 	}
 

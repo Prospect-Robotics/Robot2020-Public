@@ -2,8 +2,6 @@ package com.team2813.frc2020.subsystems;
 
 import com.team2813.frc2020.loops.Loop;
 
-import static com.team2813.frc2020.subsystems.Subsystems.DRIVE;
-
 /**
  * TODO rewrite this documentation block
  * The Subsystem abstract class, which serves as a basic framework for all robot subsystems. Each subsystem outputs

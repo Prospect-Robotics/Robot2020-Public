@@ -23,15 +23,15 @@ public class Autonomous {
 
     // this will be run periodically (usually to follow the path)
     public void periodic() {
-        Subsystems.DRIVE.setDemand(ramseteAuto.getDemand(Subsystems.DRIVE.robotPosition));
+//        Subsystems.DRIVE.setDemand(ramseteAuto.getDemand(Subsystems.DRIVE.robotPosition));
     }
 
     public void run() {
-        AutoRoutine routine = ShuffleboardData.routineChooser.getSelected();
-        ramseteAuto = new RamseteAuto(Subsystems.DRIVE.kinematics, routine.trajectory);
-
-        Subsystems.DRIVE.initAutonomous(ramseteAuto.initialPose());
-        Subsystems.LOOPER.addAction(routine.action);
+//        AutoRoutine routine = ShuffleboardData.routineChooser.getSelected();
+//        ramseteAuto = new RamseteAuto(Subsystems.DRIVE.kinematics, routine.trajectory);
+//
+//        Subsystems.DRIVE.initAutonomous(ramseteAuto.initialPose());
+//        Subsystems.LOOPER.addAction(routine.action);
     }
 
     public static void addRoutines() {
