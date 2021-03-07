@@ -92,6 +92,10 @@ public class SparkMaxWrapper extends CANSparkMax implements Motor {
         return super.setSoftLimit(direction.getSparkMode(), (float) limit);
     }
 
+    public double getSoftLimit(LimitDirection direction) {
+        return super.getSoftLimit(direction.getSparkMode());
+    }
+
     @Override
     public void setPIDF(int slot, double p, double i, double d, double f) {
         getPIDController().setP(p, slot);
