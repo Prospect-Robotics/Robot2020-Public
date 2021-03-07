@@ -57,7 +57,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         KICKER = MotorConfigs.sparks.get("kicker");
         encoder = HOOD.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
 
-        HOOD.getPIDController().setFeedbackDevice(HOOD.getAlternateEncoder());
+        HOOD.getPIDController().setFeedbackDevice(encoder);
 
         HOOD.setSoftLimit(LimitDirection.REVERSE, MAX_ENCODER);
         HOOD.setSoftLimit(LimitDirection.FORWARD, 0);
@@ -212,7 +212,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     @Override
     public void writePeriodicOutputs() {
         // TODO remove the line below as it spams the console
-        System.out.println("HOOD Soft Limit: " + HOOD.getSoftLimit(LimitDirection.REVERSE) + "; HOOD Position: " + HOOD.getEncoderPosition());
+        System.out.println("HOOD Soft Limit: " + HOOD.getSoftLimit(LimitDirection.REVERSE) + "; HOOD Position: " + encoder.getPosition());
 
         if (demand != Demand.OFF && (Math.abs(getVelocity()) < Math.abs(demand.expected)) || (Math.abs(getVelocity() - demand.expected) < 300)) {
             double velocity = demand.velocity / FLYWHEEL_UPDUCTION;
