@@ -211,9 +211,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     @Override
     public void writePeriodicOutputs() {
-        // TODO remove the line below as it spams the console
-        System.out.println("HOOD Soft Limit: " + HOOD.getSoftLimit(LimitDirection.REVERSE) + "; HOOD Position: " + encoder.getPosition());
-
+        
         if (demand != Demand.OFF && (Math.abs(getVelocity()) < Math.abs(demand.expected)) || (Math.abs(getVelocity() - demand.expected) < 300)) {
             double velocity = demand.velocity / FLYWHEEL_UPDUCTION;
             FLYWHEEL.set(ControlMode.VELOCITY, velocity, shooterFeedforward.calculate(velocity));
