@@ -1,0 +1,9 @@
+3-ball trench
+back 3-ball
+9-ball 3
+9-ball get rev 1
+9-ball get fwd 2
+9-ball get rev 3
+9-ball get fwd 4
+9-ball get rev 5
+return 9-ball 2

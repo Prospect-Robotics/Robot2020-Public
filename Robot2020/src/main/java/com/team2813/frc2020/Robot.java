@@ -8,10 +8,11 @@
 package com.team2813.frc2020;
 
 import com.ctre.phoenix.CANifier;
-import com.team2813.frc2020.auto.AutoRoutine;
 import com.team2813.frc2020.auto.Autonomous;
 import com.team2813.frc2020.subsystems.Subsystem;
 import com.team2813.frc2020.subsystems.Subsystems;
+import com.team2813.frc2020.util.Lightshow;
+import com.team2813.frc2020.util.Limelight;
 import com.team2813.frc2020.util.RobotTest;
 import com.team2813.frc2020.util.ShuffleboardData;
 import com.team2813.lib.config.MotorConfigs;
@@ -19,7 +20,6 @@ import com.team2813.lib.drive.DriveDemand;
 import com.team2813.lib.util.CrashTracker;
 import com.team2813.lib.util.LimelightValues;
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.io.IOException;
@@ -44,7 +44,9 @@ public class Robot extends TimedRobot {
     public final LimelightValues limelightValues = new LimelightValues();
     public static Autonomous autonomous;
 
-    private CANifier caNifier = new CANifier(0);
+    private static CANifier canifier = new CANifier(14);
+    private Limelight limelight = Limelight.getInstance();
+    public static Lightshow lightshow = new Lightshow(canifier);
     public static boolean isAuto = false;
 
     /**
@@ -69,7 +71,10 @@ public class Robot extends TimedRobot {
                 LOOPER.addLoop(subsystem);
                 subsystem.zeroSensors();
             }
-            DRIVE.limelight.setLights(false);
+            limelight.setLights(false);
+            lightshow.setDefaultLight(Lightshow.Light.DISABLED);
+
+
         } catch (IOException e) {
             System.out.println("Something went wrong while reading config files!");
             CrashTracker.logThrowableCrash(e);
@@ -107,8 +112,10 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         try {
             CrashTracker.logDisabledInit();
+            lightshow.setDefaultLight(Lightshow.Light.DISABLED);
             LOOPER.setMode(RobotMode.DISABLED);
             LOOPER.start();
+//            DRIVE.setBrakeMode(false);
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
@@ -122,11 +129,12 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         isAuto = true;
         autonomous = new Autonomous();
-        DRIVE.limelight.setLights(true);
+        limelight.setLights(true);
+        lightshow.setDefaultLight(Lightshow.Light.AUTONOMOUS);
+        LOOPER.setMode(RobotMode.ENABLED);
+//        DRIVE.setBrakeMode(true);
         try {
             CrashTracker.logAutoInit();
-//            Compressor compressor = new Compressor(); // FIXME: 11/02/2019 this shouldn't need to be here
-//            compressor.start();
             for (Subsystem subsystem : allSubsystems) {
                 subsystem.zeroSensors();
             }
@@ -146,7 +154,10 @@ public class Robot extends TimedRobot {
             CrashTracker.logTeleopInit();
             LOOPER.setMode(RobotMode.ENABLED);
             LOOPER.start();
-            DRIVE.limelight.setLights(false);
+            limelight.setLights(false);
+            limelight.setStream(2);
+            lightshow.setDefaultLight(Lightshow.Light.ENABLED);
+//            DRIVE.setBrakeMode(true);
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             try {

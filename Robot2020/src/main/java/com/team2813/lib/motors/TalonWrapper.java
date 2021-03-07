@@ -10,11 +10,15 @@ import com.team2813.lib.motors.interfaces.ControlMode;
 import com.team2813.lib.motors.interfaces.LimitDirection;
 import edu.wpi.first.wpilibj.util.Units;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class TalonWrapper<Controller extends BaseTalon> implements Motor {
     private TimeoutMode timeoutMode = TimeoutMode.CONSTRUCTING;
     public String subsystemName;
 
     public Controller controller;
+    public List<TalonWrapper> slaves = new ArrayList<>();
 
     @Override
     public Object set(ControlMode controlMode, double demand) {

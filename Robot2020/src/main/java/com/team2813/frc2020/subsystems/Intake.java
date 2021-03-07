@@ -1,24 +1,30 @@
 package com.team2813.frc2020.subsystems;
 
+import com.team2813.frc2020.util.Limelight;
 import com.team2813.lib.config.MotorConfigs;
 import com.team2813.lib.controls.Button;
 import com.team2813.lib.motors.SparkMaxWrapper;
 import com.team2813.lib.solenoid.PistonSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import static com.team2813.frc2020.subsystems.Subsystems.MAGAZINE;
+
 public class Intake extends Subsystem {
 
     private SparkMaxWrapper INTAKE_MOTOR;
+    private final Button INTAKE_PISTONS = SubsystemControlsConfig.getIntakePistons();
     private final Button INTAKE_DEPLOY_BUTTON = SubsystemControlsConfig.getIntakeDeployButton();
     private final Button INTAKE_SPIN_BUTTON = SubsystemControlsConfig.getIntakeSpinButton();
-    private final Button PISTONS_BUTTON = SubsystemControlsConfig.getIntakePistons();
     private final Button INTAKE_IN_BUTTON = SubsystemControlsConfig.getIntakeIn();
     private final Button INTAKE_OUT_BUTTON = SubsystemControlsConfig.getIntakeOut();
     protected Demand demand = Demand.OFF;
+    private boolean isAuto;
 
     Intake() {
         INTAKE_MOTOR = MotorConfigs.sparks.get("intake");
     }
+
+    private Limelight limelight = Limelight.getInstance();
 
     private static PistonSolenoid PISTONS = new PistonSolenoid(1, 2);
 
@@ -42,7 +48,7 @@ public class Intake extends Subsystem {
         });
 
         // operator
-        PISTONS_BUTTON.whenPressed(() -> setDeployed(!deployed));
+        INTAKE_PISTONS.whenPressed(PISTONS::toggle);
         INTAKE_IN_BUTTON.whenPressedReleased(() -> setIntake(Demand.IN), () -> setIntake(Demand.OFF));
         INTAKE_OUT_BUTTON.whenPressedReleased(() -> setIntake(Demand.OUT), () -> setIntake(Demand.OFF));
     }
@@ -67,12 +73,20 @@ public class Intake extends Subsystem {
 
     }
 
+    public void autoIntake(boolean on) {
+        setDeployed(on);
+        isAuto = on;
+        demand = on ? Demand.IN : Demand.OFF;
+        if (on) MAGAZINE.spinMagazineIntake();
+        else MAGAZINE.stopMagazine();
+    }
+
     @Override
     public void writePeriodicOutputs() {
         INTAKE_MOTOR.set(demand.percent);
     }
 
-    protected enum Demand {
+    public enum Demand {
         IN(0.7), OFF(0.0), OUT(-0.7);
 
         double percent;

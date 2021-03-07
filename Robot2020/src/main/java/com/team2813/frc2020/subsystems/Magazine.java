@@ -19,6 +19,7 @@ public class Magazine extends Subsystem {
     private final Button START_STOP_BUTTON = SubsystemControlsConfig.getMagButton();
     private final Button FORWARD_BUTTON = SubsystemControlsConfig.getMagForward();
     private final Button REVERSE_BUTTON = SubsystemControlsConfig.getMagReverse();
+    private final Button AUTO_BUTTON = SubsystemControlsConfig.getAutoButton();
     private Demand demand;
 
     public int ammo = 0;
@@ -32,9 +33,9 @@ public class Magazine extends Subsystem {
     }
 
     public void spinMagazineForward() {
-        if (Shooter.currentPosition == Shooter.Position.INITIATION)
-            demand = Demand.INITIATION;
-        else demand = Demand.TRENCH;
+        if (SHOOTER.demand == Shooter.Demand.LOW_RANGE)
+            demand = Demand.LOW_RANGE;
+        else demand = Demand.FAR_RANGE;
         SHOOTER.setKicker(Shooter.KickerDemand.ON);
         INTAKE.setIntake(Intake.Demand.IN);
     }
@@ -76,6 +77,28 @@ public class Magazine extends Subsystem {
         START_STOP_BUTTON.whenPressedReleased(this::spinMagazineForward, this::stopMagazine);
         FORWARD_BUTTON.whenPressedReleased(this::spinMagazineIntake, this::stopMagazine);
         REVERSE_BUTTON.whenPressedReleased(this::spinMagazineReverse, this::stopMagazine);
+
+
+        if (SHOOTER.isFullyRevvedUp()) {
+            // [-4.9, 21.9]
+            // -4.9 LOW_MID_THRESHOLD
+            // -9.5 MID_FAR_THRESHOLD
+            // -11.3 MAX_THRESHOLD
+//            double vertAngle = limelight.getVertAngle();
+//            if (vertAngle >= LOW_MID_THRESHOLD) {
+////                setPosition(calculateLowPosition(getLimelight().getVertAngle()));
+////                desiredDemand = Shooter.Demand.LOW_RANGE;
+//                demand = Demand.INITIATION;
+//            } else if (vertAngle >= MID_FAR_THRESHOLD && vertAngle <= LOW_MID_THRESHOLD) {
+////                setPosition(calculateMidPosition(getLimelight().getVertAngle()));
+////                desiredDemand = Shooter.Demand.MID_RANGE;
+//                demand = Demand.TRENCH;
+//            } else if (vertAngle >= MAX_THRESHOLD && vertAngle <= MID_FAR_THRESHOLD) {
+////                setPosition(calculateHighPosition(getLimelight().getVertAngle()));
+////                desiredDemand = Shooter.Demand.HIGH_RANGE;
+//                demand = Demand.TRENCH;
+//            }
+        }
     }
 
     @Override
@@ -119,7 +142,7 @@ public class Magazine extends Subsystem {
     }
 
     enum Demand {
-        TRENCH(0.1), INITIATION(0.3), OFF(0.0), REV(-0.3), INTAKE(0.2);
+        LOW_RANGE(1), FAR_RANGE(.5), OFF(0.0), REV(-0.3), INTAKE(0.2);
 
         double percent;
 

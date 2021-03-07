@@ -1,8 +1,7 @@
 package com.team2813.frc2020.util;
 
-import com.team2813.frc2020.subsystems.DriveTalon;
+import com.team2813.frc2020.subsystems.Drive;
 import com.team2813.lib.drive.DriveDemand;
-import edu.wpi.first.wpilibj.util.Units;
 
 public final class Units2813 {
     // ticks to motor revolutions
@@ -29,7 +28,7 @@ public final class Units2813 {
     }
 
     public static double motorRevsToWheelRevs(double revolutions) {
-        return motorRevsToWheelRevs(revolutions, DriveTalon.GEAR_RATIO);
+        return motorRevsToWheelRevs(revolutions, Drive.GEAR_RATIO);
     }
 
     // wheel revs of the drivetrain to motor revs
@@ -38,16 +37,16 @@ public final class Units2813 {
     }
 
     public static double wheelRevsToMotorRevs(double revolutions) {
-        return wheelRevsToMotorRevs(revolutions, DriveTalon.GEAR_RATIO);
+        return wheelRevsToMotorRevs(revolutions, Drive.GEAR_RATIO);
     }
 
     // drivetrain velocity to motor rpms
     public static double dtVelocityToMotorRpm(double speed) { // input m/s
-        return wheelRevsToMotorRevs(speed / DriveTalon.WHEEL_CIRCUMFERENCE) * 60;
+        return wheelRevsToMotorRevs(speed / Drive.WHEEL_CIRCUMFERENCE) * 60;
     }
 
     public static double motorRpmToDtVelocity(double rpm) { // input rpm
-        return motorRevsToWheelRevs(rpm) * DriveTalon.WHEEL_CIRCUMFERENCE / 60; // motor rpm -> wheel rpm -> distance/minutes -> distance/second
+        return motorRevsToWheelRevs(rpm) * Drive.WHEEL_CIRCUMFERENCE / 60; // motor rpm -> wheel rpm -> distance/minutes -> distance/second
     }
 
     public static DriveDemand dtDemandToMotorDemand(DriveDemand demand) { // input in m/s output in motor rpm

@@ -1,107 +1,191 @@
 package com.team2813.frc2020.auto;
 
-import com.team2813.frc2020.subsystems.Shooter;
-import com.team2813.frc2020.subsystems.Subsystems;
-import com.team2813.frc2020.util.ShuffleboardData;
+import com.team2813.frc2020.subsystems.Intake;
+import com.team2813.frc2020.util.AutoAimAction;
+import com.team2813.frc2020.util.TrajectoryLock;
 import com.team2813.lib.actions.*;
-import com.team2813.lib.auto.AutoTrajectory;
-import com.team2813.lib.auto.GeneratedTrajectory;
-import com.team2813.lib.auto.PauseTrajectory;
-import com.team2813.lib.auto.RotateTrajectory;
 import com.team2813.lib.auto.RamseteTrajectory;
-import com.team2813.lib.drive.DriveDemand;
-
-
-import java.util.List;
 
 import static com.team2813.frc2020.subsystems.Subsystems.*;
 
 public enum AutoRoutine {
-    FIVE_BALL_ENEMY("5 Ball Enemy", List.of(
-            new PauseTrajectory(1), // shoot 3 balls
-            new GeneratedTrajectory("2-ball", true),
-            new PauseTrajectory(1), // intake 2 balls, turn intake off
-            new GeneratedTrajectory("go back", false),
-            new GeneratedTrajectory("return", false),
-            new PauseTrajectory(1) // shoot 2 balls
-    ), new SeriesAction(new WaitAction(1)/* shoot ball, intake, shoot ball*/)),
-    TEST_ROUTINE("Test", List.of(
-            new PauseTrajectory(0.5),
-            new GeneratedTrajectory("test", false),
-            new RotateTrajectory(180),
-            new GeneratedTrajectory("another test path", false)
-    ), new SeriesAction(new WaitAction(1))),
-    THREE_BALL("3-ball", List.of(
-            new PauseTrajectory(1), //shoot 3-balls
-            new GeneratedTrajectory("3-ball prepare", false),
-            new PauseTrajectory(1), //turn intake on
-            new GeneratedTrajectory("3-ball", true), //intake 3 balls
-            new GeneratedTrajectory("2-ball 2", true), //intake 2 balls
-            new PauseTrajectory(1) //turn intake off
-    ), new SeriesAction(new WaitAction(1))),
-    SIX_BALL("6-ball", List.of(
-            new PauseTrajectory(1), // shoot 3 ball turn intake on
-            new GeneratedTrajectory("3-ball trench", true), // intake 3 balls
-            new PauseTrajectory(1), //turn intake off
-            new GeneratedTrajectory("back 3-ball", false),
-            new PauseTrajectory(1) // shoot 3 balls
-    ), new SeriesAction(new WaitAction(1))),
-    EIGHT_BALL("8-ball", List.of(
-            new GeneratedTrajectory("back trench", true),
-            new PauseTrajectory(1), // turn intake on
-            new GeneratedTrajectory("2-ball shield generator", true), // intake 2 balls
-            new GeneratedTrajectory("3-ball 2", true), // intake 3 balls
-            new PauseTrajectory(1), // turn intake off
-            new GeneratedTrajectory("return 8-ball", false),
-            new PauseTrajectory(1) // shoot 5 balls
-    ), new SeriesAction(new WaitAction(1))),
-    FIVE_BALL_TWO("5-ball 2", List.of(
-            new PauseTrajectory(1), //turn intake on
-            new GeneratedTrajectory("2-ball initiation line", true), //intake 2 balls
-            new RotateTrajectory(180),
-            new PauseTrajectory(1), //turn intake off, shoot 5 balls
-            new GeneratedTrajectory("general zone", false)
-    ), new SeriesAction(new WaitAction(1))),
-    TEST_REVERSE("test reverse", List.of(
-            new GeneratedTrajectory("test reverse", true)
-    ), new SeriesAction(new WaitAction(1))),
-    SCRIMMAGE_MID("Scrimmage Mid", List.of(new PauseTrajectory(60)),
+
+    FIVE_BALL_ENEMY("5 Ball Enemy",
             new SeriesAction(
-                    new LockAction(() -> {
-                        System.out.println("HI");
-                        double steer = DRIVE.limelight.getSteer();
-                        System.out.println(steer);
-                        DRIVE.setDemand(DRIVE.curvatureDrive.getDemand(0, 0, steer, true));
-                        return steer == 0;
-                    }, true),
-                    new FunctionAction(() -> SHOOTER.setPosition(Shooter.Position.INITIATION), true),
-                    new FunctionAction(() -> System.out.println("SET HOOD"), true),
-                    new FunctionAction(() -> SHOOTER.stopSpinningFlywheel(), true),
+                    new AutoAimAction(),
+                    new LockAction(() -> AutoTrajectories.FIVE_BALL_ENEMY.getTrajectory().isCurrentTrajectory(2), true),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
                     new WaitAction(1),
-                    new FunctionAction(MAGAZINE::spinMagazineForward, true),
-                    new WaitAction(2),
-                    new FunctionAction(SHOOTER::stopSpinningFlywheel, true),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
+                    new LockAction(() -> AutoTrajectories.FIVE_BALL_ENEMY.getTrajectory().isCurrentTrajectory(5), true),
+                    new AutoAimAction()/* shoot ball, intake, shoot ball*/
+            ), AutoTrajectories.FIVE_BALL_ENEMY),
+    FIVE_BALL_ENEMY_SIDE("5 ball Enemy Side",
+            new SeriesAction(
+                    new AutoAimAction(),
+                    new LockAction(() -> AutoTrajectories.FIVE_BALL_ENEMY.getTrajectory().isCurrentTrajectory(2), true),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new WaitAction(1),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
+                    new LockAction(() -> AutoTrajectories.FIVE_BALL_ENEMY.getTrajectory().isCurrentTrajectory(5), true),
+                    new AutoAimAction()/* shoot ball, intake, shoot ball*/
+            ), AutoTrajectories.FIVE_BALL_ENEMY_SIDE),
+    TEST_ROUTINE("Test",
+            new SeriesAction(
+                    new WaitAction(1)
+            ), AutoTrajectories.TEST_ROUTINE),
+    SIX_BALL("6-ball",
+            new SeriesAction(
+                    new AutoAimAction(),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new LockAction(() -> AutoTrajectories.SIX_BALL.getTrajectory().isCurrentTrajectory(2), true),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
+                    new LockAction(() -> AutoTrajectories.SIX_BALL.getTrajectory().isCurrentTrajectory(4), true),
+                    new FunctionAction(MAGAZINE::spinMagazineReverse, true),
+                    new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.IN), true),
+                    new WaitAction(.15),
                     new FunctionAction(MAGAZINE::stopMagazine, true),
-                    new FunctionAction(() -> DRIVE.setDemand(new DriveDemand(-.3, -.3)), true),
-                    new WaitAction(1),
-                    new FunctionAction(() -> DRIVE.setDemand(new DriveDemand(0, 0)), true)
-            )),
-    BRUH("bruh", List.of(new PauseTrajectory(60)),
+                    new FunctionAction(SHOOTER::startSpinningFlywheel, true),
+                    new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.OFF), true),
+                    new AutoAimAction()
+            ), AutoTrajectories.SIX_BALL),
+    SIX_BALL_SIDE("6-ball Side",
             new SeriesAction(
-                    new FunctionAction(() -> DRIVE.setDemand(new DriveDemand(-.3, -.3)), true),
+                    new AutoAimAction(),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new LockAction(() -> AutoTrajectories.SIX_BALL_SIDE.getTrajectory().isCurrentTrajectory(2), true),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
+                    new LockAction(() -> AutoTrajectories.SIX_BALL_SIDE.getTrajectory().isCurrentTrajectory(4), true),
+                    new FunctionAction(MAGAZINE::spinMagazineReverse, true),
+                    new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.IN), true),
+                    new WaitAction(.15),
+                    new FunctionAction(MAGAZINE::stopMagazine, true),
+                    new FunctionAction(SHOOTER::startSpinningFlywheel, true),
+                    new FunctionAction(() -> INTAKE.setIntake(Intake.Demand.OFF), true),
+                    new AutoAimAction()
+            ), AutoTrajectories.SIX_BALL_SIDE),
+    NINE_BALL("9-ball",
+            new SeriesAction(
+                    new AutoAimAction(),
+//                    new LockAction(() -> AutoTrajectories.NINE_BALL.getTrajectory().isCurrentTrajectory(1), true),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new LockAction(() -> AutoTrajectories.NINE_BALL.getTrajectory().isCurrentTrajectory(3), true),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
+//                    new LockAction(() -> AutoTrajectories.NINE_BALL.getTrajectory().isCurrentTrajectory(3), true),
+                    new AutoAimAction(),
+//                    new LockAction(() -> AutoTrajectories.NINE_BALL.getTrajectory().isCurrentTrajectory(5), true),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+//                    new LockAction(() -> AutoTrajectories.NINE_BALL.getTrajectory().isCurrentTrajectory(10), true),
+
+                    new LockAction(() -> AutoTrajectories.NINE_BALL.getTrajectory().isCurrentTrajectory(11), true),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
+                    new AutoAimAction()
+//                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(1), true),
+//                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+//                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(4), true),
+//                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
+//                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(6), true),
+//                    new AutoAimAction()
+//                    new LockAction(() -> AutoTrajectories.NINE_BALL.getTrajectory().isCurrentTrajectory(4), true),
+//                    new AutoAimAction()
+            ), AutoTrajectories.NINE_BALL),
+
+    FIVE_BALL("5-ball",
+            new SeriesAction(
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new TrajectoryLock(AutoTrajectories.FIVE_BALL, 2),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), false),
+                    new FunctionAction(MAGAZINE::spinMagazineReverse, true),
+                    new WaitAction(.1),
+                    new FunctionAction(MAGAZINE::stopMagazine, true),
+                    new TrajectoryLock(AutoTrajectories.FIVE_BALL, 3),
+                    new AutoAimAction()
+            ), AutoTrajectories.FIVE_BALL),
+
+    TEST_REVERSE("test reverse",
+            new SeriesAction(new WaitAction(1)
+            ), AutoTrajectories.TEST_REVERSE),
+
+    SERIES_TEST("Auto Aim Test",
+            new SeriesAction(
+                    new AutoAimAction()
+            ),
+            AutoTrajectories.SERIES_TEST),
+    AUTO_AIM_FORWARD("Auto Aim Forward",
+            new SeriesAction(
                     new WaitAction(1),
-                    new FunctionAction(() -> DRIVE.setDemand(new DriveDemand(0, 0)), true)));
-
-
+                    new AutoAimAction()
+            ), AutoTrajectories.GO_FORWARD),
+    EIGHT_BALL("Eight Ball",
+            new SeriesAction(
+                    new AutoAimAction(),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(2), true),
+//                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 2),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
+                    new LockAction(() -> {
+                        System.out.println("In Traj 4");
+                        return AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(4);
+                    }, true),
+//                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 4),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(5), true),
+//                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 5),
+                    new FunctionAction(MAGAZINE::stopMagazine, true),
+//                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(6), true),
+//                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 6),
+//                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(7), true),
+//                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 7),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
+                    new FunctionAction(MAGAZINE::spinMagazineReverse, true),
+                    new WaitAction(.15),
+                    new FunctionAction(MAGAZINE::stopMagazine, true),
+                    new LockAction(() -> AutoTrajectories.EIGHT_BALL.getTrajectory().isCurrentTrajectory(8), true),
+//                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL, 8),
+                    new AutoAimAction()
+            ), AutoTrajectories.EIGHT_BALL),
+    EIGHT_BALL_SIDE("Eight Ball Side",
+            new SeriesAction(
+                    new AutoAimAction(),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL_SIDE, 2),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
+                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL_SIDE, 4),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL_SIDE, 5),
+                    new FunctionAction(MAGAZINE::stopMagazine, true),
+                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL_SIDE, 6),
+                    new FunctionAction(() -> INTAKE.autoIntake(true), true),
+                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL_SIDE, 7),
+                    new FunctionAction(() -> INTAKE.autoIntake(false), true),
+                    new FunctionAction(MAGAZINE::spinMagazineReverse, true),
+                    new WaitAction(.15),
+                    new FunctionAction(MAGAZINE::stopMagazine, true),
+                    new TrajectoryLock(AutoTrajectories.EIGHT_BALL_SIDE, 8),
+                    new AutoAimAction()
+            ), AutoTrajectories.EIGHT_BALL_SIDE),
+    ONE_METER_TEST("One Meter Test",
+            new FunctionAction(() -> System.out.println("Testing One Meter"), true),
+            AutoTrajectories.ONE_METER_TEST
+    );
+    
+    private Action action;
+    private RamseteTrajectory trajectory;
     public String name;
-    public RamseteTrajectory trajectory;
-    public Action action;
 
-    AutoRoutine(String name, List<AutoTrajectory> trajectory, Action action) {
-        this.name = name;
-        this.trajectory = new RamseteTrajectory(trajectory);
+    AutoRoutine(String name, Action action, AutoTrajectories trajectory) {
         this.action = action;
+        this.trajectory = trajectory.getTrajectory();
+        this.name = name;
     }
 
+    Action getAction() {
+        return action;
+    }
+
+    RamseteTrajectory getTrajectory() {
+        return trajectory;
+    }
 
 }

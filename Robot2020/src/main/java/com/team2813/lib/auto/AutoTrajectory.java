@@ -6,4 +6,5 @@ public interface AutoTrajectory {
     double getTotalTimeSeconds();
     Trajectory getTrajectory();
     boolean isReversed();
+    int getIndex();
 }

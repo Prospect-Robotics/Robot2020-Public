@@ -24,7 +24,6 @@ import static com.team2813.frc2020.subsystems.Subsystems.LOOPER;
 public class Climber extends Subsystem1d<Climber.Position> {
 
     private static final Axis CLIMBER_AXIS = SubsystemControlsConfig.getClimberElevator();
-    private static final POV CLIMBER_CONTROL = SubsystemControlsConfig.getClimberElevator_();
     private static final Button CLIMBER_BUTTON = SubsystemControlsConfig.getClimberButton();
     private static final Button PISTON_BUTTON = SubsystemControlsConfig.getClimberPiston();
     private static final Button STOP_CLIMBER = SubsystemControlsConfig.getClimberDisable();
@@ -41,7 +40,7 @@ public class Climber extends Subsystem1d<Climber.Position> {
         super(MotorConfigs.sparks.get("climber"));
 //        CLIMBER = MotorConfigs.sparks.get("climber");
         BRAKE = new PistonSolenoid(0);
-        getMotor().setSoftLimit(LimitDirection.REVERSE, -78.0);
+        getMotor().setSoftLimit(LimitDirection.REVERSE, -79.75);
         getMotor().setSoftLimit(LimitDirection.FORWARD, 0.0);
         ((SparkMaxWrapper) getMotor()).enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
         ((SparkMaxWrapper) getMotor()).enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);

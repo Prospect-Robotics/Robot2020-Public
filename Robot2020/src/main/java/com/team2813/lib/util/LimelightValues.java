@@ -19,6 +19,7 @@ public class LimelightValues {
     private NetworkTableEntry getPipe = table.getEntry("getpipe");
     private NetworkTableEntry camtranEntry = table.getEntry("camtran");
     private NetworkTableEntry ledMode = table.getEntry("ledMode");
+    private NetworkTableEntry stream = table.getEntry("stream");
 
     public void update() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -36,8 +37,8 @@ public class LimelightValues {
         return tx.getDouble(0);
     }
 
-    public NetworkTableEntry getTy() {
-        return ty;
+    public double getTy() {
+        return ty.getDouble(0);
     }
 
     public NetworkTableEntry getTa() {
@@ -78,5 +79,9 @@ public class LimelightValues {
 
     public NetworkTableEntry getLedMode() {
         return ledMode;
+    }
+
+    public NetworkTableEntry getStream() {
+        return stream;
     }
 }

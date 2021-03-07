@@ -9,13 +9,15 @@ public class RotateTrajectory extends Trajectory implements AutoTrajectory {
     private double degrees;
     private double seconds = .05; // to always stay a little ahead
     private static final double MAX_ROTATION_TIME = 4.0;
+    private final int INDEX;
 
-    private RotateTrajectory(List<State> states) { // should never be used
+    private RotateTrajectory(List<State> states, int index) { // should never be used
         super(states);
+        INDEX = index;
     }
 
-    public RotateTrajectory(double degrees) {
-        this(List.of(new Trajectory.State()));
+    public RotateTrajectory(double degrees, int index) {
+        this(List.of(new Trajectory.State()), index);
         this.degrees = degrees;
     }
 
@@ -48,5 +50,10 @@ public class RotateTrajectory extends Trajectory implements AutoTrajectory {
     @Override
     public boolean isReversed() {
         return false;
+    }
+
+    @Override
+    public int getIndex() {
+        return INDEX;
     }
 }

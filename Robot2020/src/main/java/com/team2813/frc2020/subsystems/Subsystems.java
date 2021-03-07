@@ -3,9 +3,8 @@ package com.team2813.frc2020.subsystems;
 import com.team2813.frc2020.Robot.RobotMode;
 import com.team2813.frc2020.loops.Loop;
 import com.team2813.frc2020.loops.Looper;
+import com.team2813.lib.controls.Button;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,7 +14,7 @@ import java.util.List;
 public class Subsystems {
 
 	public static List<Subsystem> allSubsystems;
-	public static DriveTalon DRIVE;
+	public static Drive DRIVE;
 	public static Intake INTAKE;
 	public static Magazine MAGAZINE;
 	public static Shooter SHOOTER;
@@ -36,7 +35,7 @@ public class Subsystems {
 	};
 
 	public static void initializeSubsystems() {
-		DRIVE = new DriveTalon();
+		DRIVE = new Drive();
 		INTAKE = new Intake();
 		MAGAZINE = new Magazine();
 		SHOOTER = new Shooter();

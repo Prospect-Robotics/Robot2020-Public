@@ -24,7 +24,6 @@ class SubsystemControlsConfig {
 	private static Button autoButton = driveJoystick.button(2);
 	private static Button intakeDeployButton = driveJoystick.button(4);
 	private static Button intakeSpinButton = driveJoystick.button(3);
-	private static Button hoodButton = driveJoystick.button(3);
 	private static Button magButton = driveJoystick.button(5);
 	private static Axis driveX = driveJoystick.axis(0);
 	private static Axis driveY = driveJoystick.axis(3);
@@ -39,18 +38,13 @@ class SubsystemControlsConfig {
 	private static Button intakeIn = operatorJoystick.button(5);
 	private static Button intakeOut = operatorJoystick.button(6);
 	private static Button shooterButton = operatorJoystick.button(4);
+	private static Button hoodZeroButton = operatorJoystick.button(9);
+	private static Button hoodKillButton = operatorJoystick.button(10);
 	private static Button climberButton = operatorJoystick.button(11);
 	private static Axis climberElevator = operatorJoystick.axis(1);
-	private static POV climberElevator_ = operatorJoystick.pov();
 	private static Button climberDisable = operatorJoystick.button(1);
-	private static Button hoodInitiation = operatorJoystick.button(9);
-	private static Button hoodTrench = operatorJoystick.button(10);
 	private static Button magForward = operatorJoystick.button(7);
 	private static Button magReverse = operatorJoystick.button(8);
-
-	static Button getIntakePistons() {
-		return intakePistons;
-	}
 
 	static Button getIntakeDeployButton() {
         return intakeDeployButton;
@@ -58,6 +52,10 @@ class SubsystemControlsConfig {
 
 	static Button getIntakeSpinButton() {
 		return intakeSpinButton;
+	}
+
+	static Button getIntakePistons() {
+		return intakePistons;
 	}
 
 	static Button getMagForward() {
@@ -79,8 +77,6 @@ class SubsystemControlsConfig {
 	static Button getAutoButton() {
 		return autoButton;
 	}
-
-	static Button getHoodButton() { return hoodButton; }
 
 	static Button getShooterButton() { return shooterButton; }
 
@@ -126,17 +122,15 @@ class SubsystemControlsConfig {
 		return climberElevator;
 	}
 
-	public static POV getClimberElevator_() { return climberElevator_; }
-
 	public static Button getClimberDisable() {
 		return climberDisable;
 	}
 
-	public static Button getHoodInitiation() {
-		return hoodInitiation;
+	public static Button getHoodZeroButton() {
+		return hoodZeroButton;
 	}
 
-	public static Button getHoodTrench() {
-		return hoodTrench;
+	public static Button getHoodKillButton() {
+		return hoodKillButton;
 	}
 }
