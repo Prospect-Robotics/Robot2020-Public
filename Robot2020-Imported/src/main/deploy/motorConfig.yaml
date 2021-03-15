@@ -1,0 +1,176 @@
+---
+talons:
+  driveLeft:
+    deviceNumber: 1
+    motorControllerType: TALON_FX
+    type: BRUSHLESS
+    subsystemName: Drive
+    inverted: NONINVERTED
+    statusFrame: STATUS_2
+    followers:
+      - id: 2
+        motorControllerType: TALON_FX
+        type: BRUSHLESS
+        inverted: FOLLOW_LEADER
+    pidControllers:
+      - p: .000314
+        i: 0
+        d: 0
+        #        d: 5.79
+        #        d: 4
+        f: 0
+        maxVelocity: 18000
+        maxAcceleration: 45000
+        maxIntegralAccumulator: 0
+        integralZone: 0
+        allowableClosedLoopError: 0
+  driveRight:
+    deviceNumber: 3
+    motorControllerType: TALON_FX
+    type: BRUSHLESS
+    subsystemName: Drive
+    inverted: INVERTED
+    statusFrame: STATUS_2
+    followers:
+      - id: 4
+        motorControllerType: TALON_FX
+        type: BRUSHLESS
+        inverted: FOLLOW_LEADER
+    pidControllers:
+      - p: .000314
+        i: 0
+        d: 0
+        #        d: 5.79
+        #        d: 4
+        f: 0
+        maxVelocity: 18000
+        maxAcceleration: 45000
+        maxIntegralAccumulator: 0
+        integralZone: 0
+        allowableClosedLoopError: 0
+  T5E1:
+    deviceNumber: 5
+    motorControllerType: TALON_FX
+    type: BRUSHED
+    subsystemName: Shooter
+    peakCurrentDuration: 0
+    peakCurrentLimit: 0
+    enableVoltageCompensation: true
+    compSaturationVoltage: 12
+    continuousCurrentLimitAmps: 50
+    motionAcceleration: 0
+    motionCruiseVelocity: 0
+    closedLoopRampRate: 0
+    openLoopRampRate: 0
+    invertSensorPhase: true
+    statusFrame: STATUS_2
+    inverted: INVERTED
+    followers:
+      - id: 6
+        motorControllerType: TALON_FX
+        type: BRUSHLESS
+        inverted: OPPOSE_LEADER
+    pidControllers:
+      - p: 0.3
+        i: 0
+        d: 3
+        f: 0
+        maxVelocity: 18000
+        maxAcceleration: 45000
+        maxIntegralAccumulator: 0
+        integralZone: 0
+        allowableClosedLoopError: 0
+sparks:
+  hood:
+    deviceNumber: 7
+    type: BRUSHLESS
+    subsystemName: Shooter
+    peakCurrentDuration: 0
+    peakCurrentLimit: 0
+    enableVoltageCompensation: true
+    compSaturationVoltage: 12
+    continuousCurrentLimitAmps: 30
+    motionAcceleration: 0
+    motionCruiseVelocity: 0
+    closedLoopRampRate: 0
+    openLoopRampRate: 0
+    invertSensorPhase: false
+    statusFrame: STATUS_2
+    inverted: INVERTED
+    pidControllers:
+      #        - p: 0.1
+      #          i: 0.00005
+      #          d: 0.00001
+      #          f: 0
+      - p: 7
+        i: 0
+        d: 0
+        f: 0
+#      - p: 1.8
+#        i: 0.0005
+#        d: 0
+#        f: 0
+        maxVelocity: 1000
+        maxAcceleration: 1000
+        maxIntegralAccumulator: 0
+        integralZone: 0
+        allowableClosedLoopError: 0
+  climber:
+    deviceNumber: 11
+    type: BRUSHLESS
+    subsystemName: Climber
+    inverted: INVERTED
+    statusFrame: STATUS_2
+    pidControllers:
+      - p: 0.05
+        i: 0.005
+        d: 0
+        f: 0
+        maxVelocity: 10000
+        maxAcceleration: 10000
+        maxIntegralAccumulator: 0
+        integralZone: 0
+        allowableClosedLoopError: 0
+  magazine:
+    deviceNumber: 9
+    motorControllerType: SPARK_MAX
+    type: BRUSHLESS
+    subsystemName: Magazine
+    inverted: INVERTED
+    statusFrame: STATUS_2
+    continuousCurrentLimitAmps: 30
+    peakCurrentLimit: 30
+    followers:
+      - id: 10
+        motorControllerType: SPARK_MAX
+        type: BRUSHLESS
+        inverted: OPPOSE_LEADER
+    pidControllers:
+      - p: 0
+        i: 0
+        d: 0
+        f: 0
+        maxVelocity: 0
+        maxAcceleration: 0
+        maxIntegralAccumulator: 0
+        integralZone: 0
+        allowableClosedLoopError: 0
+  intake:
+    deviceNumber: 8
+    motorControllerType: SPARK_MAX
+    type: BRUSHLESS
+    subsystemName: Intake
+    inverted: NONINVERTED
+    statusFrame: STATUS_2
+  kicker: # Talon
+    deviceNumber: 16
+    motorControllerType: SPARK_MAX
+    type: BRUSHLESS
+    subsystemName: Magazine
+    inverted: NONINVERTED
+    statusFrame: STATUS_2
+    peakCurrentLimit: 30
+    pidControllers:
+      - p: 0.006
+victors:
+...
