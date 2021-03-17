@@ -4,6 +4,6 @@
   "maxVelocity": 1.6,
   "maxAcceleration": 4.0,
   "wheelBase": 0.6607,
-  "gameName": "Galactic Search Red B",
+  "gameName": "Galactic Search B",
   "outputDir": "../../../Robot2020"
 }
