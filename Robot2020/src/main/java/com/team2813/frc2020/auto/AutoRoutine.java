@@ -168,6 +168,22 @@ public enum AutoRoutine {
     ONE_METER_TEST("One Meter Test",
             new FunctionAction(() -> System.out.println("Testing One Meter"), true),
             AutoTrajectories.ONE_METER_TEST
+    ),
+    SAMUEL_BARREL("Samuel Bounce",
+            new WaitAction(0),
+            AutoTrajectories.SAMUEL_BARELL
+    ),
+    SAMUEL_SLALOM("Samuel Slalom",
+            new WaitAction(0),
+            AutoTrajectories.SAMUEL_SLALOM
+    ),
+    SAMUEL_BOUNCE("Samuel Bounce",
+            new WaitAction(0),
+            AutoTrajectories.SAMUEL_BOUNCE
+    ),
+    ABHINEET_BOUNCE("Abhineet Bounce",
+            new WaitAction(0),
+            AutoTrajectories.ABHINEET_BOUNCE
     );
     
     private Action action;

@@ -96,7 +96,19 @@ public enum AutoTrajectories {
             new GeneratedTrajectory("fwd shield generator to side", false, 7),
             new PauseTrajectory(1, 8)
     )),
-    BOUNCE(List.of(
+    SAMUEL_BARREL(List.of(
+            new GeneratedTrajectory("samuel barrel", false, 0)
+    )),
+    SAMUEL_SLALOM(List.of(
+            new GeneratedTrajectory("samuel slalom", false, 0)
+    )),
+    SAMUEL_BOUNCE(List.of(
+            new GeneratedTrajectory("samuel bounce 1", false, 0),
+            new GeneratedTrajectory("samuel bounce 2", true, 1),
+            new GeneratedTrajectory("samuel bounce 3", false, 2),
+            new GeneratedTrajectory("samuel bounce 4", true, 3)
+    )),
+    ABHINEET_BOUNCE(List.of(
             new GeneratedTrajectory("abhineet bounce 1", false, 0),
             new GeneratedTrajectory("abhineet bounce 2", true, 1),
             new GeneratedTrajectory("abhineet bounce 3", false, 2),
