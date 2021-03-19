@@ -5,5 +5,5 @@
   "maxAcceleration": 4.0,
   "wheelBase": 0.6604,
   "gameName": "Slalom Path",
-  "outputDir": "../../../Robot2020/src/main/deploy/paths"
+  "outputDir": "../../../Robot2020"
 }
