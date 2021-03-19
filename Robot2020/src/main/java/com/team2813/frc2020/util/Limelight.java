@@ -20,7 +20,7 @@ public class Limelight {
     private static NetworkTableEntry trimEntry = Shuffleboard.getTab("Tuning").addPersistent("Trim", 0).getEntry();
 
     private Limelight() {
-        setStream(2);
+        setStream(1);
     }
 
     private static Limelight instance = new Limelight();

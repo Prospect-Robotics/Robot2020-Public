@@ -122,9 +122,10 @@ public class Drive extends Subsystem {
     }
 
     private void teleopDrive(TeleopDriveType driveType) {
-        limelight.setLights(false);
+        limelight.setLights(true); // permanently on because its  outside
+        // limelight.setLights(false);
         if (AUTO_BUTTON.get()) {
-            limelight.setLights(true);
+            // limelight.setLights(true);
             driveDemand = curvatureDrive.getDemand(0, 0, limelight.getSteer(), true);
         } else if (driveType == TeleopDriveType.ARCADE) {
             driveDemand = arcadeDrive.getDemand(arcade_y.get(), arcade_x.get());
@@ -132,6 +133,9 @@ public class Drive extends Subsystem {
         } else {
             double steer = CURVATURE_STEER.get();
             if (PIVOT_BUTTON.get()) steer *= .8; // cap it so it's not too sensitive
+            if (!PIVOT_BUTTON.get()) {
+                steer *= 1.3;
+            }
             driveDemand = curvatureDrive.getDemand(CURVATURE_FORWARD.get(), CURVATURE_REVERSE.get(), steer, PIVOT_BUTTON.get());
         }
 
