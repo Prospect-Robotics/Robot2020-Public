@@ -95,6 +95,12 @@ public enum AutoTrajectories {
             new GeneratedTrajectory("rev 2-ball shield generator", true, 6),
             new GeneratedTrajectory("fwd shield generator to side", false, 7),
             new PauseTrajectory(1, 8)
+    )),
+    BOUNCE(List.of(
+            new GeneratedTrajectory("abhineet bounce 1", false, 0),
+            new GeneratedTrajectory("abhineet bounce 2", true, 1),
+            new GeneratedTrajectory("abhineet bounce 3", false, 2),
+            new GeneratedTrajectory("abhineet bounce 4", true, 3)
     ));
 
 
