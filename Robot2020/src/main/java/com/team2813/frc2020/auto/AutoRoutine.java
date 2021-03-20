@@ -171,7 +171,7 @@ public enum AutoRoutine {
     ),
     SAMUEL_BARREL("Samuel Bounce",
             new WaitAction(0),
-            AutoTrajectories.SAMUEL_BARELL
+            AutoTrajectories.SAMUEL_BARREL
     ),
     SAMUEL_SLALOM("Samuel Slalom",
             new WaitAction(0),
