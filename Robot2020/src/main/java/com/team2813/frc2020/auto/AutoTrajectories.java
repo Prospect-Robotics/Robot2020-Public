@@ -95,6 +95,10 @@ public enum AutoTrajectories {
             new GeneratedTrajectory("rev 2-ball shield generator", true, 6),
             new GeneratedTrajectory("fwd shield generator to side", false, 7),
             new PauseTrajectory(1, 8)
+    )),
+    PATH_B_BLUE(List.of(
+            new PauseTrajectory(1.0, 0), //turn on intake
+            new GeneratedTrajectory("abhineet path b blue", true, 1)
     ));
 
 
