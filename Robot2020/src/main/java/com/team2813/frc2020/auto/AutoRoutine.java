@@ -169,7 +169,7 @@ public enum AutoRoutine {
             new FunctionAction(() -> System.out.println("Testing One Meter"), true),
             AutoTrajectories.ONE_METER_TEST
     ),
-    SAMUEL_BARREL("Samuel Bounce",
+    SAMUEL_BARREL("Samuel Barrel ",
             new WaitAction(0),
             AutoTrajectories.SAMUEL_BARREL
     ),
