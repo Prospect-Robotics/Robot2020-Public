@@ -2,8 +2,6 @@ package com.team2813.frc2020.auto;
 
 import com.team2813.frc2020.Robot;
 import com.team2813.frc2020.util.Limelight;
-import com.team2813.frc2020.util.ShuffleboardData;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class GalacticSearch {
     private static final double TOLERANCE = 1;
