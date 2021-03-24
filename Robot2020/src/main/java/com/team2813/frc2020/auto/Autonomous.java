@@ -27,15 +27,21 @@ public class Autonomous {
         prevDemand = demand;
     }
 
-    public void run() {
-        AutoRoutine routine = ShuffleboardData.routineChooser.getSelected();
+    public void run(AutoRoutine routine) {
         ramseteAuto = new RamseteAuto(Subsystems.DRIVE.kinematics, routine.getTrajectory());
 
         Subsystems.DRIVE.initAutonomous(ramseteAuto.initialPose());
         Subsystems.LOOPER.addAction(routine.getAction());
     }
 
+    public void run() {
+        run(ShuffleboardData.routineChooser.getSelected());
+    }
+
     public static void addRoutines() {
+        ShuffleboardData.autoModeChooser.addOption("Regular", AutoMode.REGULAR);
+        ShuffleboardData.autoModeChooser.addOption("Galactic Search", AutoMode.GALACTIC_SEARCH);
+
         for (AutoRoutine routine : AutoRoutine.values()) {
             ShuffleboardData.routineChooser.addOption(routine.name, routine);
         }

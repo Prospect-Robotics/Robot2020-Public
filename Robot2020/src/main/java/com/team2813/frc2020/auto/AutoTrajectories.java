@@ -95,6 +95,18 @@ public enum AutoTrajectories {
             new GeneratedTrajectory("rev 2-ball shield generator", true, 6),
             new GeneratedTrajectory("fwd shield generator to side", false, 7),
             new PauseTrajectory(1, 8)
+    )),
+    PATH_A_RED(List.of(
+            new PauseTrajectory(3.5, 0)
+    )),
+    PATH_A_BLUE(List.of(
+            new PauseTrajectory(3.5, 0)
+    )),
+    PATH_B_RED(List.of(
+            new PauseTrajectory(3.5, 0)
+    )),
+    PATH_B_BLUE(List.of(
+            new PauseTrajectory(3.5, 0)
     ));
 
 

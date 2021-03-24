@@ -168,7 +168,19 @@ public enum AutoRoutine {
     ONE_METER_TEST("One Meter Test",
             new FunctionAction(() -> System.out.println("Testing One Meter"), true),
             AutoTrajectories.ONE_METER_TEST
-    );
+    ),
+    PATH_A_RED("Path A Red",
+            new FunctionAction(() -> System.out.println("stub"), true),
+            AutoTrajectories.PATH_A_RED),
+    PATH_A_BLUE("Path A Blue",
+            new FunctionAction(() -> System.out.println("stub"), true),
+            AutoTrajectories.PATH_A_BLUE),
+    PATH_B_RED("Path B Red",
+            new FunctionAction(() -> System.out.println("stub"), true),
+            AutoTrajectories.PATH_B_RED),
+    PATH_B_BLUE("Path B Blue",
+            new FunctionAction(() -> System.out.println("stub"), true),
+            AutoTrajectories.PATH_B_BLUE);
     
     private Action action;
     private RamseteTrajectory trajectory;
