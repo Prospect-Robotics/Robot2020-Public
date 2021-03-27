@@ -113,6 +113,15 @@ public enum AutoTrajectories {
             new GeneratedTrajectory("abhineet bounce 2", true, 1),
             new GeneratedTrajectory("abhineet bounce 3", false, 2),
             new GeneratedTrajectory("abhineet bounce 4", true, 3)
+    )),
+    MARKO_BARREL(List.of(
+            new GeneratedTrajectory("marko_barrel", false, 0)
+    )),
+    GRADY_BARREL(List.of(
+            new GeneratedTrajectory("D5", false, 0),
+            new GeneratedTrajectory("B8", false, 1),
+            new GeneratedTrajectory("D10", false, 2),
+            new GeneratedTrajectory("Finish", false, 3)
     ));
 
 

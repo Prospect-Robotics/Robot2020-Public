@@ -184,6 +184,14 @@ public enum AutoRoutine {
     ABHINEET_BOUNCE("Abhineet Bounce",
             new WaitAction(0),
             AutoTrajectories.ABHINEET_BOUNCE
+    ),
+    MARKO_BARREL("Marko Barrel",
+            new WaitAction(0),
+            AutoTrajectories.MARKO_BARREL
+    ),
+    GRADY_BARREL("Grady Barrel",
+            new WaitAction(0),
+            AutoTrajectories.GRADY_BARREL
     );
     
     private Action action;
