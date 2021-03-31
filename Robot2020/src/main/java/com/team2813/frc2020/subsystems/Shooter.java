@@ -28,6 +28,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
     private static final Button AUTO_BUTTON = SubsystemControlsConfig.getAutoButton();
     private static final Button HOOD_ZERO_BUTTON = SubsystemControlsConfig.getHoodZeroButton();
     private static final Button HOOD_KILL_BUTTON = SubsystemControlsConfig.getHoodKillButton();
+    private static final Button HOOD_CLOSE_BUTTON = SubsystemControlsConfig.getHoodCloseButton();
     private final SparkMaxWrapper HOOD;
     private final TalonFXWrapper FLYWHEEL;
     protected final SparkMaxWrapper KICKER;
@@ -155,6 +156,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
         isFullyRevvedUp = FLYWHEEL.getVelocity() >= desiredDemand.velocity;
 
         // operator
+        HOOD_CLOSE_BUTTON.whenPressed(() -> setPosition(Position.CLOSE));
         HOOD_ZERO_BUTTON.whenPressed(() -> setPosition(Position.MIN));
         HOOD_KILL_BUTTON.whenPressed(() -> murderedHood = !murderedHood);
     }
@@ -230,6 +232,7 @@ public class Shooter extends Subsystem1d<Shooter.Position> {
 
     public enum Position implements Subsystem1d.Position<Shooter.Position> {
         MIN("Min", 0),
+        CLOSE("Close", -.578),
         MAX("Max", MAX_ENCODER),
         INITIATION("Initiation", -.4),
         TRENCH("Trench", -.6);

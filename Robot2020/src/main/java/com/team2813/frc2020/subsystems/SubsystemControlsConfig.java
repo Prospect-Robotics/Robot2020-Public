@@ -40,6 +40,7 @@ class SubsystemControlsConfig {
 	private static Button shooterButton = operatorJoystick.button(4);
 	private static Button hoodZeroButton = operatorJoystick.button(9);
 	private static Button hoodKillButton = operatorJoystick.button(10);
+	private static Button hoodCloseButton = operatorJoystick.button(1);
 	private static Button climberButton = operatorJoystick.button(11);
 	private static Axis climberElevator = operatorJoystick.axis(1);
 	private static Button climberDisable = operatorJoystick.button(1);
@@ -132,5 +133,8 @@ class SubsystemControlsConfig {
 
 	public static Button getHoodKillButton() {
 		return hoodKillButton;
+	}
+	public static Button getHoodCloseButton() {
+		return hoodCloseButton;
 	}
 }
