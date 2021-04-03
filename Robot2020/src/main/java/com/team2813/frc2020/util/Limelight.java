@@ -14,7 +14,7 @@ public class Limelight {
     private final double kP = 0.2;
     private static final double CORRECTION_MAX_STEER_SPEED = 0.7;
     // private static final double MIN_CORRECTION_STEER = 0.109;
-    private static final double MIN_CORRECTION_STEER = 0.05;
+    private static final double MIN_CORRECTION_STEER = 0.025;
     private static final double MOUNT_ANGLE = 15; // in degrees
     private static final double MOUNT_HEIGHT = 35; // in inches
     private static final double TARGET_HEIGHT = 98.25; // in inches
