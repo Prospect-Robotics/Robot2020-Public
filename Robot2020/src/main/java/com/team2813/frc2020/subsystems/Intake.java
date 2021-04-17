@@ -73,12 +73,17 @@ public class Intake extends Subsystem {
 
     }
 
-    public void autoIntake(boolean on) {
-        setDeployed(on);
+    public void autoIntake(boolean on, boolean ignoreDeploy) {
+        if (!ignoreDeploy)
+            setDeployed(on);
         isAuto = on;
         demand = on ? Demand.IN : Demand.OFF;
         if (on) MAGAZINE.spinMagazineIntake();
         else MAGAZINE.stopMagazine();
+    }
+
+    public void autoIntake(boolean on) {
+        autoIntake(on, false);
     }
 
     @Override

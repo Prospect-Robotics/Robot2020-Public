@@ -97,17 +97,19 @@ public enum AutoTrajectories {
             new PauseTrajectory(1, 8)
     )),
     PATH_A_RED(List.of(
-            new PauseTrajectory(3.5, 0)
+            new PauseTrajectory(1, 0),
+            new GeneratedTrajectory("path a red", true, 1)
     )),
     PATH_A_BLUE(List.of(
-            new PauseTrajectory(3.5, 0)
+            new GeneratedTrajectory("path a blue", true, 0)
     )),
     PATH_B_RED(List.of(
             new PauseTrajectory(3.5, 0)
     )),
     PATH_B_BLUE(List.of(
             new PauseTrajectory(1.0, 0), //turn on intake
-            new GeneratedTrajectory("abhineet path b blue", true, 1);
+            new GeneratedTrajectory("abhineet path b blue", true, 1)
+        ));
 
 
 

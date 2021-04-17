@@ -28,6 +28,7 @@ public class Autonomous {
     }
 
     public void run(AutoRoutine routine) {
+        System.out.println("Running auto routine " + routine.name);
         ramseteAuto = new RamseteAuto(Subsystems.DRIVE.kinematics, routine.getTrajectory());
 
         Subsystems.DRIVE.initAutonomous(ramseteAuto.initialPose());
