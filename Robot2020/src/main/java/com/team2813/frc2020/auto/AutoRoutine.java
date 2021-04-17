@@ -174,15 +174,15 @@ public enum AutoRoutine {
             AutoTrajectories.PATH_A_RED),
     PATH_A_BLUE("Path A Blue", new SeriesAction(
         new FunctionAction(() -> INTAKE.setDeployed(true), true),
-        new WaitAction(2.5),
+        new WaitAction(2.5), // wait for first ball
         new FunctionAction(() -> INTAKE.autoIntake(true, true), true),
         new WaitAction(1),
         new FunctionAction(() -> INTAKE.autoIntake(false, true), true),
-        new WaitAction(1.7),
+        new WaitAction(1.7), // wait for second ball
         new FunctionAction(() -> INTAKE.autoIntake(true, true), true),
         new WaitAction(0.7),
         new FunctionAction(() -> INTAKE.autoIntake(false, true), true),
-        new WaitAction(0.3),
+        new WaitAction(0.3), // wait for third ball
         new FunctionAction(() -> INTAKE.autoIntake(true, true), true),
         new WaitAction(1),
         new FunctionAction(() -> INTAKE.autoIntake(false, true), true),
