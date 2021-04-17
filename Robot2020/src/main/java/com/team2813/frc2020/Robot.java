@@ -8,7 +8,9 @@
 package com.team2813.frc2020;
 
 import com.ctre.phoenix.CANifier;
+import com.team2813.frc2020.auto.AutoMode;
 import com.team2813.frc2020.auto.Autonomous;
+import com.team2813.frc2020.auto.GalacticSearch;
 import com.team2813.frc2020.subsystems.Subsystem;
 import com.team2813.frc2020.subsystems.Subsystems;
 import com.team2813.frc2020.util.Lightshow;
@@ -43,6 +45,7 @@ public class Robot extends TimedRobot {
 
     public final LimelightValues limelightValues = new LimelightValues();
     public static Autonomous autonomous;
+    public static GalacticSearch galacticSearch;
 
     private static CANifier canifier = new CANifier(14);
     private Limelight limelight = Limelight.getInstance();
@@ -129,6 +132,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         isAuto = true;
         autonomous = new Autonomous();
+        galacticSearch = new GalacticSearch();
         limelight.setLights(true);
         lightshow.setDefaultLight(Lightshow.Light.AUTONOMOUS);
         LOOPER.setMode(RobotMode.ENABLED);
@@ -138,7 +142,9 @@ public class Robot extends TimedRobot {
             for (Subsystem subsystem : allSubsystems) {
                 subsystem.zeroSensors();
             }
-            autonomous.run();
+            if (ShuffleboardData.autoModeChooser.getSelected() == AutoMode.REGULAR)
+                autonomous.run();
+            else galacticSearch.run();
         } catch (Throwable t) {
             CrashTracker.logThrowableCrash(t);
             throw t;
