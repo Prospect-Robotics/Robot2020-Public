@@ -106,8 +106,8 @@ public enum AutoTrajectories {
             new PauseTrajectory(3.5, 0)
     )),
     PATH_B_BLUE(List.of(
-            new PauseTrajectory(3.5, 0)
-    ));
+            new PauseTrajectory(1.0, 0), //turn on intake
+            new GeneratedTrajectory("abhineet path b blue", true, 1);
 
 
 
